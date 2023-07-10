@@ -1,7 +1,6 @@
 package com.example.halagodainv.model;
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Entity
 @Table(name = "news_language")
 @Data
