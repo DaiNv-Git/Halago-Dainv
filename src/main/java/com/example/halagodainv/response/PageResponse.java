@@ -10,17 +10,17 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageResponse<T>{
+public class PageResponse<T> {
     private List<T> content;
     private Integer totalPages;
     private Long totalElements;
     private Integer currentPage;
     private Integer pageSize;
 
-    public PageResponse(Page<T> page, Long totalElements){
+    public PageResponse(Page<T> page) {
         this.content = page.getContent();
         this.totalPages = page.getTotalPages();
-        this.totalElements =totalElements;
+        this.totalElements = page.getTotalElements();
         this.currentPage = page.getNumber() + 1;
         this.pageSize = page.getPageable().getPageSize();
     }

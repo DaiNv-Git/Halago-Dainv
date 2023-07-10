@@ -1,14 +1,15 @@
 package com.example.halagodainv.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.Data;import java.util.Date;
+import javax.persistence.*;
+import java.util.Date;
 @Entity
 @Table(name = "api")
-public class Api {
+@Data
+public class ApiEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

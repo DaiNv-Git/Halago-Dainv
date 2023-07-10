@@ -1,9 +1,7 @@
 package com.example.halagodainv.model;
 
+import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.Data;
 @Entity
 @Table(name = "footer_language")
 public class FooterLanguage {

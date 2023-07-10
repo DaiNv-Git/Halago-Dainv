@@ -1,9 +1,9 @@
 package com.example.halagodainv.repository;
 
 
-import com.example.halagodainv.model.Api;
+import com.example.halagodainv.model.ApiEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ApiRepository extends JpaRepository<Api,String> {
+public interface ApiRepository extends JpaRepository<ApiEntity,String> {
 
 }

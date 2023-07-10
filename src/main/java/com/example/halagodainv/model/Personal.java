@@ -5,12 +5,13 @@ import org.springframework.lang.Nullable;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
+
 @Entity
 @Table(name = "tbl_personal")
 public class Personal {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_personal")
