@@ -1,7 +1,6 @@
 package com.example.halagodainv.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.Date;
 @Entity
