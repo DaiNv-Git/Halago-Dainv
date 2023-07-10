@@ -1,18 +1,19 @@
 package com.example.halagodainv.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 import java.util.Date;
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     @Column(name = "username")
-    private String username;
+    private String userName;
     @Column(name = "password")
     private String password;
     @Column(name = "role")

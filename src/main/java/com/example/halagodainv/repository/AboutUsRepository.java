@@ -1,12 +1,10 @@
 package com.example.halagodainv.repository;
 
-import com.example.halagodainv.model.AboutUs;
-import org.springframework.data.jpa.repository.Query;
+import com.example.halagodainv.model.AboutUsEntity;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AboutUsRepository extends CrudRepository<AboutUs,String> {
+public interface AboutUsRepository extends CrudRepository<AboutUsEntity,String> {
 
 }

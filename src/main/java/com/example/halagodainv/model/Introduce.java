@@ -2,8 +2,10 @@ package com.example.halagodainv.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
+
 @Entity
 @Table(name = "introduce")
 public class Introduce {

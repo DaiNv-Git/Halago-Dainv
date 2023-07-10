@@ -1,12 +1,10 @@
 package com.example.halagodainv.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 
 @Entity
 @Table(name = "about_us")
-
-public class AboutUs {
+public class AboutUsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

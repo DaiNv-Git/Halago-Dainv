@@ -1,6 +1,7 @@
 package com.example.halagodainv.model;
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_role_personal")
