@@ -45,18 +45,7 @@ public class BrandServiceImpl implements BrandService {
         }
         int countALlBrands = brandRepository.countAllBy();
         Pageable pageable = PageRequest.of(offset, pageSize);
-        SimpleDateFormat inSDF = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String outDate = "";
-        String outDate2 = "";
-        String st1 = startDate + " 00:00:00";
-        String st2 = endDate + " 23:59:59";
-        Date date = inSDF.parse(st1);
-        outDate = outSDF.format(date);
-        Date date2 = inSDF.parse(st2);
-        outDate2 = outSDF.format(date2);
-        System.out.println(outDate + "         " + outDate2);
-        List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndStatus(brandName, outDate, outDate2, pageable);
+        List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndStatus(brandName, startDate, endDate, pageable);
         List<BrandDto> brandDtos = new ArrayList<>();
         getBrandEntities.forEach(brandEntity -> {
             brandDtos.add(new BrandDto(brandEntity));
