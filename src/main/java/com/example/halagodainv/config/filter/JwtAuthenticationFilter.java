@@ -38,12 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Lấy jwt từ request
             String authenticationHeader = getJwtFromRequest(request);
             if (StringUtils.hasText(authenticationHeader) && token.validateToken(authenticationHeader)) {
-                // Lấy userLogin từ chuỗi jwt
-                String userLogin = token.getUserNameFromJWT(authenticationHeader);
-                // Lấy thông tin người dùng qua userLogin
-                UserDetails userDetails = userServiceConfig.loadUserByUsername(userLogin);
+                String email = token.getUserNameFromJWT(authenticationHeader);
+                UserDetails userDetails = userServiceConfig.loadByEmail(email);
                 if (userDetails != null) {
-                    // Nếu người dùng hợp lệ, set thông tin cho Seturity Context
                     UsernamePasswordAuthenticationToken
                             usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

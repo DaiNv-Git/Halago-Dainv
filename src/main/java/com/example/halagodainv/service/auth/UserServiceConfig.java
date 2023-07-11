@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,13 +23,22 @@ public class UserServiceConfig implements UserDetailsService {
     private UserRepository authJPARepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> login = authJPARepository.findByUserName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UserEntity> login = authJPARepository.findByEmail(email);
         if (login.isEmpty()) {
             throw new UsernameNotFoundException("user name or password not exits");
         }
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        return new User(login.get().getUserName(), login.get().getPassword(), authorities);
+        return new User(login.get().getEmail(), login.get().getPassword(), authorities);
+    }
+
+    public UserDetails loadByEmail(String email) throws UsernameNotFoundException {
+        Optional<UserEntity> login = authJPARepository.findByEmail(email);
+        if (login.isEmpty()) {
+            throw new UsernameNotFoundException("user name or password not exits");
+        }
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        return new User(login.get().getEmail(), login.get().getPassword(), authorities);
     }
 
     public UserDetails loadUserById(int id) throws UsernameNotFoundException {

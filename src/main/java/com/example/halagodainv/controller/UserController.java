@@ -31,8 +31,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<Object>> user(@Valid @RequestBody UserLogin userLogin) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUserName(), userLogin.getPassword()));
-            UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getUserName());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
+            UserDetails userDetails = authConfig.loadByEmail(userLogin.getEmail());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
             return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(token, refreshToken)));

@@ -15,6 +15,8 @@ public class UserEntity {
     private String userName;
     @Column(name = "password")
     private String password;
+    @Column(name = "password_hide")
+    private String passwordHide;
     @Column(name = "role")
     private int role;
     @Column(name = "created")

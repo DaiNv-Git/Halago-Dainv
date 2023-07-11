@@ -31,7 +31,6 @@ public class BrandEntity implements Serializable {
     @Column(name = "description")
     private String description;
     @Column(name = "created")
-    @JsonFormat(pattern = "dd-MM-yyyy",timezone = "Asia/Ho_Chi_Minh")
     private Date created;
     @Column(name = "fb_id")
     private String fbId;
