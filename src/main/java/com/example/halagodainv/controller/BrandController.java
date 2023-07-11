@@ -40,7 +40,7 @@ public class BrandController {
     @PostMapping("/add-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandAddRequest brandAddRequest) throws GeneralException {
         String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "save success", brandService.add(brandAddRequest, email)));
+        return ResponseEntity.ok(brandService.add(brandAddRequest, email));
     }
 
     @PostMapping("/edit-brand")
