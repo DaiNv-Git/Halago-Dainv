@@ -2,7 +2,6 @@ package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.userconfig.UserAuthenConfig;
 import com.example.halagodainv.exception.GeneralException;
-import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.request.brand.BrandAddRequest;
 import com.example.halagodainv.request.brand.BrandEditRequest;
 import com.example.halagodainv.response.BaseResponse;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,10 +26,10 @@ public class BrandController {
 
     private final UserAuthenConfig userAuthenConfig;
 
-    @PostMapping("")
+    @GetMapping("")
     public ResponseEntity<Object> getByBrands(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
                                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                              @RequestParam(value = "brandName", required = false) String brandName,
+                                              @RequestParam(value = "brandName", required = false ,defaultValue = "") String brandName,
                                               @RequestParam(value = "startDate", required = false, defaultValue = "") String startDate,
                                               @RequestParam(value = "endDate", required = false, defaultValue = "") String endDate) throws ParseException {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", brandService.getByListBrand(pageNo, pageSize, brandName, startDate, endDate)));
