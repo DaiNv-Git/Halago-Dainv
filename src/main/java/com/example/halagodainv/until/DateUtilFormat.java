@@ -15,4 +15,10 @@ public class DateUtilFormat {
         String dateFormatString = formatter.format(dateTime);
         return dateFormatString;
     }
+
+    public static Date converStringToDate(String dateTime, String dateType) throws ParseException {
+        DateFormat df = new SimpleDateFormat(dateType);
+        Date startDate = df.parse(dateTime);
+        return startDate;
+    }
 }

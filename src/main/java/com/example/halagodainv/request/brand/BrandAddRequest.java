@@ -31,6 +31,14 @@ public class BrandAddRequest {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName is not null or empty", null));
             isCheck = false;
         }
+        if (Strings.isBlank(email)) {
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "email is not null or empty", null));
+            isCheck = false;
+        }
+        if (Strings.isBlank(password)) {
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "password is not null or empty", null));
+            isCheck = false;
+        }
         return isCheck;
     }
 }
