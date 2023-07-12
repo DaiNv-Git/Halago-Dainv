@@ -26,6 +26,11 @@ public class CampaignController {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", campaignService.getCampaigns(campaignSearch)));
     }
 
+    @PostMapping("/detail")
+    public ResponseEntity<Object> getDetail(@RequestParam("campaignId") int campaignId) {
+        return ResponseEntity.ok(campaignService.getDetail(campaignId));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> add(@RequestBody CampaignAddRequest addRequest) throws ParseException {
         return ResponseEntity.ok(campaignService.add(addRequest));

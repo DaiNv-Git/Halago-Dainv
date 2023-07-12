@@ -37,6 +37,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final ImageProductRepository imageProductRepository;
 
+    @Override
     public Object getCampaigns(CampaignSearch campaignSearch) {
         int offset = 0;
         if (campaignSearch.getPageNo() > 0) {
@@ -64,6 +65,16 @@ public class CampaignServiceImpl implements CampaignService {
         }
         pageResponse = new PageResponse<>(new PageImpl<>(campaignDtos, pageable, totalCountByCampaign));
         return pageResponse;
+    }
+
+
+    public Object getDetail(int campaignId) {
+        Optional<CampaignEntity> editEntity = campaignRepository.findById(campaignId);
+        if (editEntity.isPresent()) {
+            CampaignDto campaignDto = new CampaignDto(editEntity.get(), imageProductRepository.findByCampaignEntity_Id(editEntity.get().getId()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "success", campaignDto);
+        }
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "campain detail is not exit", null);
     }
 
     @Override

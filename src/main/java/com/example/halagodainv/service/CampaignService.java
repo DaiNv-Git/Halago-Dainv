@@ -8,8 +8,13 @@ import java.text.ParseException;
 
 public interface CampaignService {
     Object getCampaigns(CampaignSearch campaignSearch);
+
+    Object getDetail(int campaignId);
+
     Object add(CampaignAddRequest campaignAddRequest) throws ParseException;
+
     Object edit(CampaignEditRequest campaignEditRequest) throws ParseException;
+
     Object deleteByCampaign(int campaignId);
 
 
