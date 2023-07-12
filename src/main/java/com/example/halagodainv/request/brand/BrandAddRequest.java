@@ -14,6 +14,8 @@ import java.util.List;
 public class BrandAddRequest {
     private String registerName;
     private String brandName;
+    private String email;
+    private String password;
     private String website;
     private int phoneNumber;
     private String logo;

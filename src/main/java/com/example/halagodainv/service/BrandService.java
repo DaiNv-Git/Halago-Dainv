@@ -17,4 +17,5 @@ public interface BrandService {
     Object add(BrandAddRequest brandAddRequest, String email) throws GeneralException;
 
     Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException;
+    Object deleteByBranId(int brandId);
 }
