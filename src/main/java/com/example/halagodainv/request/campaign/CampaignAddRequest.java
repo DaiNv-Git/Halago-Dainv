@@ -1,6 +1,7 @@
 package com.example.halagodainv.request.campaign;
 
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.request.campaign.imageproduct.ImageProductAddRequest;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
@@ -12,12 +13,11 @@ public class CampaignAddRequest {
     private String brandName;
     private String campaignName;
     private String industry;
-    private String ExecutionTime;
     private String campaignImage;
     private String titleCampaign;
     private String startDate;
     private String endDate;
-    private String ProductImage;
+    private List<ImageProductAddRequest> imageProductAddRequests;
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
@@ -31,10 +31,6 @@ public class CampaignAddRequest {
         }
         if (Strings.isBlank(campaignName)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name is not null or empty", null));
-            isCheck = false;
-        }
-        if (Strings.isBlank(ExecutionTime)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "ExecutionTime is not null or empty", null));
             isCheck = false;
         }
         if (Strings.isBlank(industry)) {

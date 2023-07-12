@@ -1,12 +1,16 @@
 package com.example.halagodainv.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "image_product")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +18,6 @@ public class ImageProductEntity {
     private int id;
     @Column(name = "image_product")
     private String imageProduct;
-    @Column(name = "campaign_id")
-    private int campaignId;
     @ManyToOne
     private CampaignEntity campaignEntity;
 }

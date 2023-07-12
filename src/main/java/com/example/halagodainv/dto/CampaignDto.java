@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CampaignDto {
+    private int id;
     private String brandName;
     private String campaignName;
     private String industry;
@@ -21,13 +22,14 @@ public class CampaignDto {
     private String endDate;
     private String campaignImage;
     private String titleCampaign;
-    private List<ImageProductEntity> productImage = new ArrayList<>();
+    private List<ImageProductDto> productImages = new ArrayList<>();
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
     private String reward;
 
-    public CampaignDto(CampaignEntity campaignEntity) {
+    public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
+        this.id = campaignEntity.getId();
         this.brandName = campaignEntity.getBrandName();
         this.campaignName = campaignEntity.getCampaignName();
         this.industry = campaignEntity.getIndustry();
@@ -35,10 +37,13 @@ public class CampaignDto {
         this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "dd-MM-yyyy");
         this.campaignImage = campaignEntity.getImg();
         this.titleCampaign = campaignEntity.getTitleCampaign();
-        this.productImage.addAll(campaignEntity.getProductEntityList());
         this.titleProduct = campaignEntity.getTitleProduct();
         this.descriptionCampaign = campaignEntity.getContent();
         this.descriptionCandidatePerform = campaignEntity.getDescription();
         this.reward = campaignEntity.getRewards();
+        response.forEach(campaign -> {
+            this.productImages.add(new ImageProductDto(campaign));
+        });
+
     }
 }
