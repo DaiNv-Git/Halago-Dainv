@@ -21,5 +21,4 @@ public class NewsLanguage {
     String language;
     @Column(name = "id_news")
     int idNews;
-
 }
