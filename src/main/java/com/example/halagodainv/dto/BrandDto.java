@@ -4,8 +4,6 @@ import com.example.halagodainv.model.BrandEntity;
 import com.example.halagodainv.until.DateUtilFormat;
 import lombok.*;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,28 +13,34 @@ public class BrandDto {
     private String brandName;
     private String logo;
     private String registerName;
-    private String brandEmail;
-    private String phone;
+    private String email;
+    private String phoneNumber;
     private String createDate;
     private String passwordHide;
+    private String website;
+    private String description;
 
     public BrandDto(BrandEntity brandEntity,String passwordHide) {
         this.id = brandEntity.getId();
         this.brandName = brandEntity.getBrandName();
         this.logo = brandEntity.getLogo();
         this.registerName = brandEntity.getRepresentativeName();
-        this.brandEmail = brandEntity.getBrandEmail();
-        this.phone = brandEntity.getBrandPhone();
+        this.email = brandEntity.getBrandEmail();
+        this.phoneNumber = brandEntity.getBrandPhone();
         this.passwordHide = passwordHide;
+        this.website = brandEntity.getWebsite();
         this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
+        this.description = brandEntity.getDescription();
     }
     public BrandDto(BrandEntity brandEntity) {
         this.id = brandEntity.getId();
         this.brandName = brandEntity.getBrandName();
         this.logo = brandEntity.getLogo();
         this.registerName = brandEntity.getRepresentativeName();
-        this.brandEmail = brandEntity.getBrandEmail();
-        this.phone = brandEntity.getBrandPhone();
+        this.email = brandEntity.getBrandEmail();
+        this.phoneNumber = brandEntity.getBrandPhone();
+        this.website = brandEntity.getWebsite();
         this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
+        this.description = brandEntity.getDescription();
     }
 }
