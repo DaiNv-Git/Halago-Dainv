@@ -14,6 +14,7 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.BrandService;
 import com.example.halagodainv.service.auth.UserServiceConfig;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,18 +46,7 @@ public class BrandServiceImpl implements BrandService {
         }
         int countALlBrands = brandRepository.countAllBy();
         Pageable pageable = PageRequest.of(offset, pageSize);
-        SimpleDateFormat inSDF = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        SimpleDateFormat outSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String outDate = "";
-        String outDate2 = "";
-        String st1 = startDate + " 00:00:00";
-        String st2 = endDate + " 23:59:59";
-        Date date = inSDF.parse(st1);
-        outDate = outSDF.format(date);
-        Date date2 = inSDF.parse(st2);
-        outDate2 = outSDF.format(date2);
-        System.out.println(outDate + "         " + outDate2);
-        List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndStatus(brandName, outDate, outDate2, pageable);
+        List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndStatus(brandName, startDate + " 00:00:00", endDate + " 23:59:59", pageable);
         List<BrandDto> brandDtos = new ArrayList<>();
         getBrandEntities.forEach(brandEntity -> {
             brandDtos.add(new BrandDto(brandEntity));
@@ -68,6 +58,16 @@ public class BrandServiceImpl implements BrandService {
         }
         pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, countALlBrands));
         return pageResponse;
+    }
+
+    public Object getByDetail(int brandId, String email) throws ParseException {
+        UserDetails user = userServiceConfig.loadUserByUsername(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(user.getUsername());
+        Optional<BrandEntity> brandEntity = brandRepository.findById(brandId);
+        if (!brandEntity.isPresent()) {
+            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "branId is not exit", null);
+        }
+        return new BaseResponse<>(HttpStatus.OK.value(), "", new BrandDto(brandEntity.get(), userEntity.get().getPasswordHide()));
     }
 
     @Override
