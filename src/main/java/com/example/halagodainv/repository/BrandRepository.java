@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
-
-    @Query(nativeQuery = true, value = "SELECT * FROM brand br WHERE br.brand_name LIKE CONCAT('%',:brandName, '%') "+
-            "ORDER BY br.id DESC")
+    @Query(nativeQuery = true,value = "SELECT * FROM brand br WHERE br.brand_name LIKE CONCAT('%', :brandName, '%') AND " +
+            "br.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
+            "br.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s') ")
     List<BrandEntity> findByBrandNameAndStatus(@Param("brandName") String brandName, Pageable pageable);
 
     int countAllBy();
