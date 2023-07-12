@@ -12,12 +12,10 @@ import java.util.List;
 
 @Repository
 public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
-
     @Query(nativeQuery = true,value = "SELECT * FROM brand br WHERE br.brand_name LIKE CONCAT('%', :brandName, '%') AND " +
             "br.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
-            "br.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s')  " +
-            "ORDER BY br.id DESC")
-    List<BrandEntity> findByBrandNameAndStatus(@Param("brandName") String brandName, @Param("startDate") String startDate, @Param("endDate") String endDate, Pageable pageable);
+            "br.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s') ")
+    List<BrandEntity> findByBrandNameAndStatus(@Param("brandName") String brandName, Pageable pageable);
 
     int countAllBy();
 }
