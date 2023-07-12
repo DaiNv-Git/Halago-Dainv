@@ -31,7 +31,7 @@ public class BrandController {
                                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                               @RequestParam(value = "brandName", required = false,defaultValue = "") String brandName,
                                               @RequestParam(value = "startDate", required = false, defaultValue = "1000-01-01") String startDate,
-                                              @RequestParam(value = "endDate", required = false, defaultValue = "3000-12-12") String endDate) throws ParseException {) throws ParseException {
+                                              @RequestParam(value = "endDate", required = false, defaultValue = "3000-12-12") String endDate) throws  ParseException {
 
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", brandService.getByListBrand(pageNo, pageSize, brandName, startDate, endDate)));
     }
