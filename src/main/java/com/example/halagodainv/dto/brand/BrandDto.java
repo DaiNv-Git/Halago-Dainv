@@ -1,4 +1,4 @@
-package com.example.halagodainv.dto;
+package com.example.halagodainv.dto.brand;
 
 import com.example.halagodainv.model.BrandEntity;
 import com.example.halagodainv.until.DateUtilFormat;

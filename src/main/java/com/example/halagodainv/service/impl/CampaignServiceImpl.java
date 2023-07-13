@@ -2,12 +2,14 @@ package com.example.halagodainv.service.impl;
 
 
 import com.example.halagodainv.config.Constant;
-import com.example.halagodainv.dto.CampaignDto;
+import com.example.halagodainv.dto.campain.CampaignDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
+import com.example.halagodainv.repository.BrandRepository;
 import com.example.halagodainv.repository.CampaignRepository;
 import com.example.halagodainv.repository.ImageProductRepository;
+import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignSearch;
@@ -37,6 +39,9 @@ import java.util.Optional;
 public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final ImageProductRepository imageProductRepository;
+
+    private final BrandRepository brandRepository;
+    private final IndustryRepository industryRepository;
 
     @Override
     public Object getCampaigns(CampaignSearch campaignSearch) {
@@ -73,9 +78,9 @@ public class CampaignServiceImpl implements CampaignService {
         Optional<CampaignEntity> editEntity = campaignRepository.findById(campaignId);
         if (editEntity.isPresent()) {
             CampaignDto campaignDto = new CampaignDto(editEntity.get(), imageProductRepository.findByCampaignEntity_Id(editEntity.get().getId()));
-            return new BaseResponse<>(HttpStatus.OK.value(), "success", campaignDto);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu chi tiết thành công", campaignDto);
         }
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "campain detail is not exit", null);
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu chi tiết thất bại", null);
     }
 
     @Override
@@ -140,21 +145,14 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setRewards(campaignEditRequest.getReward());
             editEntity = campaignRepository.save(editEntity);
             List<ImageProductEntity> imageProductEntities = new ArrayList<>();
-            List<Integer> imageIds = new ArrayList<>();
             CampaignEntity finalEditEntity = editEntity;
+            imageProductRepository.deleteByCampaignEntity_Id(editEntity.getId());
             campaignEditRequest.getImageProductEditRequests().forEach(i -> {
-                if (i.getImageProductId() > 0) {
-                    ImageProductEntity imageProductEntity = imageProductRepository.findByIdAndCampaignEntity_Id(i.getImageProductId(), finalEditEntity.getId()).get();
-                    imageProductEntity.setImageProduct(i.getImageProduct());
-                    imageProductEntities.add(imageProductEntity);
-                } else {
-                    ImageProductEntity imageProductEntity = new ImageProductEntity();
-                    imageProductEntity.setImageProduct(i.getImageProduct());
-                    imageProductEntity.setCampaignEntity(finalEditEntity);
-                    imageProductEntities.add(imageProductEntity);
-                }
+                ImageProductEntity imageProductEntity = new ImageProductEntity();
+                imageProductEntity.setImageProduct(i.getImageProduct());
+                imageProductEntity.setCampaignEntity(finalEditEntity);
+                imageProductEntities.add(imageProductEntity);
             });
-            imageProductRepository.deleteByIdIn(imageIds);
             List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDto(editEntity, response));
         } catch (Exception e) {
@@ -171,5 +169,13 @@ public class CampaignServiceImpl implements CampaignService {
         imageProductRepository.deleteByCampaignEntity_Id(campaignId);
         campaignRepository.deleteById(campaignId);
         return new BaseResponse<>(HttpStatus.OK.value(), "delete success", null);
+    }
+
+    public Object getByBrands(){
+        return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", brandRepository.findByBrandNameAndId());
+    }
+
+    public Object getByIndustry(){
+        return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", industryRepository.findAll());
     }
 }

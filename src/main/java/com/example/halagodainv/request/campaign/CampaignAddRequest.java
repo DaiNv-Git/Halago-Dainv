@@ -26,35 +26,35 @@ public class CampaignAddRequest {
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
         if (Strings.isBlank(brandName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(campaignName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(industry)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "industry is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "industry is không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(titleCampaign)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleCampaign is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleCampaign không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(titleProduct)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleProduct is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleProduct không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(descriptionCampaign)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCampaign is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCampaign không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(descriptionCandidatePerform)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCandidatePerform is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCandidatePerform không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(reward)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "reward is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "reward không được rỗng", null));
             isCheck = false;
         }
         return isCheck;

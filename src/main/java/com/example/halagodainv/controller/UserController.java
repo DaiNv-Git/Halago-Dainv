@@ -1,6 +1,8 @@
 package com.example.halagodainv.controller;
 
+import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.config.filter.JwtToken;
+import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserLogin;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -34,16 +38,28 @@ public class UserController {
     private JwtToken jwtToken;
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<Object>> user(@Valid @RequestBody UserLogin userLogin) {
+    public ResponseEntity<Object> user(@Valid @RequestBody UserLogin userLogin) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
-            UserDetails userDetails = authConfig.loadByEmail(userLogin.getEmail());
+            Pattern pattern = Pattern.compile("@");
+            Matcher matcher = pattern.matcher(userLogin.getEmail());
+            int count = 0;
+            while (matcher.find()) {
+                count++;
+            }
+            UserDetails userDetails;
+            if (count == 1) {
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
+                userDetails = authConfig.loadUserByUsername(userLogin.getEmail());
+            } else {
+                userDetails = authConfig.loadByUserName(userLogin.getEmail());
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userLogin.getPassword()));
+            }
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(userEntity.get().getUserName(), token, refreshToken)));
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Đăng nhập không thành công", null));
         }
     }
 
@@ -51,11 +67,11 @@ public class UserController {
     public ResponseEntity<BaseResponse<Object>> user(@RequestParam("refreshToken") String refreshToken) {
         try {
             String accessToken = jwtToken.getUserNameFromJWT(refreshToken);
-            UserDetails userDetails = authConfig.loadByEmail(accessToken);
+            UserDetails userDetails = authConfig.loadUserByUsername(accessToken);
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             String newToken = jwtToken.generateToken(userDetails);
             String refreshTokenNew = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(),newToken, refreshTokenNew)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), newToken, refreshTokenNew)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
 

@@ -1,4 +1,4 @@
-package com.example.halagodainv.dto;
+package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;

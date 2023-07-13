@@ -1,6 +1,6 @@
 package com.example.halagodainv.service.impl;
 
-import com.example.halagodainv.dto.BrandDto;
+import com.example.halagodainv.dto.brand.BrandDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.BrandEntity;

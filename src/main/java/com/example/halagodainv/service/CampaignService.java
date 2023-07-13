@@ -16,6 +16,8 @@ public interface CampaignService {
     Object edit(CampaignEditRequest campaignEditRequest) throws ParseException;
 
     Object deleteByCampaign(int campaignId);
+    Object getByBrands();
+    Object getByIndustry();
 
 
 }

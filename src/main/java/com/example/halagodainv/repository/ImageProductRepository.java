@@ -13,8 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface ImageProductRepository extends JpaRepository<ImageProductEntity, Integer> {
-    void deleteByIdIn(List<Integer> integers);
-
     Optional<ImageProductEntity> findByIdAndCampaignEntity_Id(Integer integer, Integer campaignId);
 
     List<ImageProductEntity> findByCampaignEntity_Id(int campaignId);

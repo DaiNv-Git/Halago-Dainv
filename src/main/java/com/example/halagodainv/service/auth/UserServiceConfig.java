@@ -32,8 +32,8 @@ public class UserServiceConfig implements UserDetailsService {
         return new User(login.get().getEmail(), login.get().getPassword(), authorities);
     }
 
-    public UserDetails loadByEmail(String email) throws UsernameNotFoundException {
-        Optional<UserEntity> login = authJPARepository.findByEmail(email);
+    public UserDetails loadByUserName(String userName) throws UsernameNotFoundException {
+        Optional<UserEntity> login = authJPARepository.findByUserName(userName);
         if (login.isEmpty()) {
             throw new UsernameNotFoundException("user name or password not exits");
         }
