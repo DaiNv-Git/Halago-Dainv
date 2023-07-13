@@ -1,6 +1,7 @@
 package com.example.halagodainv.service.impl;
 
 
+import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.CampaignDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.CampaignEntity;
@@ -80,66 +81,68 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     @Transactional
     public Object add(CampaignAddRequest campaignAddRequest) throws ParseException {
-        List<ErrorResponse> errorResponses = new ArrayList<>();
-        if (!campaignAddRequest.validate(errorResponses)) {
-            return errorResponses;
+        try {
+            List<ErrorResponse> errorResponses = new ArrayList<>();
+            if (!campaignAddRequest.validate(errorResponses)) {
+                return errorResponses;
+            }
+            CampaignEntity campaignEntity = new CampaignEntity();
+            campaignEntity.setBrandName(campaignAddRequest.getBrandName());
+            campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
+            campaignEntity.setIndustry(campaignAddRequest.getIndustry());
+            campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
+            campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
+            campaignEntity.setImg(campaignAddRequest.getCampaignImage());
+            campaignEntity.setTitleCampaign(campaignAddRequest.getTitleCampaign());
+            campaignEntity.setTitleProduct(campaignAddRequest.getTitleProduct());
+            campaignEntity.setDescription(campaignAddRequest.getDescriptionCampaign());
+            campaignEntity.setContent(campaignAddRequest.getDescriptionCandidatePerform());
+            campaignEntity.setRewards(campaignAddRequest.getReward());
+            campaignEntity.setCreated(new Date());
+            campaignEntity = campaignRepository.save(campaignEntity);
+            List<ImageProductEntity> imageProductEntities = new ArrayList<>();
+            CampaignEntity finalCampaignEntity = campaignEntity;
+            campaignAddRequest.getImageProductAddRequests().forEach(i -> {
+                ImageProductEntity imageProductEntity = new ImageProductEntity();
+                imageProductEntity.setImageProduct(i.getImageProduct());
+                imageProductEntity.setCampaignEntity(finalCampaignEntity);
+                imageProductEntities.add(imageProductEntity);
+            });
+            List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
+            return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDto(campaignEntity, response));
+        } catch (Exception e) {
+            return new ErrorResponse(Constant.FAILED, "Thêm mới không thành công", null);
         }
-        CampaignEntity campaignEntity = new CampaignEntity();
-        campaignEntity.setBrandName(campaignAddRequest.getBrandName());
-        campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
-        campaignEntity.setIndustry(campaignAddRequest.getIndustry());
-        campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
-        campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
-        campaignEntity.setImg(campaignAddRequest.getCampaignImage());
-        campaignEntity.setTitleCampaign(campaignAddRequest.getTitleCampaign());
-        campaignEntity.setTitleProduct(campaignAddRequest.getTitleProduct());
-        campaignEntity.setDescription(campaignAddRequest.getDescriptionCampaign());
-        campaignEntity.setContent(campaignAddRequest.getDescriptionCandidatePerform());
-        campaignEntity.setRewards(campaignAddRequest.getReward());
-        campaignEntity.setCreated(new Date());
-        campaignEntity = campaignRepository.save(campaignEntity);
-        List<ImageProductEntity> imageProductEntities = new ArrayList<>();
-        CampaignEntity finalCampaignEntity = campaignEntity;
-        campaignAddRequest.getImageProductAddRequests().forEach(i -> {
-            ImageProductEntity imageProductEntity = new ImageProductEntity();
-            imageProductEntity.setImageProduct(i.getImageProduct());
-            imageProductEntity.setCampaignEntity(finalCampaignEntity);
-            imageProductEntities.add(imageProductEntity);
-        });
-        List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
-        return new BaseResponse<>(HttpStatus.CREATED.value(), "add success", new CampaignDto(campaignEntity, response));
     }
 
     @Override
     @Transactional
     public Object edit(CampaignEditRequest campaignEditRequest) throws ParseException {
-        List<ErrorResponse> errorResponses = new ArrayList<>();
-        CampaignEntity editEntity = campaignRepository.findByCamId(campaignEditRequest.getId());
-        if (ObjectUtils.isEmpty(editEntity)) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "campaign is not exits", null);
-        }
-        if (!campaignEditRequest.validate(errorResponses)) {
-            return errorResponses;
-        }
-        editEntity.setBrandName(campaignEditRequest.getBrandName());
-        editEntity.setCampaignName(campaignEditRequest.getCampaignName());
-        editEntity.setIndustry(campaignEditRequest.getIndustry());
-        editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "dd-MM-yyyy"));
-        editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "dd-MM-yyyy"));
-        editEntity.setImg(campaignEditRequest.getCampaignImage());
-        editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
-        editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
-        editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
-        editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
-        editEntity.setRewards(campaignEditRequest.getReward());
-        editEntity = campaignRepository.save(editEntity);
-        List<ImageProductEntity> imageProductEntities = new ArrayList<>();
-        List<Integer> imageIds = new ArrayList<>();
-        CampaignEntity finalEditEntity = editEntity;
-        campaignEditRequest.getImageProductEditRequests().forEach(i -> {
-            if (Boolean.TRUE.equals(i.isCheck())) {
-                imageIds.add(i.getImageProductId());
-            } else {
+        try {
+            List<ErrorResponse> errorResponses = new ArrayList<>();
+            CampaignEntity editEntity = campaignRepository.findByCamId(campaignEditRequest.getId());
+            if (ObjectUtils.isEmpty(editEntity)) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu Không tồn tại", null);
+            }
+            if (!campaignEditRequest.validate(errorResponses)) {
+                return errorResponses;
+            }
+            editEntity.setBrandName(campaignEditRequest.getBrandName());
+            editEntity.setCampaignName(campaignEditRequest.getCampaignName());
+            editEntity.setIndustry(campaignEditRequest.getIndustry());
+            editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "dd-MM-yyyy"));
+            editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "dd-MM-yyyy"));
+            editEntity.setImg(campaignEditRequest.getCampaignImage());
+            editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
+            editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
+            editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
+            editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
+            editEntity.setRewards(campaignEditRequest.getReward());
+            editEntity = campaignRepository.save(editEntity);
+            List<ImageProductEntity> imageProductEntities = new ArrayList<>();
+            List<Integer> imageIds = new ArrayList<>();
+            CampaignEntity finalEditEntity = editEntity;
+            campaignEditRequest.getImageProductEditRequests().forEach(i -> {
                 if (i.getImageProductId() > 0) {
                     ImageProductEntity imageProductEntity = imageProductRepository.findByIdAndCampaignEntity_Id(i.getImageProductId(), finalEditEntity.getId()).get();
                     imageProductEntity.setImageProduct(i.getImageProduct());
@@ -150,11 +153,14 @@ public class CampaignServiceImpl implements CampaignService {
                     imageProductEntity.setCampaignEntity(finalEditEntity);
                     imageProductEntities.add(imageProductEntity);
                 }
-            }
-        });
-        imageProductRepository.deleteByIdIn(imageIds);
-        List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
-        return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new CampaignDto(editEntity, response));
+            });
+            imageProductRepository.deleteByIdIn(imageIds);
+            List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDto(editEntity, response));
+        } catch (Exception e) {
+            return new ErrorResponse(Constant.FAILED, "Sửa không thành công", null);
+        }
+
     }
 
     public Object deleteByCampaign(int campaignId) {

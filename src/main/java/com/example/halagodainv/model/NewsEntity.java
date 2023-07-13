@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "news")
-public class News {
+public class NewsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_news")
@@ -28,4 +29,7 @@ public class News {
     String titleSeo;
     @Column(name = "link_papers")
     String linkPapers;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "newsEntity")
+    private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();
 }
