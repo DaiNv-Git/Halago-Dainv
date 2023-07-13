@@ -36,7 +36,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final UserServiceConfig userServiceConfig;
     private final UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public PageResponse<BrandDto> getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
@@ -67,7 +67,7 @@ public class BrandServiceImpl implements BrandService {
         pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, countALlBrands));
         return pageResponse;
     }
-
+    @Override
     public Object getByDetail(int brandId, String email) throws ParseException {
         UserDetails user = userServiceConfig.loadUserByUsername(email);
         Optional<UserEntity> userEntity = userRepository.findByEmail(user.getUsername());
@@ -85,8 +85,13 @@ public class BrandServiceImpl implements BrandService {
             return errorResponses;
         }
         UserEntity userEntity = new UserEntity();
+        Optional<UserEntity> user = userRepository.findByEmail(brandAddRequest.getEmail());
+        if (user.isPresent()) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "email is exit", null);
+        }
         userEntity.setEmail(brandAddRequest.getEmail());
         userEntity.setPassword(passwordEncoder.encode(brandAddRequest.getPassword()));
+        userEntity.setCreated(new Date());
         userEntity.setPasswordHide(brandAddRequest.getPassword());
         userEntity = userRepository.save(userEntity);
         BrandEntity brandEntity = new BrandEntity();
@@ -95,6 +100,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.setBrandPhone('0' + String.valueOf(brandAddRequest.getPhoneNumber()));
         brandEntity.setBrandEmail(brandAddRequest.getEmail());
         brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
+        brandEntity.setDescription(brandAddRequest.getDescription());
         brandEntity.setLogo(brandAddRequest.getLogo());
         brandEntity.setCreated(new Date());
         brandEntity = brandRepository.save(brandEntity);
@@ -114,13 +120,15 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandName(brandEditRequest.getBrandName());
         brandEntity.get().setWebsite(brandEditRequest.getWebsite());
         brandEntity.get().setBrandPhone('0' + String.valueOf(brandEditRequest.getPhoneNumber()));
-        brandEntity.get().setBrandEmail(brandEntity.get().getBrandEmail());
+        brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());
+        brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
         return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new BrandDto(brandEntity.get()));
     }
 
+    @Override
     public Object deleteByBranId(int brandId) {
         Optional<BrandEntity> brandEntity = brandRepository.findById(brandId);
         if (!brandEntity.isPresent()) {

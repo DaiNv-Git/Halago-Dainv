@@ -11,11 +11,8 @@ import java.util.List;
 
 public interface BrandService {
     PageResponse<BrandDto> getByListBrand(int pageNo, int pageSize, String brandName, String startDate,String endDate) throws ParseException;
-
     Object getByDetail(int brandId,String email) throws ParseException;
-
     Object add(BrandAddRequest brandAddRequest, String email) throws GeneralException;
-
     Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException;
     Object deleteByBranId(int brandId);
 }

@@ -13,6 +13,7 @@ public class BrandEditRequest {
     private int id;
     private String registerName;
     private String brandName;
+    private String email;
     private String website;
     private int phoneNumber;
     private String logo;

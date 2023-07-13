@@ -6,7 +6,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "campaign")
@@ -35,7 +37,6 @@ public class CampaignEntity implements Serializable {
     @Column(name = "content")
     private String content;
     @Column(name = "created")
-    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
     private Date created;
     @Column(name = "img")
     private String img;
@@ -43,6 +44,12 @@ public class CampaignEntity implements Serializable {
     private String imgProduct;
     @Column(name = "id_brand")
     private int idBrand;
-    @Column(name = "industry_id")
-    private int industryId;
+    @Column(name = "industry")
+    private String industry;
+    @Column(name = "title_product")
+    private String titleProduct;
+    @Column(name = "title_campaign")
+    private String titleCampaign;
+    @OneToMany(mappedBy = "campaignEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<ImageProductEntity> productEntityList = new ArrayList<>();
 }
