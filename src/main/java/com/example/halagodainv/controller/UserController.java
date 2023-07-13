@@ -1,6 +1,5 @@
 package com.example.halagodainv.controller;
 
-import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.config.filter.JwtToken;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.UserEntity;
@@ -41,17 +40,17 @@ public class UserController {
     public ResponseEntity<Object> user(@Valid @RequestBody UserLogin userLogin) {
         try {
             Pattern pattern = Pattern.compile("@");
-            Matcher matcher = pattern.matcher(userLogin.getEmail());
+            Matcher matcher = pattern.matcher(userLogin.getLoginAccount());
             int count = 0;
             while (matcher.find()) {
                 count++;
             }
             UserDetails userDetails;
             if (count == 1) {
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
-                userDetails = authConfig.loadUserByUsername(userLogin.getEmail());
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
+                userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
             } else {
-                userDetails = authConfig.loadByUserName(userLogin.getEmail());
+                userDetails = authConfig.loadByUserName(userLogin.getLoginAccount());
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userLogin.getPassword()));
             }
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
