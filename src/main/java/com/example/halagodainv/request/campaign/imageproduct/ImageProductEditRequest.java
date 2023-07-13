@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class ImageProductEditRequest {
     private int imageProductId;
     private String imageProduct;
-    private boolean isCheck = false;
 }
