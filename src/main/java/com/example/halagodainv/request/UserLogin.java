@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class UserLogin {
     @NotBlank
-    private String email;
+    private String loginAccount;
 
     @NotBlank
     private String password;

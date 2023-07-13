@@ -1,11 +1,14 @@
 package com.example.halagodainv.model;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "industry")
-public class Industry {
+public class IndustryEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,13 +22,5 @@ public class Industry {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getIndustryName() {
-        return industryName;
-    }
-
-    public void setIndustryName(String industryName) {
-        this.industryName = industryName;
     }
 }

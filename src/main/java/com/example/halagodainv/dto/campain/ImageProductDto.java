@@ -1,4 +1,4 @@
-package com.example.halagodainv.dto;
+package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.ImageProductEntity;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageProductDto {
-    private int imageProductId;
-    private int campaignId;
     private String imageProduct;
 
     public ImageProductDto(ImageProductEntity imageProductEntity) {
-        this.imageProductId = imageProductEntity.getId();
         this.imageProduct = imageProductEntity.getImageProduct();
-        this.campaignId = imageProductEntity.getCampaignEntity().getId();
     }
 
 }

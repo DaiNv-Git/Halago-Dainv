@@ -45,4 +45,14 @@ public class CampaignController {
     public ResponseEntity<Object> edit(@RequestParam("campaignId") int campaignId) {
         return ResponseEntity.ok(campaignService.deleteByCampaign(campaignId));
     }
+
+    @GetMapping("/brand")
+    public ResponseEntity<Object> getBrands() {
+        return ResponseEntity.ok(campaignService.getByBrands());
+    }
+
+    @GetMapping("/industry")
+    public ResponseEntity<Object> getIndustry() {
+        return ResponseEntity.ok(campaignService.getByIndustry());
+    }
 }
