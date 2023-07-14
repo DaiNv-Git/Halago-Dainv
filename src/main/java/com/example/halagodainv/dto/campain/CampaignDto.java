@@ -22,7 +22,7 @@ public class CampaignDto {
     private String endDate;
     private String campaignImage;
     private String titleCampaign;
-    private List<ImageProductDto> productImages = new ArrayList<>();
+    private List<ImageProductDto> imageProductAddRequests = new ArrayList<>();
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
@@ -33,8 +33,8 @@ public class CampaignDto {
         this.brandName = campaignEntity.getBrandName();
         this.campaignName = campaignEntity.getCampaignName();
         this.industry = campaignEntity.getIndustry();
-        this.startDate = DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "dd-MM-yyyy");
-        this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "dd-MM-yyyy");
+        this.startDate = DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
+        this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "yyyy-MM-dd");
         this.campaignImage = campaignEntity.getImg();
         this.titleCampaign = campaignEntity.getTitleCampaign();
         this.titleProduct = campaignEntity.getTitleProduct();
@@ -42,8 +42,7 @@ public class CampaignDto {
         this.descriptionCandidatePerform = campaignEntity.getDescription();
         this.reward = campaignEntity.getRewards();
         response.forEach(campaign -> {
-            this.productImages.add(new ImageProductDto(campaign));
+            this.imageProductAddRequests.add(new ImageProductDto(campaign));
         });
-
     }
 }
