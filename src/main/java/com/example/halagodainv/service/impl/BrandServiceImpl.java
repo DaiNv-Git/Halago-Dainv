@@ -13,6 +13,7 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.BrandService;
 import com.example.halagodainv.service.auth.UserServiceConfig;
+import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
@@ -39,34 +40,31 @@ public class BrandServiceImpl implements BrandService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public PageResponse<BrandDto> getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
-        int offset = 0;
-        if (pageNo > 0) {
-            offset = pageNo - 1;
+    public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
+        try {
+            int offset = 0;
+            if (pageNo > 0) {
+                offset = pageNo - 1;
+            }
+            int countALlBrands = brandRepository.countAllBy(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(startDate));
+            Pageable pageable = PageRequest.of(offset, pageSize);
+            List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndCreatedDate(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(startDate), pageable);
+            List<BrandDto> brandDtos = new ArrayList<>();
+            getBrandEntities.forEach(brandEntity -> {
+                brandDtos.add(new BrandDto(brandEntity));
+            });
+            PageResponse<BrandDto> pageResponse;
+            if (CollectionUtils.isEmpty(brandDtos)) {
+                pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, 0));
+                return new BaseResponse(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
+            }
+            pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, countALlBrands));
+            return new BaseResponse(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
+        } catch (Exception e) {
+            return new ErrorResponse(HttpStatus.OK.value(), "Lấy dữ liệu thất bại", null);
         }
-        int countALlBrands = brandRepository.countAllBy();
-        Pageable pageable = PageRequest.of(offset, pageSize);
-        String startDateFormat = "1000-01-01";
-        String endDateFormat = "9000-12-31";
-        if (!Strings.isEmpty(startDate)) {
-            startDateFormat = startDate;
-        }
-        if (!Strings.isEmpty(endDate)) {
-            endDateFormat = endDate;
-        }
-        List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndCreatedDate(brandName, startDateFormat + " 00:00:00", endDateFormat + " 23:59:59", pageable);
-        List<BrandDto> brandDtos = new ArrayList<>();
-        getBrandEntities.forEach(brandEntity -> {
-            brandDtos.add(new BrandDto(brandEntity));
-        });
-        PageResponse<BrandDto> pageResponse;
-        if (CollectionUtils.isEmpty(brandDtos)) {
-            pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, 0));
-            return pageResponse;
-        }
-        pageResponse = new PageResponse<>(new PageImpl<>(brandDtos, pageable, countALlBrands));
-        return pageResponse;
     }
+
     @Override
     public Object getByDetail(int brandId, String email) throws ParseException {
         UserDetails user = userServiceConfig.loadUserByUsername(email);
@@ -106,7 +104,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity, userEntity.getPasswordHide()));
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm dữ liệu thất bại", null);
         }
 

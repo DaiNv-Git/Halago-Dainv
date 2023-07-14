@@ -30,7 +30,7 @@ public class BrandController {
 
     @PostMapping("")
     public ResponseEntity<Object> getByBrands(@RequestBody BrandSearch brandSearch) throws ParseException {
-        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", brandService.getByListBrand(brandSearch.getPageNo(), brandSearch.getPageSize(), brandSearch.getBrandName(), brandSearch.getStartDate(), brandSearch.getEndDate())));
+        return ResponseEntity.ok(brandService.getByListBrand(brandSearch.getPageNo(), brandSearch.getPageSize(), brandSearch.getBrandName(), brandSearch.getStartDate(), brandSearch.getEndDate()));
     }
 
     @PostMapping("/detail")

@@ -15,8 +15,12 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity, Intege
             "and (cam.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
             "cam.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s'))ORDER BY cam.id DESC ")
     List<CampaignEntity> getByCampaigns(@Param("campaignName") String campaignName, @Param("startDate") String startDate, @Param("endDate") String endDate, Pageable pageable);
+
     @Query(nativeQuery = true, value = "select * from campaign cam where cam.id =:campaignId ")
     CampaignEntity findByCamId(@Param("campaignId") int campaignId);
 
-    int countAllBy();
+    @Query(nativeQuery = true, value = "select count(*) from campaign cam where cam.campaign_name like concat('%',:campaignName,'%') " +
+            "and (cam.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
+            "cam.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s')) ")
+    int countAllBy(@Param("campaignName") String campaignName, @Param("startDate") String startDate, @Param("endDate") String endDate);
 }

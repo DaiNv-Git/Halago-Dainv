@@ -17,7 +17,10 @@ public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
             "br.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s'))ORDER BY br.id DESC ")
     List<BrandEntity> findByBrandNameAndCreatedDate(@Param("brandName") String brandName, @Param("startDate") String startDate, @Param("endDate") String endDate, Pageable pageable);
 
-    int countAllBy();
+    @Query(nativeQuery = true, value = "SELECT count(*) FROM brand br WHERE br.brand_name LIKE CONCAT('%',:brandName, '%') AND " +
+            "(br.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
+            "br.created <=  STR_TO_DATE(:endDate, '%Y-%m-%d %H:%i:%s'))ORDER BY br.id DESC ")
+    int countAllBy(@Param("brandName") String brandName, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query("SELECT new com.example.halagodainv.dto.campain.CampaignBranDto(br.id, br.brandName) FROM BrandEntity br ")
     List<CampaignBranDto> findByBrandNameAndId();

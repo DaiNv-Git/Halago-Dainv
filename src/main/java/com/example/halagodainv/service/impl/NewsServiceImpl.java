@@ -2,8 +2,9 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.common.Language;
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
-import com.example.halagodainv.dto.news.NewDtoDetail;
+import com.example.halagodainv.dto.news.NewDtoDetails;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.NewsLanguageEntity;
@@ -15,6 +16,8 @@ import com.example.halagodainv.request.news.NewsSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
+import com.example.halagodainv.until.FormatTimeSearch;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class NewsServiceImpl implements NewsService {
@@ -48,9 +48,9 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = (int) newsRepository.count();
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()));
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDtoDetail> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getStartDate() + " 00:00:00", newsSearch.getEndDate() + " 23:59:59", pageable);
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()), pageable);
             PageResponse pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
@@ -65,12 +65,33 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Object getDetail(int newId) {
-        Optional<NewsEntity> newsEntity = newsRepository.findById(newId);
-        if (newsEntity.isPresent()) {
-            NewDto newDto = new NewDto(newsEntity.get(), newsEntity.get().getImageBrandMains());
-            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDto);
+        try {
+            List<NewDetails> newsRepositoryDetail = newsRepository.getDetail(newId);
+            Set<NewDtoDetails> newDtoDetail = new HashSet<>();
+            NewDtoDetails newewDtoDetailsss = new NewDtoDetails();
+            newsRepositoryDetail.forEach(
+                    i -> {
+                        newewDtoDetailsss.setIdNews(i.getIdNews());
+                        newewDtoDetailsss.setThumbnail(i.getThumbnail());
+                        newewDtoDetailsss.setType(i.getType());
+                        newewDtoDetailsss.setStatus(i.getStatus());
+                        newewDtoDetailsss.setLinkPost(i.getLinkPost());
+                        newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
+                        if (i.getLanguage().equals("VN")) {
+                            newewDtoDetailsss.setContentVN(i.getContent());
+                            newewDtoDetailsss.setDescriptionVN(i.getDescription());
+                            newewDtoDetailsss.setTitleVN(i.getTitle());
+                        } else {
+                            newewDtoDetailsss.setTitleEN(i.getTitle());
+                            newewDtoDetailsss.setDescriptionEN(i.getDescription());
+                            newewDtoDetailsss.setContentEN(i.getContent());
+                        }
+                    });
+            newDtoDetail.add(newewDtoDetailsss);
+            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDtoDetail);
+        } catch (Exception e) {
+            return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
         }
-        return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
     }
 
     @Override
