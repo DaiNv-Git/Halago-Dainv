@@ -14,5 +14,7 @@ public class NewsAddRequest {
     private String contentEN;
     private Integer type;
     private Integer status;
+    private String photoTitle;
+    private String linkPost;
 
 }

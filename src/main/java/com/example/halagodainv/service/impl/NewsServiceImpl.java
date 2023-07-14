@@ -48,29 +48,26 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countAllByNews(newsSearch.getLanguage());
+            int totalCountNews = (int) newsRepository.count();
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewsEntity> newsEntityList = newsRepository.getNewList(newsSearch.getLanguage(), newsSearch.getTitle(), newsSearch.getStartDate() + " 00:00:00", newsSearch.getEndDate() + " 23:59:59", pageable);
-            List<NewDto> newDtos = new ArrayList<>();
-            newsEntityList.forEach(newsEntity -> {
-                newDtos.add(new NewDto(newsEntity, newsEntity.getImageBrandMains(), newsSearch.getLanguage()));
-            });
+            List<NewDtoDetail> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getStartDate() + " 00:00:00", newsSearch.getEndDate() + " 23:59:59", pageable);
             PageResponse pageResponse;
-            if (CollectionUtils.isEmpty(newDtos)) {
-                pageResponse = new PageResponse(new PageImpl(newDtos, pageable, 0));
+            if (CollectionUtils.isEmpty(newsEntityList)) {
+                pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
                 return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
             }
-            pageResponse = new PageResponse(new PageImpl(newDtos, pageable, totalCountNews));
+            pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, totalCountNews));
             return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception e) {
             return new ErrorResponse(500, "Lấy dữ liệu thất bại", null);
         }
     }
+
     @Override
     public Object getDetail(int newId) {
         Optional<NewsEntity> newsEntity = newsRepository.findById(newId);
         if (newsEntity.isPresent()) {
-            NewDtoDetail newDto = new NewDtoDetail(newsEntity.get(), newsEntity.get().getImageBrandMains());
+            NewDto newDto = new NewDto(newsEntity.get(), newsEntity.get().getImageBrandMains());
             return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDto);
         }
         return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
@@ -85,6 +82,8 @@ public class NewsServiceImpl implements NewsService {
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
             newsEntity.setThumbnail(request.getThumbnail());
             newsEntity.setCreated(new Date());
+            newsEntity.setTitleSeo(request.getPhotoTitle());
+            newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
             newsEntity.setStatus(request.getStatus());
             newsRepository.save(newsEntity);
@@ -114,7 +113,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object update(NewsAddRequest newsAddRequest) {
         try {
-            newsLanguageRepository.deleteByIdNative(newsAddRequest.getIdNews());
+            newsLanguageRepository.deleteByNewsEntity_IdNews(newsAddRequest.getIdNews());
             newsRepository.deleteById(newsAddRequest.getIdNews());
             Object res = insertNews(newsAddRequest);
             return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", res));
@@ -128,7 +127,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object delete(Integer id) {
         try {
-            newsLanguageRepository.deleteByIdNative(id);
+            newsLanguageRepository.deleteByNewsEntity_IdNews(id);
             newsRepository.deleteById(id);
             return new BaseResponse(Constant.SUCCESS, "Xóa tin tức  thành công", new BaseResponse(1, "Xóa tin tức  thành công", null));
         } catch (Exception e) {
