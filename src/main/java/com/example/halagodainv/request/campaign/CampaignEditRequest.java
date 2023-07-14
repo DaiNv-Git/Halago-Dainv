@@ -17,7 +17,7 @@ public class CampaignEditRequest {
     private String titleCampaign;
     private String startDate;
     private String endDate;
-    private List<ImageProductEditRequest> imageProductEditRequests;
+    private List<ImageProductEditRequest> imageProductAddRequests;
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
