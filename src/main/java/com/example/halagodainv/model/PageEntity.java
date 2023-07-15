@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -26,6 +27,8 @@ public class PageEntity {
     private String follower;
     @Column(name = "expense")
     private String expense;
+    @Column(name = "created")
+    private Date created;
     @Column(name = "industry_id")
     private int industryId;
 }
