@@ -48,7 +48,6 @@ public class PageServiceImpl implements PageService {
         }
     }
 
-
     public Object detail(long pageId) {
         Optional<PageEntity> pageEntity = pageRepository.findById(pageId);
         if (pageEntity.isPresent()) {

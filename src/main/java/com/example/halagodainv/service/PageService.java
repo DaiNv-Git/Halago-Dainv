@@ -6,6 +6,7 @@ import com.example.halagodainv.request.page.PageSearch;
 
 public interface PageService {
     Object getPageAll(PageSearch pageSearch);
+
     Object detail(long pageId);
 
     Object add(PageAddRequest pageAddRequest);
