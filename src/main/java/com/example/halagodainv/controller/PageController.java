@@ -36,6 +36,6 @@ public class PageController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<Object> delete(@RequestParam("pageId") long pageId) {
-        return ResponseEntity.ok(pageService.detail(pageId));
+        return ResponseEntity.ok(pageService.delete(pageId));
     }
 }
