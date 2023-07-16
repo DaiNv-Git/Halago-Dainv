@@ -17,6 +17,7 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import com.example.halagodainv.until.DateUtilFormat;
+import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
@@ -39,7 +40,6 @@ import java.util.Optional;
 public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
     private final ImageProductRepository imageProductRepository;
-
     private final BrandRepository brandRepository;
     private final IndustryRepository industryRepository;
 
@@ -50,16 +50,9 @@ public class CampaignServiceImpl implements CampaignService {
             offset = campaignSearch.getPageNo() - 1;
         }
         Pageable pageable = PageRequest.of(offset, campaignSearch.getPageSize());
-        String startDateFormat = "1000-01-01";
-        String endDateFormat = "9999-12-31";
-        if (!Strings.isEmpty(campaignSearch.getStartDate())) {
-            startDateFormat = campaignSearch.getStartDate();
-        }
-        if (!Strings.isEmpty(campaignSearch.getEndDate())) {
-            endDateFormat = campaignSearch.getEndDate();
-        }
-        int totalCountByCampaign = campaignRepository.countAllBy();
-        List<CampaignEntity> campaignEntities = campaignRepository.getByCampaigns(campaignSearch.getCampaignName(), startDateFormat + " 00:00:00", endDateFormat + " 23:59:59", pageable);
+        int totalCountByCampaign = campaignRepository.countAllBy(campaignSearch.getCampaignName(), FormatTimeSearch.getStart(campaignSearch.getStartDate()), FormatTimeSearch.getEndDate(campaignSearch.getEndDate()));
+        List<CampaignEntity> campaignEntities = campaignRepository.getByCampaigns(campaignSearch.getCampaignName(),
+                FormatTimeSearch.getStart(campaignSearch.getStartDate()), FormatTimeSearch.getEndDate(campaignSearch.getEndDate()), pageable);
         List<CampaignDto> campaignDtos = new ArrayList<>();
         campaignEntities.forEach(campaignEntity -> {
             campaignDtos.add(new CampaignDto(campaignEntity, imageProductRepository.findByCampaignEntity_Id(campaignEntity.getId())));
@@ -135,8 +128,8 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setBrandName(campaignEditRequest.getBrandName());
             editEntity.setCampaignName(campaignEditRequest.getCampaignName());
             editEntity.setIndustry(campaignEditRequest.getIndustry());
-            editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "dd-MM-yyyy"));
-            editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "dd-MM-yyyy"));
+            editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "yyyy-MM-dd"));
+            editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "yyyy-MM-dd"));
             editEntity.setImg(campaignEditRequest.getCampaignImage());
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
@@ -147,7 +140,7 @@ public class CampaignServiceImpl implements CampaignService {
             List<ImageProductEntity> imageProductEntities = new ArrayList<>();
             CampaignEntity finalEditEntity = editEntity;
             imageProductRepository.deleteByCampaignEntity_Id(editEntity.getId());
-            campaignEditRequest.getImageProductEditRequests().forEach(i -> {
+            campaignEditRequest.getImageProductAddRequests().forEach(i -> {
                 ImageProductEntity imageProductEntity = new ImageProductEntity();
                 imageProductEntity.setImageProduct(i.getImageProduct());
                 imageProductEntity.setCampaignEntity(finalEditEntity);
@@ -171,11 +164,11 @@ public class CampaignServiceImpl implements CampaignService {
         return new BaseResponse<>(HttpStatus.OK.value(), "delete success", null);
     }
 
-    public Object getByBrands(){
+    public Object getByBrands() {
         return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", brandRepository.findByBrandNameAndId());
     }
 
-    public Object getByIndustry(){
+    public Object getByIndustry() {
         return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", industryRepository.findAll());
     }
 }

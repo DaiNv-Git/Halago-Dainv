@@ -1,9 +1,13 @@
-package com.example.halagodainv.request.news;
+package com.example.halagodainv.dto.news;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class NewsAddRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class NewDtoDetails {
     private Integer idNews;
     private String titleVN;
     private String titleEN;

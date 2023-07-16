@@ -22,6 +22,6 @@ public class ContactCustomerEntity {
     @Column(name = "note")
     private String note;
     @Column(name = "created")
-    @JsonFormat(pattern = "dd-MM-yyyy",timezone = "Asia/Ho_Chi_Minh")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Ho_Chi_Minh")
     private Date created;
 }

@@ -1,28 +1,24 @@
 package com.example.halagodainv.dto.news;
 
-import com.example.halagodainv.model.NewsEntity;
-import com.example.halagodainv.model.NewsLanguageEntity;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class NewDto {
     private int id;
     private String title;
-    private String thumbnail;
-    public NewDto(NewsEntity newsEntity, List<NewsLanguageEntity> newsLanguageEntity, String language) {
-        for (NewsLanguageEntity entity : newsLanguageEntity) {
-            if (entity.getLanguage().equalsIgnoreCase(language) && entity.getNewsEntity().getIdNews() == newsEntity.getIdNews()) {
-                this.id = newsEntity.getIdNews();
-                this.title = entity.getTitle();
-                this.thumbnail = newsEntity.getThumbnail();
-            }
-        }
-    }
+    private String category;
+    private String image;
+    private String created;
 
+    public NewDto(int id, String title, String image, String type, Date created) {
+        this.id = id;
+        this.title = title;
+        this.image = image;
+        this.category = type;
+        this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
+    }
 }

@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NewsSearch extends SearchPage {
     private String title = "";
-    private String language ="VN";
 }

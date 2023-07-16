@@ -2,8 +2,9 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.common.Language;
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
-import com.example.halagodainv.dto.news.NewDtoDetail;
+import com.example.halagodainv.dto.news.NewDtoDetails;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.NewsLanguageEntity;
@@ -15,6 +16,8 @@ import com.example.halagodainv.request.news.NewsSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
+import com.example.halagodainv.until.FormatTimeSearch;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class NewsServiceImpl implements NewsService {
@@ -48,32 +48,50 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countAllByNews(newsSearch.getLanguage());
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()));
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewsEntity> newsEntityList = newsRepository.getNewList(newsSearch.getLanguage(), newsSearch.getTitle(), newsSearch.getStartDate() + " 00:00:00", newsSearch.getEndDate() + " 23:59:59", pageable);
-            List<NewDto> newDtos = new ArrayList<>();
-            newsEntityList.forEach(newsEntity -> {
-                newDtos.add(new NewDto(newsEntity, newsEntity.getImageBrandMains(), newsSearch.getLanguage()));
-            });
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()), pageable);
             PageResponse pageResponse;
-            if (CollectionUtils.isEmpty(newDtos)) {
-                pageResponse = new PageResponse(new PageImpl(newDtos, pageable, 0));
+            if (CollectionUtils.isEmpty(newsEntityList)) {
+                pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
                 return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
             }
-            pageResponse = new PageResponse(new PageImpl(newDtos, pageable, totalCountNews));
+            pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, totalCountNews));
             return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception e) {
             return new ErrorResponse(500, "Lấy dữ liệu thất bại", null);
         }
     }
+
     @Override
     public Object getDetail(int newId) {
-        Optional<NewsEntity> newsEntity = newsRepository.findById(newId);
-        if (newsEntity.isPresent()) {
-            NewDtoDetail newDto = new NewDtoDetail(newsEntity.get(), newsEntity.get().getImageBrandMains());
-            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDto);
+        try {
+            List<NewDetails> newsRepositoryDetail = newsRepository.getDetail(newId);
+            Set<NewDtoDetails> newDtoDetail = new HashSet<>();
+            NewDtoDetails newewDtoDetailsss = new NewDtoDetails();
+            newsRepositoryDetail.forEach(
+                    i -> {
+                        newewDtoDetailsss.setIdNews(i.getIdNews());
+                        newewDtoDetailsss.setThumbnail(i.getThumbnail());
+                        newewDtoDetailsss.setType(i.getType());
+                        newewDtoDetailsss.setStatus(i.getStatus());
+                        newewDtoDetailsss.setLinkPost(i.getLinkPost());
+                        newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
+                        if (i.getLanguage().equals("VN")) {
+                            newewDtoDetailsss.setContentVN(i.getContent());
+                            newewDtoDetailsss.setDescriptionVN(i.getDescription());
+                            newewDtoDetailsss.setTitleVN(i.getTitle());
+                        } else {
+                            newewDtoDetailsss.setTitleEN(i.getTitle());
+                            newewDtoDetailsss.setDescriptionEN(i.getDescription());
+                            newewDtoDetailsss.setContentEN(i.getContent());
+                        }
+                    });
+            newDtoDetail.add(newewDtoDetailsss);
+            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDtoDetail);
+        } catch (Exception e) {
+            return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
         }
-        return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
     }
 
     @Override
@@ -85,6 +103,8 @@ public class NewsServiceImpl implements NewsService {
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
             newsEntity.setThumbnail(request.getThumbnail());
             newsEntity.setCreated(new Date());
+            newsEntity.setTitleSeo(request.getPhotoTitle());
+            newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
             newsEntity.setStatus(request.getStatus());
             newsRepository.save(newsEntity);
@@ -114,7 +134,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object update(NewsAddRequest newsAddRequest) {
         try {
-            newsLanguageRepository.deleteByIdNative(newsAddRequest.getIdNews());
+            newsLanguageRepository.deleteByNewsEntity_IdNews(newsAddRequest.getIdNews());
             newsRepository.deleteById(newsAddRequest.getIdNews());
             Object res = insertNews(newsAddRequest);
             return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", res));
@@ -128,7 +148,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object delete(Integer id) {
         try {
-            newsLanguageRepository.deleteByIdNative(id);
+            newsLanguageRepository.deleteByNewsEntity_IdNews(id);
             newsRepository.deleteById(id);
             return new BaseResponse(Constant.SUCCESS, "Xóa tin tức  thành công", new BaseResponse(1, "Xóa tin tức  thành công", null));
         } catch (Exception e) {
