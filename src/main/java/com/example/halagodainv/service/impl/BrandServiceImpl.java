@@ -1,5 +1,6 @@
 package com.example.halagodainv.service.impl;
 
+import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.brand.BrandDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
@@ -139,5 +140,9 @@ public class BrandServiceImpl implements BrandService {
         }
         brandRepository.deleteById(brandId);
         return new BaseResponse<>(HttpStatus.OK.value(), "Xóa thành công", null);
+    }
+
+    public Object getByBrands() {
+        return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", brandRepository.findByBrandNameAndId());
     }
 }
