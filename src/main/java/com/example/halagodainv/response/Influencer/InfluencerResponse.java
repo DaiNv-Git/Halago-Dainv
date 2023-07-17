@@ -1,71 +1,73 @@
-package com.example.halagodainv.model;
+package com.example.halagodainv.response.Influencer;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import utils.DateUtils;
-import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 
-@Entity
-@Table(name = "influencer")
-@Data
-public class Influencer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
-    @Column(name = "name")
+public class InfluencerResponse {
+    private int id;
+
     private String name;
-    @Column(name = "phone")
+
     private String phone;
-    @Column(name = "email")
+
     private String email;
-    @Column(name = "birthday")
+
     @JsonFormat(pattern = "dd-MM-yyyy",timezone = "Asia/Ho_Chi_Minh")
     private Date birthday;
-    @Column(name = "address")
+
     private String address;
-    @Column(name = "sex")
+
     private int sex;
-    @Column(name = "career")
+
     private int career;
-    @Column(name = "city")
+
     private int city;
 
-    @Column(name = "marital_status")
+    private String urlFb;
+
     private int maritalStatus;
-    @Column(name = "description")
+
+    private int maritalStatusName;
+
     private String description;
-    @Column(name = "bank_account")
+
     private String bankAccount;
-    @Column(name = "bank_name")
+
     private String bankName;
-    @Column(name = "Classify")
-    private String classify ;
-    @Column(name = "status")
+
     private int status;
-    @Column(name = "sale_experience")
+
+    private String statusName;
+
     private String saleExpertience;
-    @Column(name = "industry_id")
-    private String industryId;
-    @Column(name = "average_interact")
+
+    private ArrayList<Integer> industryId;
+
     private String averageInteract;
-    @Column(name = "types_interaction")
-    private String typesInteraction;
-    @Column(name = "channel_interaction")
-    private String channelInteraction;
-    @Column(name = "created")
+
+    private ArrayList<Integer> typesInteraction;
+
+    private ArrayList<Integer> channelInteraction;
+
+    private String token;
+
+    private String fbId;
+
+    public String getFbId() {
+        return fbId;
+    }
+
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
+    }
+
     @JsonFormat(pattern = "dd-MM-yyyy",timezone = "Asia/Ho_Chi_Minh")
     private Date created;
-    @Column(name = "avatar")
+
     private String avatar;
-    @Column(name = "fb")
-    private int facebook;
-    @Column(name = "youtobe")
-    private int youtobe;
-    @Column(name = "titok")
-    private int tiktok;
-    @Column(name = "instagram")
-    private int instagram;
+
     public String getAvatar() {
         return avatar;
     }
@@ -80,6 +82,14 @@ public class Influencer {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public int getId() {
@@ -118,8 +128,8 @@ public class Influencer {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = DateUtils.parseStringToDate(birthday);
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public String getAddress() {
@@ -154,12 +164,28 @@ public class Influencer {
         this.city = city;
     }
 
+    public String getUrlFb() {
+        return urlFb;
+    }
+
+    public void setUrlFb(String urlFb) {
+        this.urlFb = urlFb;
+    }
+
     public int getMaritalStatus() {
         return maritalStatus;
     }
 
     public void setMaritalStatus(int maritalStatus) {
         this.maritalStatus = maritalStatus;
+    }
+
+    public int getMaritalStatusName() {
+        return maritalStatusName;
+    }
+
+    public void setMaritalStatusName(int maritalStatusName) {
+        this.maritalStatusName = maritalStatusName;
     }
 
     public String getDescription() {
@@ -186,6 +212,14 @@ public class Influencer {
         this.status = status;
     }
 
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
     public String getSaleExpertience() {
         return saleExpertience;
     }
@@ -193,7 +227,6 @@ public class Influencer {
     public void setSaleExpertience(String saleExpertience) {
         this.saleExpertience = saleExpertience;
     }
-
 
     public String getAverageInteract() {
         return averageInteract;
@@ -203,27 +236,27 @@ public class Influencer {
         this.averageInteract = averageInteract;
     }
 
-    public String getIndustryId() {
+    public ArrayList<Integer> getIndustryId() {
         return industryId;
     }
 
-    public void setIndustryId(String industryId) {
+    public void setIndustryId(ArrayList<Integer> industryId) {
         this.industryId = industryId;
     }
 
-    public String getTypesInteraction() {
+    public ArrayList<Integer> getTypesInteraction() {
         return typesInteraction;
     }
 
-    public void setTypesInteraction(String typesInteraction) {
+    public void setTypesInteraction(ArrayList<Integer> typesInteraction) {
         this.typesInteraction = typesInteraction;
     }
 
-    public String getChannelInteraction() {
+    public ArrayList<Integer> getChannelInteraction() {
         return channelInteraction;
     }
 
-    public void setChannelInteraction(String channelInteraction) {
+    public void setChannelInteraction(ArrayList<Integer> channelInteraction) {
         this.channelInteraction = channelInteraction;
     }
 
@@ -233,41 +266,5 @@ public class Influencer {
 
     public void setBankName(String bankName) {
         this.bankName = bankName;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public int getFacebook() {
-        return facebook;
-    }
-
-    public void setFacebook(int facebook) {
-        this.facebook = facebook;
-    }
-
-    public int getYoutobe() {
-        return youtobe;
-    }
-
-    public void setYoutobe(int youtobe) {
-        this.youtobe = youtobe;
-    }
-
-    public int getTiktok() {
-        return tiktok;
-    }
-
-    public void setTiktok(int tiktok) {
-        this.tiktok = tiktok;
-    }
-
-    public int getInstagram() {
-        return instagram;
-    }
-
-    public void setInstagram(int instagram) {
-        this.instagram = instagram;
     }
 }

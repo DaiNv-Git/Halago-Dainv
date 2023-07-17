@@ -135,8 +135,8 @@ public class NewsServiceImpl implements NewsService {
         try {
             newsLanguageRepository.deleteByNewsEntity_IdNews(newsAddRequest.getIdNews());
             newsRepository.deleteById(newsAddRequest.getIdNews());
-            insertNews(newsAddRequest);
-            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", null));
+            Object res = insertNews(newsAddRequest);
+            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", res));
         } catch (Exception e) {
             return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", new BaseResponse(0, "Sửa tin tức  thất bại", null));
         }
