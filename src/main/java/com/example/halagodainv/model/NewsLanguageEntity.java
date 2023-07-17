@@ -21,6 +21,6 @@ public class NewsLanguageEntity {
     @Column(name = "language")
     String language;
     @ManyToOne
-    @JoinColumn(name = "new_id")
+    @JoinColumn(name = "new_id", nullable = false)
     private NewsEntity newsEntity;
 }
