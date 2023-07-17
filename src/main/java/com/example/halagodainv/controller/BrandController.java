@@ -53,5 +53,10 @@ public class BrandController {
         return ResponseEntity.ok(brandService.deleteByBranId(brandId));
     }
 
+    @GetMapping("/brand-all")
+    public ResponseEntity<Object> getBrands() {
+        return ResponseEntity.ok(brandService.getByBrands());
+    }
+
 }
 

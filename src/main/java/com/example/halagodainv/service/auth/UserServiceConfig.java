@@ -25,11 +25,16 @@ public class UserServiceConfig implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<UserEntity> login = authJPARepository.findByEmail(email);
-        if (login.isEmpty()) {
-            throw new UsernameNotFoundException("user name or password not exits");
-        }
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        return new User(login.get().getEmail(), login.get().getPassword(), authorities);
+        if (login.isPresent()) {
+            return new User(login.get().getEmail(), login.get().getPassword(), authorities);
+        } else {
+            Optional<UserEntity> userEntity = authJPARepository.findByUserName(email);
+            if (userEntity.isPresent()) {
+                return new User(userEntity.get().getUserName(), userEntity.get().getPassword(), authorities);
+            }
+        }
+        throw new UsernameNotFoundException("user name or password not exits");
     }
 
     public UserDetails loadByUserName(String userName) throws UsernameNotFoundException {
