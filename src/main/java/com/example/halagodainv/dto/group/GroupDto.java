@@ -20,8 +20,9 @@ public class GroupDto {
     private String expense;
     private String created;
     private String industry;
+    private int industryId;
 
-    public GroupDto(long id, String groupName, String phone, String link, String memTotal, String expense, Date created, String industry) {
+    public GroupDto(long id, String groupName, String phone, String link, String memTotal, String expense, Date created, String industry,int industryId) {
         this.id = id;
         this.groupName = groupName;
         this.phone = phone;
@@ -30,5 +31,6 @@ public class GroupDto {
         this.expense = expense;
         this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
         this.industry = industry;
+        this.industryId = industryId;
     }
 }

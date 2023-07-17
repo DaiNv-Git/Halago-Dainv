@@ -19,7 +19,7 @@ public class GroupController {
         return ResponseEntity.ok(groupService.getGroupAll(groupSearch));
     }
 
-    @GetMapping("/detail")
+    @PostMapping("/detail")
     public ResponseEntity<Object> getDetail(@RequestParam("groupId") long groupId) {
         return ResponseEntity.ok(groupService.detail(groupId));
     }
