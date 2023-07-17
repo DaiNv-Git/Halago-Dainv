@@ -12,12 +12,11 @@ import com.example.halagodainv.repository.NewsLanguageRepository;
 import com.example.halagodainv.repository.NewsRepository;
 import com.example.halagodainv.repository.NewsTypeRepository;
 import com.example.halagodainv.request.news.NewsAddRequest;
-import com.example.halagodainv.request.news.NewsSearch;
+import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FormatTimeSearch;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -42,7 +41,7 @@ public class NewsServiceImpl implements NewsService {
     NewsRepository newsRepository;
 
     @Override
-    public Object getNews(NewsSearch newsSearch) {
+    public Object getNews(NewsFormSearch newsSearch) {
         try {
             int offset = 0;
             if (newsSearch.getPageNo() > 0) {

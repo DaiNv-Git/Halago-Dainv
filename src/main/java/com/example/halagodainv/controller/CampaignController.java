@@ -2,7 +2,7 @@ package com.example.halagodainv.controller;
 
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
-import com.example.halagodainv.request.campaign.CampaignSearch;
+import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.CampaignService;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class CampaignController {
     private CampaignService campaignService;
 
     @PostMapping("")
-    public ResponseEntity<Object> getAll(@RequestBody CampaignSearch campaignSearch) {
+    public ResponseEntity<Object> getAll(@RequestBody CampaignFormSearch campaignSearch) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", campaignService.getCampaigns(campaignSearch)));
     }
 

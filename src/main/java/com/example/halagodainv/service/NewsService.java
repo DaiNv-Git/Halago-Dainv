@@ -1,10 +1,10 @@
 package com.example.halagodainv.service;
 
 import com.example.halagodainv.request.news.NewsAddRequest;
-import com.example.halagodainv.request.news.NewsSearch;
+import com.example.halagodainv.request.news.NewsFormSearch;
 
 public interface NewsService {
-    Object getNews(NewsSearch newsSearch);
+    Object getNews(NewsFormSearch newsSearch);
 
     Object getDetail(int newId);
 

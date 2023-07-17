@@ -1,15 +1,13 @@
 package com.example.halagodainv.request.brand;
 
-import com.example.halagodainv.request.SearchPage;
+import com.example.halagodainv.request.SearchPageForm;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BrandSearch extends SearchPage {
+public class BrandFormSearch extends SearchPageForm {
     private String brandName = "";
 }
