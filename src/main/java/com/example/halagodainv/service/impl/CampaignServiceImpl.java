@@ -87,6 +87,8 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setBrandName(campaignAddRequest.getBrandName());
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
             campaignEntity.setIndustry(campaignAddRequest.getIndustry());
+            campaignEntity.setIndustryId(campaignAddRequest.getIndustryId());
+            campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
             campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
             campaignEntity.setImg(campaignAddRequest.getCampaignImage());
@@ -132,6 +134,8 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setImg(campaignEditRequest.getCampaignImage());
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
+            editEntity.setIndustryId(campaignEditRequest.getIndustryId());
+            editEntity.setIdBrand(campaignEditRequest.getBrandId());
             editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
             editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
             editEntity.setRewards(campaignEditRequest.getReward());

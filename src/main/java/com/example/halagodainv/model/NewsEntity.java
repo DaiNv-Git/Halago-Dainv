@@ -1,6 +1,9 @@
 package com.example.halagodainv.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,7 +32,7 @@ public class NewsEntity {
     String titleSeo;
     @Column(name = "link_papers")
     String linkPapers;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "newsEntity")
+    @JsonIgnore
+    @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();
 }

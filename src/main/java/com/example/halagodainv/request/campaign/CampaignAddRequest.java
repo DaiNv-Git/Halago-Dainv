@@ -11,8 +11,10 @@ import java.util.List;
 @Data
 public class CampaignAddRequest {
     private String brandName;
+    private int brandId;
     private String campaignName;
     private String industry;
+    private int industryId;
     private String campaignImage;
     private String titleCampaign;
     private String startDate;

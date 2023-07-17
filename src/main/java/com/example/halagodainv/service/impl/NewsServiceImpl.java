@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.web.servlet.oauth2.resourceserver.OpaqueTokenDsl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -122,9 +123,9 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", new BaseResponse(1, "Thêm tin tức  thành công", newsEntity));
+            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", newsEntity);
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", new BaseResponse(0, "Thêm tin tức  thất bại", null));
+            return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", null);
         }
     }
 
@@ -133,12 +134,37 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object update(NewsAddRequest newsAddRequest) {
         try {
-            newsLanguageRepository.deleteByNewsEntity_IdNews(newsAddRequest.getIdNews());
-            newsRepository.deleteById(newsAddRequest.getIdNews());
-            Object res = insertNews(newsAddRequest);
-            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", res));
+            Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
+            if (news.isEmpty()) {
+                return new ErrorResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
+            }
+            //xoa detail
+            //add
+            newsLanguageRepository.deleteByNewsEntity_IdNews(news.get().getIdNews());
+            news.get().setThumbnail(newsAddRequest.getThumbnail());
+            news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
+            news.get().setLinkPapers(newsAddRequest.getLinkPost());
+            news.get().setType(newsAddRequest.getType());
+            newsRepository.save(news.get());
+            //add detail
+            NewsLanguageEntity newsEN = new NewsLanguageEntity();
+            NewsLanguageEntity newsVN = new NewsLanguageEntity();
+            newsEN.setTitle(newsAddRequest.getTitleEN());
+            newsEN.setContent(newsAddRequest.getContentEN());
+            newsEN.setDescription(newsAddRequest.getDescriptionEN());
+            newsEN.setLanguage(String.valueOf(Language.EN));
+            newsEN.setNewsEntity(news.get());
+            newsLanguageRepository.save(newsEN);
+
+            newsVN.setTitle(newsAddRequest.getTitleVN());
+            newsVN.setContent(newsAddRequest.getContentVN());
+            newsVN.setDescription(newsAddRequest.getDescriptionVN());
+            newsVN.setLanguage(String.valueOf(Language.VN));
+            newsVN.setNewsEntity(news.get());
+            newsLanguageRepository.save(newsVN);
+            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", news);
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", new BaseResponse(0, "Sửa tin tức  thất bại", null));
+            return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
         }
     }
 
