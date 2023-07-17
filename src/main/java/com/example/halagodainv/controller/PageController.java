@@ -19,7 +19,7 @@ public class PageController {
         return ResponseEntity.ok(pageService.getPageAll(pageSearch));
     }
 
-    @GetMapping("/detail")
+    @PostMapping("/detail")
     public ResponseEntity<Object> getDetail(@RequestParam("pageId") long pageId) {
         return ResponseEntity.ok(pageService.detail(pageId));
     }

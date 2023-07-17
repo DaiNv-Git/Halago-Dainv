@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface PageRepository extends JpaRepository<PageEntity, Long> {
 
-    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created) from PageEntity p left join IndustryEntity i on p.industryId = i.id where p.id =:id")
+    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created,p.industryId) from PageEntity p left join IndustryEntity i on p.industryId = i.id where p.id =:id")
     PageDto getDetailPage(@Param("id") long pageId);
 
-    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created) " +
+    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created,p.industryId) " +
             "from PageEntity p left join IndustryEntity i on p.industryId = i.id where " +
             "ifnull(i.industryName,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +

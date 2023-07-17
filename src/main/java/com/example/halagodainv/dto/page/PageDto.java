@@ -19,8 +19,9 @@ public class PageDto {
     private String expense;
     private String industry;
     private String created;
+    private int industryId;
 
-    public PageDto(long id, String pageName, String phone, String link, String follower, String expense, String industry, Date created) {
+    public PageDto(long id, String pageName, String phone, String link, String follower, String expense,String industry, Date created,int industryId) {
         this.id = id;
         this.pageName = pageName;
         this.phone = phone;
@@ -28,6 +29,7 @@ public class PageDto {
         this.follower = follower;
         this.expense = expense;
         this.industry = industry;
+        this.industryId = industryId;
         this.created = DateFormatUtils.format(created, "yyyy-MM-dd");
     }
 }
