@@ -12,18 +12,18 @@ import com.example.halagodainv.repository.NewsLanguageRepository;
 import com.example.halagodainv.repository.NewsRepository;
 import com.example.halagodainv.repository.NewsTypeRepository;
 import com.example.halagodainv.request.news.NewsAddRequest;
-import com.example.halagodainv.request.news.NewsSearch;
+import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FormatTimeSearch;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.web.servlet.oauth2.resourceserver.OpaqueTokenDsl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -42,7 +42,7 @@ public class NewsServiceImpl implements NewsService {
     NewsRepository newsRepository;
 
     @Override
-    public Object getNews(NewsSearch newsSearch) {
+    public Object getNews(NewsFormSearch newsSearch) {
         try {
             int offset = 0;
             if (newsSearch.getPageNo() > 0) {
@@ -123,23 +123,48 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", new BaseResponse(1, "Thêm tin tức  thành công", newsEntity));
+            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", newsEntity);
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", new BaseResponse(0, "Thêm tin tức  thất bại", null));
+            return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", null);
         }
     }
 
     @Override
-    @Transactional
     @Modifying
+    @Transactional
     public Object update(NewsAddRequest newsAddRequest) {
         try {
-            newsLanguageRepository.deleteByNewsEntity_IdNews(newsAddRequest.getIdNews());
-            newsRepository.deleteById(newsAddRequest.getIdNews());
-            Object res = insertNews(newsAddRequest);
-            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", new BaseResponse(1, "Sửa tin tức  thành công", res));
+            Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
+            if (news.isEmpty()) {
+                return new ErrorResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
+            }
+            //xoa detail
+            //add
+            news.get().setThumbnail(newsAddRequest.getThumbnail());
+            news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
+            news.get().setLinkPapers(newsAddRequest.getLinkPost());
+            news.get().setType(newsAddRequest.getType());
+            newsRepository.save(news.get());
+            //add detail
+            newsLanguageRepository.deleteByNewId(news.get().getIdNews());
+            NewsLanguageEntity newsEN = new NewsLanguageEntity();
+            NewsLanguageEntity newsVN = new NewsLanguageEntity();
+            newsEN.setTitle(newsAddRequest.getTitleEN());
+            newsEN.setContent(newsAddRequest.getContentEN());
+            newsEN.setDescription(newsAddRequest.getDescriptionEN());
+            newsEN.setLanguage(String.valueOf(Language.EN));
+            newsEN.setNewsEntity(news.get());
+            newsLanguageRepository.save(newsEN);
+
+            newsVN.setTitle(newsAddRequest.getTitleVN());
+            newsVN.setContent(newsAddRequest.getContentVN());
+            newsVN.setDescription(newsAddRequest.getDescriptionVN());
+            newsVN.setLanguage(String.valueOf(Language.VN));
+            newsVN.setNewsEntity(news.get());
+            newsLanguageRepository.save(newsVN);
+            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", news);
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", new BaseResponse(0, "Sửa tin tức  thất bại", null));
+            return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
         }
     }
 
@@ -148,7 +173,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object delete(Integer id) {
         try {
-            newsLanguageRepository.deleteByNewsEntity_IdNews(id);
+            newsLanguageRepository.deleteByNewId(id);
             newsRepository.deleteById(id);
             return new BaseResponse(Constant.SUCCESS, "Xóa tin tức  thành công", new BaseResponse(1, "Xóa tin tức  thành công", null));
         } catch (Exception e) {

@@ -15,9 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CampaignDto {
     private int id;
-    private String brandName;
+    private int brandId;
     private String campaignName;
-    private String industry;
+    private int industryId;
     private String startDate;
     private String endDate;
     private String campaignImage;
@@ -30,9 +30,9 @@ public class CampaignDto {
 
     public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
         this.id = campaignEntity.getId();
-        this.brandName = campaignEntity.getBrandName();
+        this.brandId = campaignEntity.getIdBrand();
         this.campaignName = campaignEntity.getCampaignName();
-        this.industry = campaignEntity.getIndustry();
+        this.industryId = campaignEntity.getIndustryId();
         this.startDate = DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
         this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "yyyy-MM-dd");
         this.campaignImage = campaignEntity.getImg();

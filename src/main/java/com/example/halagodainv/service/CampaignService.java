@@ -2,12 +2,12 @@ package com.example.halagodainv.service;
 
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
-import com.example.halagodainv.request.campaign.CampaignSearch;
+import com.example.halagodainv.request.campaign.CampaignFormSearch;
 
 import java.text.ParseException;
 
 public interface CampaignService {
-    Object getCampaigns(CampaignSearch campaignSearch);
+    Object getCampaigns(CampaignFormSearch campaignSearch);
 
     Object getDetail(int campaignId);
 

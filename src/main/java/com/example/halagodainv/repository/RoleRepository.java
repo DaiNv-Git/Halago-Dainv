@@ -1,16 +1,10 @@
 package com.example.halagodainv.repository;
 
 
-import com.example.halagodainv.model.Role;
+import com.example.halagodainv.model.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RoleRepository extends JpaRepository<Role, String> {
-//    @Query("select ro from Role ro where (:name IS NULL OR lower(ro.name) LIKE lower(concat('%', concat(:name, '%'))))")
-//    List<Role> findAll(@Param("name")String name);
-//
-//    @Query("Select fun from Role fun where fun.name=:name")
-//    Role checkRoleName(@Param("name") String name);
-//
-//    @Query("Select role from Role role where role.idRole=:id")
-//    Role findRoleById(@Param("id") int id);
+@Repository
+public interface RoleRepository extends JpaRepository<RoleEntity, Integer> {
 }

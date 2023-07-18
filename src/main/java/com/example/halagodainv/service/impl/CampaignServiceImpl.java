@@ -12,14 +12,13 @@ import com.example.halagodainv.repository.ImageProductRepository;
 import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
-import com.example.halagodainv.request.campaign.CampaignSearch;
+import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +43,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final IndustryRepository industryRepository;
 
     @Override
-    public Object getCampaigns(CampaignSearch campaignSearch) {
+    public Object getCampaigns(CampaignFormSearch campaignSearch) {
         int offset = 0;
         if (campaignSearch.getPageNo() > 0) {
             offset = campaignSearch.getPageNo() - 1;
@@ -88,6 +87,8 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setBrandName(campaignAddRequest.getBrandName());
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
             campaignEntity.setIndustry(campaignAddRequest.getIndustry());
+            campaignEntity.setIndustryId(campaignAddRequest.getIndustryId());
+            campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
             campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
             campaignEntity.setImg(campaignAddRequest.getCampaignImage());
@@ -133,6 +134,8 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setImg(campaignEditRequest.getCampaignImage());
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
+            editEntity.setIndustryId(campaignEditRequest.getIndustryId());
+            editEntity.setIdBrand(campaignEditRequest.getBrandId());
             editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
             editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
             editEntity.setRewards(campaignEditRequest.getReward());

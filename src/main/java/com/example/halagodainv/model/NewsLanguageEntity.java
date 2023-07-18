@@ -20,7 +20,7 @@ public class NewsLanguageEntity {
     String content;
     @Column(name = "language")
     String language;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "new_id")
     private NewsEntity newsEntity;
 }

@@ -1,9 +1,7 @@
 package com.example.halagodainv.controller;
 
-import com.example.halagodainv.exception.GeneralException;
-import com.example.halagodainv.request.brand.BrandAddRequest;
 import com.example.halagodainv.request.news.NewsAddRequest;
-import com.example.halagodainv.request.news.NewsSearch;
+import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.service.NewsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +19,7 @@ public class NewsController {
     private NewsService newsService;
 
     @PostMapping("")
-    public ResponseEntity<Object> get(@RequestBody NewsSearch newsSearch) {
+    public ResponseEntity<Object> get(@RequestBody NewsFormSearch newsSearch) {
         return ResponseEntity.ok(newsService.getNews(newsSearch));
     }
 
