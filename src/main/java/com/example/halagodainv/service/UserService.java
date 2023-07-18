@@ -4,6 +4,7 @@ import com.example.halagodainv.request.UserAddRequest;
 import com.example.halagodainv.request.UserEditRequest;
 
 public interface UserService {
+    Object getAll(int pageNo, int pageSize);
     Object addUser(UserAddRequest userAddRequest);
     Object updateUser(UserEditRequest userEditRequest);
     void deleteUser(int userId);

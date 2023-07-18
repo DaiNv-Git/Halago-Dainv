@@ -7,11 +7,17 @@ import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserAddRequest;
 import com.example.halagodainv.request.UserEditRequest;
 import com.example.halagodainv.response.BaseResponse;
+import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.Optional;
@@ -21,6 +27,24 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public Object getAll(int pageNo, int pageSize) {
+        try {
+            int offset = 0;
+            if (pageNo > 0) {
+                offset = pageNo - 1;
+            }
+            Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id");
+            if (CollectionUtils.isEmpty(userRepository.getAll(pageable))){
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userRepository.getAll(pageable), pageable, 0));
+                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
+            }
+            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userRepository.getAll(pageable), pageable, userRepository.totalElementAll()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
+        } catch (Exception exception) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
+        }
+    }
 
 
     public Object addUser(UserAddRequest userAddRequest) {

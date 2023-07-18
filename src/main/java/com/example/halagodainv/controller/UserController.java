@@ -42,6 +42,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @PostMapping("/user")
+    public ResponseEntity<Object> getAll(@RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
+        return ResponseEntity.ok(userService.getAll(pageNo, pageSize));
+    }
+
     @PostMapping("/insert")
     public ResponseEntity<Object> addUser(@Valid @RequestBody UserAddRequest userAddRequest) {
         return ResponseEntity.ok(userService.addUser(userAddRequest));
