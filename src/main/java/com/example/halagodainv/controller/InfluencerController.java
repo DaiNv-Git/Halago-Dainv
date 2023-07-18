@@ -1,5 +1,6 @@
 package com.example.halagodainv.controller;
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.repository.CityRepository;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
@@ -27,6 +28,8 @@ public class InfluencerController {
     @Autowired
     InfluencerService influencerService;
     @Autowired
+    CityRepository cityRepository;
+    @Autowired
     ClassifyRepository classifyRepository;
     @Autowired
     IndustryRepository industryRepository;
@@ -52,6 +55,10 @@ public class InfluencerController {
     @GetMapping("/getField")
     public ResponseEntity<Object> getField() {
         return ResponseEntity.ok(industryRepository.findAll());
+    }
+    @GetMapping("/city")
+    public ResponseEntity<Object> getCity(@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(cityRepository.findByNameContainingIgnoreCase(name));
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
