@@ -13,4 +13,9 @@ public class InfluencerSearchRequest {
     private boolean youtobe;
     private boolean titok;
     private boolean instagram;
+    private Integer cityId;
+    private Integer sex;
+    private String birthday;
+    private Double expense;
+
 }

@@ -119,6 +119,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                 request.isYoutobe(),
                 request.isTitok(),
                 request.isInstagram(),
+                request.getSex(),
+                request.getCityId(),
+                request.getBirthday(),
+                request.getExpense(),
                 pageable
         );
         return new PageResponse<>(pageResult);

@@ -59,8 +59,8 @@ public class InfluencerController {
     }
 
 
-    @GetMapping("/influencers")
-    public ResponseEntity<PageResponse<InfluencerSearchDTO>> searchInfluencers(InfluencerSearchRequest request) {
+    @PostMapping("/influencers")
+    public ResponseEntity<PageResponse<InfluencerSearchDTO>> searchInfluencers(@RequestBody InfluencerSearchRequest request) {
         PageResponse<InfluencerSearchDTO> response = influencerService.searchInfluencers(request);
         return ResponseEntity.ok(response);
     }
