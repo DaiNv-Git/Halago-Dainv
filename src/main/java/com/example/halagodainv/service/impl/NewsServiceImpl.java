@@ -130,6 +130,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Modifying
+    @Transactional
     public Object update(NewsAddRequest newsAddRequest) {
         try {
             Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
@@ -138,13 +140,13 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
-            newsLanguageRepository.deleteByNewsEntity_IdNews(news.get().getIdNews());
             news.get().setThumbnail(newsAddRequest.getThumbnail());
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
             newsRepository.save(news.get());
             //add detail
+            newsLanguageRepository.deleteByNewId(news.get().getIdNews());
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
             newsEN.setTitle(newsAddRequest.getTitleEN());
@@ -171,7 +173,7 @@ public class NewsServiceImpl implements NewsService {
     @Modifying
     public Object delete(Integer id) {
         try {
-            newsLanguageRepository.deleteByNewsEntity_IdNews(id);
+            newsLanguageRepository.deleteByNewId(id);
             newsRepository.deleteById(id);
             return new BaseResponse(Constant.SUCCESS, "Xóa tin tức  thành công", new BaseResponse(1, "Xóa tin tức  thành công", null));
         } catch (Exception e) {
