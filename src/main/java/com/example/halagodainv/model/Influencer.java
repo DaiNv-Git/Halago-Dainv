@@ -1,10 +1,27 @@
 package com.example.halagodainv.model;
+import com.example.halagodainv.response.Influencer.InfluencerSearchDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import utils.DateUtils;
 import javax.persistence.*;
 import java.util.Date;
-
+@SqlResultSetMapping(
+        name = "InfluencerDTO",
+        classes = @ConstructorResult(
+                targetClass = InfluencerSearchDTO.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Integer.class),
+                        @ColumnResult(name = "name", type = String.class),
+                        @ColumnResult(name = "description", type = String.class),
+                        @ColumnResult(name = "industries", type = String.class),
+                        @ColumnResult(name = "fb", type = Boolean.class),
+                        @ColumnResult(name = "youtobe", type = Boolean.class),
+                        @ColumnResult(name = "titok", type = Boolean.class),
+                        @ColumnResult(name = "instagram", type = Boolean.class),
+                        @ColumnResult(name = "phone", type = String.class)
+                }
+        )
+)
 @Entity
 @Table(name = "influencer")
 @Data

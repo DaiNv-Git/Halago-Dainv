@@ -6,13 +6,20 @@ import com.example.halagodainv.model.Influencer;
 import com.example.halagodainv.model.SocialNetworkInfluencer;
 import com.example.halagodainv.repository.InfluencerRepository;
 import com.example.halagodainv.repository.SocialNetworkInfluencerRepository;
+import com.example.halagodainv.repository.jpaRepository.InfluencerNativeRepository;
 import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
+import com.example.halagodainv.request.Influencer.InfluencerSearchRequest;
 import com.example.halagodainv.request.Influencer.InfluencerSocialNetwordRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.Influencer.InfluencerResponse;
+import com.example.halagodainv.response.Influencer.InfluencerSearchDTO;
+import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import utils.StringUtils;
@@ -26,6 +33,8 @@ import java.util.List;
 public class InfluencerServiceImpl implements InfluencerService {
     @Autowired
     InfluencerRepository influencerRepository;
+    @Autowired
+    private InfluencerNativeRepository influencerNativeRepository;
     @Autowired
     SocialNetworkInfluencerRepository socialNetworkInfluencerRepository;
     @Override
@@ -98,5 +107,20 @@ public class InfluencerServiceImpl implements InfluencerService {
             return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
 
         }
+    }
+
+    @Override
+    public PageResponse<InfluencerSearchDTO> searchInfluencers(InfluencerSearchRequest request) {
+        Pageable pageable = PageRequest.of(request.getPageNo() - 1, request.getPageSize());
+        Page<InfluencerSearchDTO> pageResult = influencerNativeRepository.searchInfluencers(
+                request.getName(),
+                request.getIndustryName(),
+                request.isFb(),
+                request.isYoutobe(),
+                request.isTitok(),
+                request.isInstagram(),
+                pageable
+        );
+        return new PageResponse<>(pageResult);
     }
 }

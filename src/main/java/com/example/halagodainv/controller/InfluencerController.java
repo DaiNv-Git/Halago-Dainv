@@ -3,9 +3,12 @@ import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
+import com.example.halagodainv.request.Influencer.InfluencerSearchRequest;
 import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.Influencer.InfluencerResponse;
+import com.example.halagodainv.response.Influencer.InfluencerSearchDTO;
+import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,5 +56,12 @@ public class InfluencerController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
         return ResponseEntity.ok(influencerService.delete(id));
+    }
+
+
+    @GetMapping("/influencers")
+    public ResponseEntity<PageResponse<InfluencerSearchDTO>> searchInfluencers(InfluencerSearchRequest request) {
+        PageResponse<InfluencerSearchDTO> response = influencerService.searchInfluencers(request);
+        return ResponseEntity.ok(response);
     }
 }
