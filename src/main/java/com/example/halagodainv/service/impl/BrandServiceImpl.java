@@ -92,6 +92,7 @@ public class BrandServiceImpl implements BrandService {
             userEntity.setEmail(brandAddRequest.getEmail());
             userEntity.setPassword(passwordEncoder.encode(brandAddRequest.getPassword()));
             userEntity.setCreated(new Date());
+            userEntity.setUserName(brandAddRequest.getRegisterName());
             userEntity.setPasswordHide(brandAddRequest.getPassword());
             userEntity = userRepository.save(userEntity);
             BrandEntity brandEntity = new BrandEntity();

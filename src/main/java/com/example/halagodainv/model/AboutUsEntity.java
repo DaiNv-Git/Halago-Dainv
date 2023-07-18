@@ -1,8 +1,11 @@
 package com.example.halagodainv.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "about_us")
 public class AboutUsEntity {
     @Id
@@ -13,38 +16,8 @@ public class AboutUsEntity {
     private String title;
     @Column(name = "content")
     private String content;
+    @Column(name = "language")
+    private String language;
     @Column(name = "type")
     private int type;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
 }

@@ -3,6 +3,8 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.model.ContactCustomerEntity;
 import com.example.halagodainv.repository.ContactCustomerRepository;
+import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
+import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ContactCustomerService;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +12,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,6 +38,17 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         }
         PageResponse response = new PageResponse<>(new PageImpl<>(entities, pageable, totalCount));
         return response;
+    }
+
+    public Object add(ConcatCustomerRequest customerRequest) {
+        ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
+        contactCustomerEntity.setCreated(new Date());
+        contactCustomerEntity.setEmail(customerRequest.getEmail());
+        contactCustomerEntity.setPhone(customerRequest.getPhone());
+        contactCustomerEntity.setName(customerRequest.getUserName());
+        contactCustomerEntity.setNote(customerRequest.getNote());
+        contactCustomerRepository.save(contactCustomerEntity);
+        return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", null);
     }
 
 }
