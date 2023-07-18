@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "footer_language")
-public class FooterLanguage {
+public class FooterLanguageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
