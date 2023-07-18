@@ -1,5 +1,6 @@
 package com.example.halagodainv.service.auth;
 
+import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.repository.RoleRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,18 +30,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public Object getAll(int pageNo, int pageSize) {
+    public Object getAll(int pageNo, int pageSize, String userName) {
         try {
             int offset = 0;
             if (pageNo > 0) {
                 offset = pageNo - 1;
             }
             Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id");
-            if (CollectionUtils.isEmpty(userRepository.getAll(pageable))){
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userRepository.getAll(pageable), pageable, 0));
+            List<UserDto> userDtos = userRepository.getAll(userName, pageable);
+            if (CollectionUtils.isEmpty(userDtos)) {
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, 0));
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
             }
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userRepository.getAll(pageable), pageable, userRepository.totalElementAll()));
+            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, userRepository.totalElementAll(userName)));
             return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception exception) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
