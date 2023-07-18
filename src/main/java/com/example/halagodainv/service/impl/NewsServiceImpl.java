@@ -130,8 +130,6 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Transactional
-    @Modifying
     public Object update(NewsAddRequest newsAddRequest) {
         try {
             Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
