@@ -4,7 +4,9 @@ import com.example.halagodainv.request.SearchPageForm;
 import lombok.Data;
 
 @Data
-public class InfluencerSearchRequest extends SearchPageForm {
+public class InfluencerSearchRequest {
+    private int pageSize = 10;
+    private int pageNo = 1;
     private String name;
     private String industryName;
     private boolean fb;

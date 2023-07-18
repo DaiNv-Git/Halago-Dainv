@@ -64,4 +64,5 @@ public class InfluencerController {
         PageResponse<InfluencerSearchDTO> response = influencerService.searchInfluencers(request);
         return ResponseEntity.ok(response);
     }
+
 }
