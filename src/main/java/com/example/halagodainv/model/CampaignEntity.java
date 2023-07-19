@@ -40,8 +40,6 @@ public class CampaignEntity implements Serializable {
     private Date created;
     @Column(name = "img")
     private String img;
-    @Column(name = "img_product")
-    private String imgProduct;
     @Column(name = "id_brand")
     private int idBrand;
     @Column(name = "industry")

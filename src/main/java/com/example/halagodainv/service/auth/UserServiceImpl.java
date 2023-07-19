@@ -50,6 +50,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    public Object getDetail(int userId) {
+        try {
+            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", userRepository.getUser(userId));
+        } catch (Exception exception) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
+        }
+    }
+
     public Object addUser(UserAddRequest userAddRequest) {
         try {
             Optional<UserEntity> userDetails = userRepository.findByEmail(userAddRequest.getEmail());

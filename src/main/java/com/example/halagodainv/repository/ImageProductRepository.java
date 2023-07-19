@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ImageProductRepository extends JpaRepository<ImageProductEntity, Integer> {
+public interface ImageProductRepository extends JpaRepository<ImageProductEntity, Long> {
     Optional<ImageProductEntity> findByIdAndCampaignEntity_Id(Integer integer, Integer campaignId);
 
     List<ImageProductEntity> findByCampaignEntity_Id(int campaignId);
