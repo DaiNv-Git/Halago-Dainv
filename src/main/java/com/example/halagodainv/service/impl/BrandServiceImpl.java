@@ -89,12 +89,6 @@ public class BrandServiceImpl implements BrandService {
             if (user.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email đã tồn tại", null);
             }
-            userEntity.setEmail(brandAddRequest.getEmail());
-            userEntity.setPassword(passwordEncoder.encode(brandAddRequest.getPassword()));
-            userEntity.setCreated(new Date());
-            userEntity.setUserName(brandAddRequest.getRegisterName());
-            userEntity.setPasswordHide(brandAddRequest.getPassword());
-            userEntity = userRepository.save(userEntity);
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());

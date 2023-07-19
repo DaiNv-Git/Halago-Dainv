@@ -15,7 +15,7 @@ public class ImageProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "image_product")
     private String imageProduct;
     @ManyToOne

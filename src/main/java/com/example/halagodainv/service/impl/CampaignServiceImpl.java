@@ -84,9 +84,7 @@ public class CampaignServiceImpl implements CampaignService {
                 return errorResponses;
             }
             CampaignEntity campaignEntity = new CampaignEntity();
-            campaignEntity.setBrandName(campaignAddRequest.getBrandName());
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
-            campaignEntity.setIndustry(campaignAddRequest.getIndustry());
             campaignEntity.setIndustryId(campaignAddRequest.getIndustryId());
             campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
@@ -126,9 +124,7 @@ public class CampaignServiceImpl implements CampaignService {
             if (!campaignEditRequest.validate(errorResponses)) {
                 return errorResponses;
             }
-            editEntity.setBrandName(campaignEditRequest.getBrandName());
             editEntity.setCampaignName(campaignEditRequest.getCampaignName());
-            editEntity.setIndustry(campaignEditRequest.getIndustry());
             editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "yyyy-MM-dd"));
             editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "yyyy-MM-dd"));
             editEntity.setImg(campaignEditRequest.getCampaignImage());

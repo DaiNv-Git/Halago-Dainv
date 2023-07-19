@@ -44,10 +44,15 @@ public class UserController {
 
 
     @PostMapping("/user")
-    public ResponseEntity<Object> getAll(@RequestParam(value = "pageNo",defaultValue = "1") int pageNo,
-                                         @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                         @RequestParam(value = "userName",defaultValue = "",required = false) String userName) {
+    public ResponseEntity<Object> getAll(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                         @RequestParam(value = "userName", defaultValue = "", required = false) String userName) {
         return ResponseEntity.ok(userService.getAll(pageNo, pageSize, userName));
+    }
+
+    @PostMapping("/detail")
+    public ResponseEntity<Object> getDetail(@RequestParam("userId") int userId) {
+        return ResponseEntity.ok(userService.getDetail(userId));
     }
 
     @PostMapping("/insert")

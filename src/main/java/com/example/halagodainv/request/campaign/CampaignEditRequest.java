@@ -10,10 +10,8 @@ import java.util.List;
 @Data
 public class CampaignEditRequest {
     private int id;
-    private String brandName;
     private int brandId;
     private String campaignName;
-    private String industry;
     private int industryId;
     private String campaignImage;
     private String titleCampaign;
@@ -27,16 +25,8 @@ public class CampaignEditRequest {
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
-        if (Strings.isBlank(brandName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName is not null or empty", null));
-            isCheck = false;
-        }
         if (Strings.isBlank(campaignName)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name is not null or empty", null));
-            isCheck = false;
-        }
-        if (Strings.isBlank(industry)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "industry is not null or empty", null));
             isCheck = false;
         }
         if (Strings.isBlank(titleCampaign)) {

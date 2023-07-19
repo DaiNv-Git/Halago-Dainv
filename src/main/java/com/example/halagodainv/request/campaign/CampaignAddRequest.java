@@ -10,10 +10,8 @@ import java.util.List;
 
 @Data
 public class CampaignAddRequest {
-    private String brandName;
     private int brandId;
     private String campaignName;
-    private String industry;
     private int industryId;
     private String campaignImage;
     private String titleCampaign;
@@ -27,16 +25,8 @@ public class CampaignAddRequest {
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
-        if (Strings.isBlank(brandName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName không được rỗng", null));
-            isCheck = false;
-        }
         if (Strings.isBlank(campaignName)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name không được rỗng", null));
-            isCheck = false;
-        }
-        if (Strings.isBlank(industry)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "industry is không được rỗng", null));
             isCheck = false;
         }
         if (Strings.isBlank(titleCampaign)) {
