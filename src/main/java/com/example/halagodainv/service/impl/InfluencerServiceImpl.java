@@ -8,7 +8,7 @@ import com.example.halagodainv.model.SocialNetworkInfluencer;
 import com.example.halagodainv.repository.InfluencerEntityRepository;
 import com.example.halagodainv.repository.InfluencerRepository;
 import com.example.halagodainv.repository.SocialNetworkInfluencerRepository;
-import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
+import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.Influencer.InfluencerSearch;
 import com.example.halagodainv.request.influencer.InfluencerSocialNetwordRequest;
 import com.example.halagodainv.response.BaseResponse;

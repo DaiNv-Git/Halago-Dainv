@@ -3,7 +3,7 @@ package com.example.halagodainv.controller;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
-import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
+import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.Influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.Influencer.InfluencerResponse;
