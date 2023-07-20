@@ -3,7 +3,6 @@ package com.example.halagodainv.controller;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
-import com.example.halagodainv.repository.InfluencerEntityRepository;
 import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.Influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
@@ -30,9 +29,9 @@ public class InfluencerController {
     @Autowired
     IndustryRepository industryRepository;
 
-    @PostMapping(value = "/getDetail")
+    @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getDetail(@RequestBody InfluencerSearch search) {
-        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getDetail(search));
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluMenu(search));
     }
 
     @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET)

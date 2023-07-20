@@ -29,6 +29,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     public Object getAll(int pageNo, int pageSize, String userName) {
         try {
@@ -98,5 +99,9 @@ public class UserServiceImpl implements UserService {
 
     public void deleteUser(int userId) {
         userRepository.deleteById(userId);
+    }
+
+    public Object getRole(){
+        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", roleRepository.findAll());
     }
 }

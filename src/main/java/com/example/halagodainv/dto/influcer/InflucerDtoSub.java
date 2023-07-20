@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InflucerDto {
+public class InflucerDtoSub {
     private long id;
     private String name;
-    private boolean isFacebook;
-    private boolean isTikTok;
-    private boolean isInstagram;
-    private boolean isYouTube;
-    private String industry;
     private String phone;
+    private String link;
+    private String follower;
+    private String expense;
+    private String industry;
 }

@@ -10,7 +10,7 @@ import com.example.halagodainv.repository.InfluencerRepository;
 import com.example.halagodainv.repository.SocialNetworkInfluencerRepository;
 import com.example.halagodainv.request.Influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.Influencer.InfluencerSearch;
-import com.example.halagodainv.request.Influencer.InfluencerSocialNetwordRequest;
+import com.example.halagodainv.request.influencer.InfluencerSocialNetwordRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.Influencer.InfluencerResponse;
 import com.example.halagodainv.response.PageResponse;
@@ -42,9 +42,10 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Autowired
     private InfluencerEntityRepository influencerEntityRepository;
 
-    public Object getDetail(InfluencerSearch search) {
+    @Override
+    public Object getInfluMenu(InfluencerSearch search) {
         int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo()-1;
+        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
         Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
         Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
         Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;

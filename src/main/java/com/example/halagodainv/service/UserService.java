@@ -13,4 +13,5 @@ public interface UserService {
     Object updateUser(UserEditRequest userEditRequest);
 
     void deleteUser(int userId);
+    Object getRole();
 }

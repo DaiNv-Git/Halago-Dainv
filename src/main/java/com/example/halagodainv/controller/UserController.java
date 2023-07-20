@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api")
@@ -71,6 +69,11 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Xóa thành công", null));
     }
 
+    @GetMapping("/role")
+    public ResponseEntity<Object> getRole() {
+        return ResponseEntity.ok(userService.getRole());
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Object> user(@Valid @RequestBody UserLogin userLogin) {
         try {
@@ -80,7 +83,7 @@ public class UserController {
             UserDto user = userRepository.getUser(userEntity.get().getId());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(user.getName(), user.getEmail(), user.getRole(), token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(user.getUserName(), user.getEmail(), user.getRole(), token, refreshToken)));
         } catch (Exception e) {
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Đăng nhập không thành công", null));
         }
@@ -94,7 +97,7 @@ public class UserController {
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             UserDto user = userRepository.getUser(userEntity.get().getId());
             String newToken = jwtToken.generateToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(user.getName(), user.getEmail(), user.getRole(), newToken, refreshToken)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(user.getUserName(), user.getEmail(), user.getRole(), newToken, refreshToken)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

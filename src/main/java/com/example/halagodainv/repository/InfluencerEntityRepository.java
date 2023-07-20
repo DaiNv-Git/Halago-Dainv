@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
 
-    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry)  " +
+    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone)  " +
             "FROM InfluencerEntity ie " +
             "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and" +
@@ -41,4 +41,5 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                    @Param("isTiktok") Boolean isTiktok,
                    @Param("industry") String industry,
                    @Param("provinceId") int provinceId);
+
 }
