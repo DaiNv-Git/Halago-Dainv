@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InfluencerSocialNetwordRequest {
+public class InfluencerDetailNetworkRequest {
     private String link;
     private Double follower;
     private Double expense;
-    private Integer channelId;
+    private String channel;
 }

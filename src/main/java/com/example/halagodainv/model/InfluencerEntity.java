@@ -26,20 +26,12 @@ public class InfluencerEntity {
     private String yearOld;
     @Column(name = "isFacebook")
     private boolean isFacebook;
-    @Column(name = "linkFb")
-    private String linkFb;
     @Column(name = "isTiktok")
     private boolean isTiktok;
-    @Column(name = "linkTT")
-    private String linkTT;
     @Column(name = "isInstagram")
     private boolean isInstagram;
-    @Column(name = "linkIns")
-    private String linkIns;
     @Column(name = "isYoutube")
     private boolean isYoutube;
-    @Column(name = "linkYoutube")
-    private String linkYoutube;
     @Column(name = "email")
     private String email;
     @Column(name = "industry")
@@ -50,8 +42,8 @@ public class InfluencerEntity {
     private int provinceId;
     @Column(name = "address")
     private String address;
-    @Column(name = "bank")
-    private String bank;
+    @Column(name = "bank_id")
+    private int bankId;
     @Column(name = "account_number")
     private String accountNumber;
 
