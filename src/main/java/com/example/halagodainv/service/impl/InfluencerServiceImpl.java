@@ -48,39 +48,48 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     @Override
     public Object getInfluMenu(InfluencerSearch search) {
-        int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-        Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
-        Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
-        Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
-        Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
-        Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-        long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId());
-        List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), pageable);
-        if (CollectionUtils.isEmpty(influcerMenuDtos)) {
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
+        try {
+            int offset = 0;
+            if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
+            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
+            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
+            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
+            Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
+            long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId());
+            List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), pageable);
+            if (CollectionUtils.isEmpty(influcerMenuDtos)) {
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
+                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+            }
+            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
             return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+        } catch (Exception e) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
         }
-        PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
-        return new BaseResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bại", pageResponse);
+
     }
 
     public Object getInfluSubMenu(InFluencerSubMenuSearch search) {
-        int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-        Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
-        Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
-        Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
-        Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
-        Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-        long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry());
-        List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry(), pageable);
-        if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
+        try {
+            int offset = 0;
+            if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
+            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
+            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
+            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
+            Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
+            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry());
+            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry(), pageable);
+            if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
+                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+            }
+            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
             return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+        } catch (Exception e) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
         }
-        PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
-        return new BaseResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bại", pageResponse);
     }
 
     @Override
@@ -125,9 +134,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                         }
                     });
             dtoDetailsSet.add(dtoDetails);
-            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", dtoDetailsSet);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm thành công", dtoDetailsSet);
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
+            return new ErrorResponse(Constant.FAILED, "Thêm thất bại", null);
         }
     }
 
