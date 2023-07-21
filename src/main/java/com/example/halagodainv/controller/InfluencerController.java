@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.repository.CityRepository;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.influencer.InFluencerSubMenuSearch;
@@ -29,6 +30,8 @@ public class InfluencerController {
     ClassifyRepository classifyRepository;
     @Autowired
     IndustryRepository industryRepository;
+    @Autowired
+    private CityRepository cityRepository;
 
     @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
@@ -50,6 +53,11 @@ public class InfluencerController {
         return ResponseEntity.ok(influencerService.add(request));
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<Object> update(@Valid @RequestBody InfluencerAddRequest request) {
+        return ResponseEntity.ok(influencerService.edit(request));
+    }
+
     @GetMapping("/getClassify")
     public ResponseEntity<Object> getClassìy() {
         return ResponseEntity.ok(classifyRepository.findAll());
@@ -60,8 +68,13 @@ public class InfluencerController {
         return ResponseEntity.ok(industryRepository.findAll());
     }
 
+    @GetMapping("/getIndustry")
+    public ResponseEntity<Object> getProvince() {
+        return ResponseEntity.ok(cityRepository.findAll());
+    }
+
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Integer id) {
+    public ResponseEntity<Object> delete(@PathVariable long id) {
         return ResponseEntity.ok(influencerService.delete(id));
     }
 }

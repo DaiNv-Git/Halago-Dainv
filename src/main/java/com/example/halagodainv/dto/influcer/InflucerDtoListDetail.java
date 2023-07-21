@@ -18,7 +18,7 @@ public class InflucerDtoListDetail {
     private boolean isYouTube;
     private String industry;
     private String phone;
-    private boolean isSex;
+    private int sex;
     private String birtYear;
     private int classify;
     private int provinceId;
@@ -30,4 +30,5 @@ public class InflucerDtoListDetail {
     private String link;
     private String channel;
     private Date createHistory;
+    private String email;
 }

@@ -82,7 +82,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +
             "ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone,ie.sex,ie.yearOld,ie.classifyId,ie.provinceId,ie.address,ie.bankId,ie.accountNumber," +
-            "id.follower,id.expense,id.url,id.channel,ie.historyCreated) from InfluencerEntity ie " +
+            "id.follower,id.expense,id.url,id.channel,ie.historyCreated,ie.email) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE ie.id = :#{#id}")
     List<InflucerDtoListDetail> getDetails(@Param("id") long id);

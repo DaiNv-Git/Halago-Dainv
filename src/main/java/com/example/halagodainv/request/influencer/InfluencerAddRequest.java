@@ -8,9 +8,10 @@ import java.util.List;
 
 @Data
 public class InfluencerAddRequest {
+    private long Id;
     private String name;
     private String phone;
-    private boolean isSex;
+    private int sex;
     private String birtYear;
     private Boolean isFacebook = null;
     private Boolean isTikTok = null;

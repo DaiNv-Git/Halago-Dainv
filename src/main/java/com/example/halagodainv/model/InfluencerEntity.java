@@ -19,7 +19,7 @@ public class InfluencerEntity {
     @Column(name = "created")
     private Date created;
     @Column(name = "sex")
-    private boolean sex;
+    private int sex;
     @Column(name = "phone")
     private String phone;
     @Column(name = "yearOld")

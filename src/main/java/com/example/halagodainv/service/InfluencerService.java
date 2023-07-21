@@ -14,6 +14,7 @@ public interface InfluencerService {
     Object findInfluencerById(long id);
 
     Object add(InfluencerAddRequest request);
+    Object edit(InfluencerAddRequest request);
 
-    Object delete(Integer id);
+    Object delete(long id);
 }

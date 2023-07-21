@@ -12,11 +12,12 @@ public class InfluencerDtoDetails {
     private String name;
     private String phone;
     private String industry;
-    private Boolean isSex;
+    private int sex;
     private String birtYear;
     private int classify ;
     private int provinceId;
     private String address;
+    private String email;
     private int bankId;
     private String bankNumber;
     private String createHistory;
