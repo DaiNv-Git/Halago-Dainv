@@ -107,6 +107,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                         dtoDetails.setBirtYear(influencer.getBirtYear());
                         dtoDetails.setCreateHistory(DateFormatUtils.format(influencer.getCreateHistory(), "yyyy-MM-dd"));
                         dtoDetails.setPhone(influencer.getPhone());
+                        dtoDetails.setIndustry(influencer.getIndustry());
                         if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
                             dtoDetails.setLinkFb(influencer.getLink());
                             dtoDetails.setExpenseFb(influencer.getExpense());
