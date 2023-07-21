@@ -14,6 +14,4 @@ public class CityEntity {
     private int cityId;
     @Column(name = "city_name")
     private String cityName;
-    @Column(name = "sort")
-    private int sort;
 }
