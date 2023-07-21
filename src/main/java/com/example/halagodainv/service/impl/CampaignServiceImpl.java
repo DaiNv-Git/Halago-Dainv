@@ -6,6 +6,7 @@ import com.example.halagodainv.dto.campain.CampaignDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
+import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.repository.BrandRepository;
 import com.example.halagodainv.repository.CampaignRepository;
 import com.example.halagodainv.repository.ImageProductRepository;
@@ -86,6 +87,10 @@ public class CampaignServiceImpl implements CampaignService {
             CampaignEntity campaignEntity = new CampaignEntity();
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
             campaignEntity.setIndustryId(campaignAddRequest.getIndustryId());
+            Optional<IndustryEntity> industryEntity = industryRepository.findById(campaignAddRequest.getIndustryId());
+            if (industryEntity.isPresent()) {
+                campaignEntity.setIndustry(industryEntity.get().getIndustryName());
+            }
             campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
             campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
@@ -131,6 +136,12 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
             editEntity.setIndustryId(campaignEditRequest.getIndustryId());
+            Optional<IndustryEntity> industryEntity = industryRepository.findById(campaignEditRequest.getIndustryId());
+            if (industryEntity.isPresent()) {
+                editEntity.setIndustry(industryEntity.get().getIndustryName());
+            } else {
+                editEntity.setIndustry("");
+            }
             editEntity.setIdBrand(campaignEditRequest.getBrandId());
             editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
             editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());

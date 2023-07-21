@@ -40,7 +40,7 @@ public class InfluencerController {
     }
 
     @PostMapping(value = "/getSubMenuInflu")
-    public ResponseEntity<Object> getSubMenu(@RequestBody InFluencerSubMenuSearch search) {
+    public ResponseEntity<Object> getSubMenu(@RequestBody InfluencerSearch search) {
         return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluSubMenu(search));
     }
 

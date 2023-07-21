@@ -35,8 +35,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class InfluencerServiceImpl implements InfluencerService {
-    private final InfluencerRepository influencerRepository;
-    private final SocialNetworkInfluencerRepository socialNetworkInfluencerRepository;
     private final InfluencerEntityRepository influencerEntityRepository;
     private final InfluencerDetailRepository influencerDetailRepository;
 
@@ -64,7 +62,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     }
 
-    public Object getInfluSubMenu(InFluencerSubMenuSearch search) {
+    public Object getInfluSubMenu(InfluencerSearch search) {
         try {
             int offset = 0;
             if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
@@ -73,8 +71,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry());
-            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getExpanse(), search.getFollower(), search.getIndustry(), pageable);
+            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId());
+            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
                 PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);

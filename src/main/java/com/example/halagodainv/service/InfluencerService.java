@@ -9,7 +9,7 @@ import com.example.halagodainv.response.Influencer.InfluencerResponse;
 public interface InfluencerService {
     Object getInfluMenu(InfluencerSearch search);
 
-    Object getInfluSubMenu(InFluencerSubMenuSearch search);
+    Object getInfluSubMenu(InfluencerSearch search);
 
     Object findInfluencerById(long id);
 

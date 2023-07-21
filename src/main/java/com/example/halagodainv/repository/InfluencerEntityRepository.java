@@ -54,14 +54,17 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
             "ie.industry like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
-            "id.follower like concat('%',:#{#follower},'%')")
+            "id.follower like concat('%',:#{#follower},'%') and " +
+            "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})")
     List<InflucerDtoSubMenu> getSubMenu(@Param("isFacebook") Boolean isFacebook,
                                         @Param("isYoutube") Boolean isYoutube,
                                         @Param("isInstagram") Boolean isInstagram,
                                         @Param("isTiktok") Boolean isTiktok,
                                         @Param("industry") String industry,
                                         @Param("expense") String expense,
-                                        @Param("follower") String follower, Pageable pageable);
+                                        @Param("follower") String follower,
+                                        @Param("provinceId") int provinceId,
+                                        Pageable pageable);
 
     @Query("select count(ie)from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
@@ -78,7 +81,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("isTiktok") Boolean isTiktok,
                       @Param("industry") String industry,
                       @Param("expense") String expense,
-                      @Param("follower") String follower);
+                      @Param("follower") String follower,
+                      @Param("provinceId") int provinceId);
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +
             "ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone,ie.sex,ie.yearOld,ie.classifyId,ie.provinceId,ie.address,ie.bankId,ie.accountNumber," +

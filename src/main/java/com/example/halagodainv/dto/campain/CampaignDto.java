@@ -18,6 +18,7 @@ public class CampaignDto {
     private int brandId;
     private String campaignName;
     private int industryId;
+    private String industry;
     private String startDate;
     private String endDate;
     private String campaignImage;
@@ -42,6 +43,7 @@ public class CampaignDto {
         this.descriptionCampaign = campaignEntity.getContent();
         this.descriptionCandidatePerform = campaignEntity.getDescription();
         this.reward = campaignEntity.getRewards();
+        this.industry = campaignEntity.getIndustry();
         this.created = DateUtilFormat.convertDateToString(campaignEntity.getCreated(), "yyyy-MM-dd");
         response.forEach(campaign -> {
             this.imageProductAddRequests.add(new ImageProductDto(campaign));
