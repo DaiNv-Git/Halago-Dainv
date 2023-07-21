@@ -47,17 +47,14 @@ public class InfluencerController {
     public ResponseEntity<?> findInfluencerById(@RequestParam("id") long id) {
         return ResponseEntity.ok(influencerService.findInfluencerById(id));
     }
-
     @PostMapping("/add")
     public ResponseEntity<Object> add(@Valid @RequestBody InfluencerAddRequest request) {
         return ResponseEntity.ok(influencerService.add(request));
     }
-
     @PostMapping("/update")
     public ResponseEntity<Object> update(@Valid @RequestBody InfluencerAddRequest request) {
         return ResponseEntity.ok(influencerService.edit(request));
     }
-
     @GetMapping("/getClassify")
     public ResponseEntity<Object> getClassìy() {
         return ResponseEntity.ok(classifyRepository.findAll());
@@ -68,7 +65,7 @@ public class InfluencerController {
         return ResponseEntity.ok(industryRepository.findAll());
     }
 
-    @GetMapping("/getIndustry")
+    @GetMapping("/getProvince")
     public ResponseEntity<Object> getProvince() {
         return ResponseEntity.ok(cityRepository.findAll());
     }
