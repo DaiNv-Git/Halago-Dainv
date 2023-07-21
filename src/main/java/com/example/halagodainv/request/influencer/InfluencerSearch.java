@@ -1,4 +1,4 @@
-package com.example.halagodainv.request.Influencer;
+package com.example.halagodainv.request.influencer;
 
 import com.example.halagodainv.request.SearchPageForm;
 import lombok.Data;

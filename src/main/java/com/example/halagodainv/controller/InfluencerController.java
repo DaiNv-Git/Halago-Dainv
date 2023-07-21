@@ -3,8 +3,9 @@ package com.example.halagodainv.controller;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
+import com.example.halagodainv.request.influencer.InFluencerSubMenuSearch;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
-import com.example.halagodainv.request.Influencer.InfluencerSearch;
+import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.Influencer.InfluencerResponse;
 import com.example.halagodainv.service.InfluencerService;
@@ -30,20 +31,18 @@ public class InfluencerController {
     IndustryRepository industryRepository;
 
     @PostMapping(value = "/getMenuInflu")
-    public ResponseEntity<Object> getDetail(@RequestBody InfluencerSearch search) {
+    public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
         return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluMenu(search));
     }
 
-    @RequestMapping(value = "/findById/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> findInfluencerById(@PathVariable("id") Integer id) {
-        try {
-            InfluencerResponse Influencer = influencerService.findInfluencerById(id);
-            responseData = new BaseResponse(Constant.SUCCESS, "Tìm kiếm thành công", new BaseResponse(1, "", Influencer));
-        } catch (Exception e) {
-            logger.info(e.getMessage(), e.getCause());
-            responseData = new BaseResponse(Constant.FAILED, "Tìm kiếm thât bại", new BaseResponse(0, "", null));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(responseData);
+    @PostMapping(value = "/getSubMenuInflu")
+    public ResponseEntity<Object> getSubMenu(@RequestBody InFluencerSubMenuSearch search) {
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluSubMenu(search));
+    }
+
+    @PostMapping(value = "/findById")
+    public ResponseEntity<?> findInfluencerById(@RequestParam("id") long id) {
+        return ResponseEntity.ok(influencerService.findInfluencerById(id));
     }
 
     @PostMapping("/add")
@@ -51,12 +50,12 @@ public class InfluencerController {
         return ResponseEntity.ok(influencerService.add(request));
     }
 
-    @GetMapping("/getClassìy")
+    @GetMapping("/getClassify")
     public ResponseEntity<Object> getClassìy() {
         return ResponseEntity.ok(classifyRepository.findAll());
     }
 
-    @GetMapping("/getField")
+    @GetMapping("/getIndustry")
     public ResponseEntity<Object> getField() {
         return ResponseEntity.ok(industryRepository.findAll());
     }

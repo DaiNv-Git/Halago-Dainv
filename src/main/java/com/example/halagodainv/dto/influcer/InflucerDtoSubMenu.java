@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InflucerDtoSub {
+public class InflucerDtoSubMenu {
     private long id;
     private String name;
     private String phone;

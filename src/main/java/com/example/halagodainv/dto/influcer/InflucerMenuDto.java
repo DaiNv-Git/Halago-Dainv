@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InflucerDto {
+public class InflucerMenuDto {
     private long id;
     private String name;
     private boolean isFacebook;
