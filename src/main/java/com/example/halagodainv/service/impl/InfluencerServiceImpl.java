@@ -273,7 +273,6 @@ public class InfluencerServiceImpl implements InfluencerService {
                 }
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
-
             }
             return new ErrorResponse(Constant.FAILED, "Sửa thất bại", null);
         } catch (Exception e) {

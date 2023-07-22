@@ -102,7 +102,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("provinceId") int provinceId,
                                         Pageable pageable);
 
-    @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry) from InfluencerEntity ie " +
+    @Query("select count(ie)from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE (:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
             "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
