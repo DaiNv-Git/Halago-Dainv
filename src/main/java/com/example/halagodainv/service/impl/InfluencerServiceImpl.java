@@ -2,10 +2,7 @@ package com.example.halagodainv.service.impl;
 
 
 import com.example.halagodainv.config.Constant;
-import com.example.halagodainv.dto.influcer.InflucerDtoListDetail;
-import com.example.halagodainv.dto.influcer.InflucerMenuDto;
-import com.example.halagodainv.dto.influcer.InflucerDtoSubMenu;
-import com.example.halagodainv.dto.influcer.InfluencerDtoDetails;
+import com.example.halagodainv.dto.influcer.*;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.CityEntity;
 import com.example.halagodainv.model.InfluencerDetailEntity;
@@ -27,6 +24,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import utils.StringUtils;
 
 import javax.transaction.Transactional;
@@ -48,14 +46,27 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId());
-            List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), pageable);
-            if (CollectionUtils.isEmpty(influcerMenuDtos)) {
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
+            if (search.getExpanse() == "") {
+                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId());
+                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), pageable);
+                if (CollectionUtils.isEmpty(influcerMenuDtos)) {
+                    PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
+                    return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                }
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
+                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+            }else {
+                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower());
+                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower(), pageable);
+                Set<InflucerMenuDto> menuDtoSet = new HashSet<>();
+                menuDtoSet.addAll(filterMenu);
+                if (CollectionUtils.isEmpty(filterMenu)) {
+                    PageResponse pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
+                    return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                }
+                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, total));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             }
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
-            return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
         } catch (Exception e) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
         }

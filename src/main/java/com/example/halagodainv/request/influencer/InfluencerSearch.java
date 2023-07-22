@@ -11,6 +11,6 @@ public class InfluencerSearch extends SearchPageForm {
     private Boolean isYoutube = null;
     private String industry = "";
     private int provinceId = 0;
-    private String follower;
-    private String expanse;
+    private String follower ="";
+    private String expanse ="";
 }

@@ -1,9 +1,6 @@
 package com.example.halagodainv.repository;
 
-import com.example.halagodainv.dto.influcer.InflucerDtoListDetail;
-import com.example.halagodainv.dto.influcer.InflucerMenuDto;
-import com.example.halagodainv.dto.influcer.InflucerDtoSubMenu;
-import com.example.halagodainv.dto.influcer.InfluencerDtoDetails;
+import com.example.halagodainv.dto.influcer.*;
 import com.example.halagodainv.model.InfluencerEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,6 +42,45 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                    @Param("industry") String industry,
                    @Param("provinceId") int provinceId);
 
+    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone) " +
+            "FROM InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId WHERE " +
+            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and" +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and" +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and "+
+            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "id.expense like concat('%',:#{#expense},'%') and " +
+            "id.follower like concat('%',:#{#follower},'%') and " +
+            "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) ")
+    List<InflucerMenuDto> getFilterMenu(@Param("isFacebook") Boolean isFacebook,
+                                       @Param("isYoutube") Boolean isYoutube,
+                                       @Param("isInstagram") Boolean isInstagram,
+                                       @Param("isTiktok") Boolean isTiktok,
+                                       @Param("industry") String industry,
+                                       @Param("provinceId") int provinceId,
+                                       @Param("expense") String expense,
+                                       @Param("follower") String follower,
+                                       Pageable pageable);
+
+    @Query("SELECT count(ie) " +
+            "from InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId where " +
+            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and" +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and" +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and "+
+            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "id.expense like concat('%',:#{#expense},'%') and " +
+            "id.follower like concat('%',:#{#follower},'%') and " +
+            "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) ")
+    long countFilterMenu(@Param("isFacebook") Boolean isFacebook,
+                     @Param("isYoutube") Boolean isYoutube,
+                     @Param("isInstagram") Boolean isInstagram,
+                     @Param("isTiktok") Boolean isTiktok,
+                     @Param("industry") String industry,
+                     @Param("provinceId") int provinceId,
+                     @Param("expense") String expense,
+                     @Param("follower") String follower);
+
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
@@ -66,7 +102,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("provinceId") int provinceId,
                                         Pageable pageable);
 
-    @Query("select count(ie)from InfluencerEntity ie " +
+    @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE (:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
             "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
@@ -74,7 +110,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
             "ie.industry like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
-            "id.follower like concat('%',:#{#follower},'%')")
+            "id.follower like concat('%',:#{#follower},'%') and " +
+            "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})")
     long countSubMenu(@Param("isFacebook") Boolean isFacebook,
                       @Param("isYoutube") Boolean isYoutube,
                       @Param("isInstagram") Boolean isInstagram,
