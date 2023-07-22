@@ -29,5 +29,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "on r.idRole = u.role where ifnull(u.userName,'')  like concat('%',:userName,'%')")
     int  totalElementAll(@Param("userName") String userName);
 
+    UserEntity findByResetToken(String token);
+
 
 }

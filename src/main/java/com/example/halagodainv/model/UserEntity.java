@@ -26,4 +26,10 @@ public class UserEntity {
     private int status;
     @Column(name = "email")
     private String email;
+
+    @Column(name = "reset_password")
+    private String resetPassword;
+
+    @Column(name = "reset_token")
+    private String resetToken;
 }

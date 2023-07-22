@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
             user.get().setEmail(userEditRequest.getEmail());
             user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
             user.get().setPasswordHide(userEditRequest.getPassword());
+            user.get().setUserName(userEditRequest.getUserName());
             user.get().setRole(userEditRequest.getRole());
             userRepository.save(user.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", userRepository.getUser(user.get().getId()));
@@ -101,7 +102,32 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    public Object getRole(){
+    public Object getRole() {
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", roleRepository.findAll());
     }
+
+
+    public void updateResetPasswordToken(String token, String email) {
+        Optional<UserEntity> customer = userRepository.findByEmail(email);
+        if (customer != null) {
+            customer.get().setResetPassword(token);
+            userRepository.save(customer.get());
+        } else {
+            throw new RuntimeException("Could not find any customer with the email " + email);
+        }
+    }
+
+    public UserEntity getByResetPasswordToken(String token) {
+        return userRepository.findByResetToken(token);
+    }
+
+    public void updatePassword(UserEntity customer, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        customer.setPassword(encodedPassword);
+
+        customer.setResetPassword(null);
+        userRepository.save(customer);
+    }
+
 }

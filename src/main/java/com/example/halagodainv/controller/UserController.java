@@ -12,17 +12,28 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.UserResponse;
 import com.example.halagodainv.service.UserService;
 import com.example.halagodainv.service.auth.UserServiceConfig;
+import com.example.halagodainv.until.FormatTimeSearch;
+import net.bytebuddy.utility.RandomString;
+import org.aspectj.weaver.bcel.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 @RestController
@@ -39,6 +50,9 @@ public class UserController {
     private JwtToken jwtToken;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
 
     @PostMapping("/user")
@@ -101,5 +115,44 @@ public class UserController {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+    @PostMapping("/forgot_password")
+    public String processForgotPassword(HttpServletRequest request, @RequestParam("email") String email) {
+        String token = RandomString.make(30);
+        try {
+            userService.updateResetPasswordToken(token, email);
+            String resetPasswordLink = FormatTimeSearch.getSiteURL(request) + "/reset_password?token=" + token;
+            sendEmail(email, resetPasswordLink);
+            return "We have sent a reset password link to your email. Please check";
+        } catch (IOException ex) {
+            throw new RuntimeException("error" + ex.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException("error" + e.getMessage());
+        }
+    }
+
+    public void sendEmail(String recipientEmail, String link)
+            throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("halogohalogo939@gmail.com", "Shopme Support");
+        helper.setTo(recipientEmail);
+
+        String subject = "Here's the link to reset your password";
+
+        String content = "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Click the link below to change your password:</p>"
+                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                + "<br>"
+                + "<p>Ignore this email if you do remember your password, "
+                + "or you have not made the request.</p>";
+
+        helper.setSubject(subject);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
     }
 }

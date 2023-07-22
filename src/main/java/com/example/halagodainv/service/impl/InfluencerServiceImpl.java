@@ -4,11 +4,9 @@ package com.example.halagodainv.service.impl;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.influcer.*;
 import com.example.halagodainv.exception.ErrorResponse;
-import com.example.halagodainv.model.CityEntity;
 import com.example.halagodainv.model.InfluencerDetailEntity;
 import com.example.halagodainv.model.InfluencerEntity;
 import com.example.halagodainv.repository.*;
-import com.example.halagodainv.request.influencer.InFluencerSubMenuSearch;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
@@ -25,12 +23,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import utils.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -112,7 +107,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                         dtoDetails.setName(influencer.getName());
                         dtoDetails.setAddress(influencer.getAddress());
                         dtoDetails.setBankId(influencer.getBankId());
-                        dtoDetails.setClassify(influencer.getClassify());
+                        dtoDetails.setClassifyId(influencer.getClassify());
                         dtoDetails.setBankNumber(influencer.getBankNumber());
                         dtoDetails.setBirtYear(influencer.getBirtYear());
                         dtoDetails.setSex(influencer.getSex());
@@ -196,7 +191,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                 detailEntityYoutube.setFollower(request.getFollowerYT());
                 detailEntityYoutube.setExpense(request.getExpenseYT());
-                detailEntityYoutube.setUrl(String.valueOf(request.getLinkFb()));
+                detailEntityYoutube.setUrl(String.valueOf(request.getLinkYT()));
                 detailEntityYoutube.setInfluId(influencer.getId());
                 influencerDetailEntities.add(detailEntityYoutube);
             }
@@ -263,7 +258,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                     detailEntityYoutube.setFollower(request.getFollowerYT());
                     detailEntityYoutube.setExpense(request.getExpenseYT());
-                    detailEntityYoutube.setUrl(String.valueOf(request.getLinkFb()));
+                    detailEntityYoutube.setUrl(String.valueOf(request.getIsYoutube()));
                     detailEntityYoutube.setInfluId(entity.get().getId());
                     influencerDetailEntities.add(detailEntityYoutube);
                 }
