@@ -191,7 +191,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                 detailEntityYoutube.setFollower(request.getFollowerYT());
                 detailEntityYoutube.setExpense(request.getExpenseYT());
-                detailEntityYoutube.setUrl(String.valueOf(request.getLinkFb()));
+                detailEntityYoutube.setUrl(String.valueOf(request.getLinkYT()));
                 detailEntityYoutube.setInfluId(influencer.getId());
                 influencerDetailEntities.add(detailEntityYoutube);
             }
@@ -258,7 +258,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                     detailEntityYoutube.setFollower(request.getFollowerYT());
                     detailEntityYoutube.setExpense(request.getExpenseYT());
-                    detailEntityYoutube.setUrl(String.valueOf(request.getLinkFb()));
+                    detailEntityYoutube.setUrl(String.valueOf(request.getIsYoutube()));
                     detailEntityYoutube.setInfluId(entity.get().getId());
                     influencerDetailEntities.add(detailEntityYoutube);
                 }
