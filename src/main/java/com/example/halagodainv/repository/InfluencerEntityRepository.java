@@ -146,6 +146,30 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("sex") int sex,
                       @Param("birtYear") String birtYear);
 
+
+    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,id.url,id.follower,id.expense,ie.address,ie.industry,c.name) from InfluencerEntity ie " +
+            "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex left join ClassifyEntity c on c.id = ie.classifyId " +
+            "WHERE (:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
+            "(:#{#isInstagram} is null or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
+            "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
+            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "id.expense like concat('%',:#{#expense},'%') and " +
+            "id.follower like concat('%',:#{#follower},'%') and " +
+            "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
+            "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
+            "ie.yearOld like concat('%',:#{#birtYear},'%') order by ie.id desc ")
+    List<InfluencerExportExcelDto> getExportExcel(@Param("isFacebook") Boolean isFacebook,
+                                                  @Param("isYoutube") Boolean isYoutube,
+                                                  @Param("isInstagram") Boolean isInstagram,
+                                                  @Param("isTiktok") Boolean isTiktok,
+                                                  @Param("industry") String industry,
+                                                  @Param("expense") String expense,
+                                                  @Param("follower") String follower,
+                                                  @Param("provinceId") int provinceId,
+                                                  @Param("sex") int sex,
+                                                  @Param("birtYear") String birtYear);
+
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +
             "ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone,ie.sex,ie.yearOld,ie.classifyId,ie.provinceId,ie.address,ie.bankId,ie.accountNumber," +
             "id.follower,id.expense,id.url,id.channel,ie.historyCreated,ie.email) from InfluencerEntity ie " +

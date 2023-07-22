@@ -3,10 +3,12 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.influcer.*;
+import com.example.halagodainv.excel.InfluencerExcel;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.InfluencerDetailEntity;
 import com.example.halagodainv.model.InfluencerEntity;
 import com.example.halagodainv.repository.*;
+import com.example.halagodainv.request.excel.InfluceRequestExportExcel;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
@@ -32,6 +34,7 @@ import java.util.*;
 public class InfluencerServiceImpl implements InfluencerService {
     private final InfluencerEntityRepository influencerEntityRepository;
     private final InfluencerDetailRepository influencerDetailRepository;
+    private final InfluencerExcel influencerExcel;
 
     @Override
     public Object getInfluMenu(InfluencerSearch search) {
@@ -292,6 +295,20 @@ public class InfluencerServiceImpl implements InfluencerService {
         } catch (Exception e) {
             return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
 
+        }
+    }
+
+    public byte[] exportExcel(InfluceRequestExportExcel search) {
+        try {
+            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
+            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
+            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
+            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
+            List<InfluencerExportExcelDto> influcerDtoSubMenus = influencerEntityRepository.getExportExcel(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            influencerExcel.initializeData(influcerDtoSubMenus, "template/Influencer.xls");
+            return  influencerExcel.export();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

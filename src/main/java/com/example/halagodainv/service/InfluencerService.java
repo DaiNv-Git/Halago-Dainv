@@ -1,6 +1,7 @@
 package com.example.halagodainv.service;
 
 
+import com.example.halagodainv.request.excel.InfluceRequestExportExcel;
 import com.example.halagodainv.request.influencer.InFluencerSubMenuSearch;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
@@ -17,4 +18,6 @@ public interface InfluencerService {
     Object edit(InfluencerAddRequest request);
 
     Object delete(long id);
+
+    byte[] exportExcel(InfluceRequestExportExcel search);
 }

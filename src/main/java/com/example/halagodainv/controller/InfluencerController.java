@@ -5,6 +5,7 @@ import com.example.halagodainv.repository.BankRepository;
 import com.example.halagodainv.repository.CityRepository;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
+import com.example.halagodainv.request.excel.InfluceRequestExportExcel;
 import com.example.halagodainv.request.influencer.InFluencerSubMenuSearch;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
@@ -85,5 +86,10 @@ public class InfluencerController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Object> delete(@PathVariable long id) {
         return ResponseEntity.ok(influencerService.delete(id));
+    }
+
+    @PostMapping("/export-excel")
+    public ResponseEntity<Object> exportExcel(@RequestBody InfluceRequestExportExcel search) {
+        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.exportExcel(search)));
     }
 }

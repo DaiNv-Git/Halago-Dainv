@@ -81,20 +81,19 @@ public class UserServiceImpl implements UserService {
 
     public Object updateUser(UserEditRequest userEditRequest) {
         try {
-            Optional<UserEntity> userDetails = userRepository.findById(userEditRequest.getId());
-            if (!userDetails.isPresent()) {
+            Optional<UserEntity> user = userRepository.findById(userEditRequest.getId());
+            if (!user.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
             }
-            Optional<UserEntity> user = userRepository.findById(userEditRequest.getId());
             user.get().setEmail(userEditRequest.getEmail());
             user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
             user.get().setPasswordHide(userEditRequest.getPassword());
             user.get().setUserName(userEditRequest.getUserName());
             user.get().setRole(userEditRequest.getRole());
             userRepository.save(user.get());
-            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", userRepository.getUser(user.get().getId()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa dữ liệu thành công", userRepository.getUser(user.get().getId()));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm dữ liệu thất bại", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa dữ liệu thất bại", null);
         }
     }
 
