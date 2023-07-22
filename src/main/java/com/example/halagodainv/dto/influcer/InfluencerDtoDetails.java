@@ -14,7 +14,7 @@ public class InfluencerDtoDetails {
     private String industry;
     private int sex;
     private String birtYear;
-    private int classify ;
+    private int classifyId;
     private int provinceId;
     private String address;
     private String email;

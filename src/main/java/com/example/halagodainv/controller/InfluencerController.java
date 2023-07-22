@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.repository.BankRepository;
 import com.example.halagodainv.repository.CityRepository;
 import com.example.halagodainv.repository.ClassifyRepository;
 import com.example.halagodainv.repository.IndustryRepository;
@@ -33,6 +34,8 @@ public class InfluencerController {
     IndustryRepository industryRepository;
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private BankRepository bankRepository;
 
     @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
@@ -48,16 +51,19 @@ public class InfluencerController {
     public ResponseEntity<?> findInfluencerById(@RequestParam("id") long id) {
         return ResponseEntity.ok(influencerService.findInfluencerById(id));
     }
+
     @PostMapping("/add")
     public ResponseEntity<Object> add(@Valid @RequestBody InfluencerAddRequest request) {
         return ResponseEntity.ok(influencerService.add(request));
     }
+
     @PostMapping("/update")
     public ResponseEntity<Object> update(@Valid @RequestBody InfluencerAddRequest request) {
         return ResponseEntity.ok(influencerService.edit(request));
     }
+
     @GetMapping("/getClassify")
-    public ResponseEntity<Object> getClassìy() {
+    public ResponseEntity<Object> getClassify() {
         return ResponseEntity.ok(classifyRepository.findAll());
     }
 
@@ -69,6 +75,11 @@ public class InfluencerController {
     @GetMapping("/getProvince")
     public ResponseEntity<Object> getProvince() {
         return ResponseEntity.ok(cityRepository.findAll());
+    }
+
+    @GetMapping("/getBank")
+    public ResponseEntity<Object> getBank() {
+        return ResponseEntity.ok(bankRepository.findAll());
     }
 
     @DeleteMapping("/delete/{id}")
