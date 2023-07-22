@@ -16,6 +16,7 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ import utils.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,25 +48,28 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            if (search.getExpanse() == "") {
-                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId());
-                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), pageable);
+            PageResponse pageResponse;
+            if (Strings.isBlank(search.getExpanse()) && Strings.isBlank(search.getFollower())) {
+                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getSex(), search.getBirhYear(), pageable);
                 if (CollectionUtils.isEmpty(influcerMenuDtos)) {
-                    PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
+                    pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
                     return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
                 }
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
+                pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-            }else {
-                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower());
-                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower(), pageable);
+            } else {
+                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower(), search.getSex(), search.getBirhYear());
+                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getProvinceId(), search.getExpanse(), search.getFollower(), search.getSex(), search.getBirhYear(), pageable);
                 Set<InflucerMenuDto> menuDtoSet = new HashSet<>();
                 menuDtoSet.addAll(filterMenu);
                 if (CollectionUtils.isEmpty(filterMenu)) {
-                    PageResponse pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
+                    pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
                     return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
                 }
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, total));
+                Set<InflucerMenuDto> sortedMenuDtoSet = new TreeSet<>(Comparator.comparing(InflucerMenuDto::getId).reversed());
+                sortedMenuDtoSet.addAll(menuDtoSet);
+                pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(sortedMenuDtoSet.toArray()), pageable, total));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             }
         } catch (Exception e) {
@@ -82,8 +87,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId());
-            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), pageable);
+            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
                 PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
