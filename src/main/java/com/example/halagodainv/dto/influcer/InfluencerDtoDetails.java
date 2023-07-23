@@ -18,7 +18,7 @@ public class InfluencerDtoDetails {
     private int provinceId;
     private String address;
     private String email;
-    private int bankId;
+    private String bankId;
     private String bankNumber;
     private String createHistory;
     private String linkFb;

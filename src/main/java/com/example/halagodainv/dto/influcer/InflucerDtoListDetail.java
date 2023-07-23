@@ -23,7 +23,7 @@ public class InflucerDtoListDetail {
     private int classify;
     private int provinceId;
     private String address;
-    private int bankId;
+    private String bankId;
     private String bankNumber;
     private String follower;
     private String expense;

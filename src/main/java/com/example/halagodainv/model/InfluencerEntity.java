@@ -42,8 +42,8 @@ public class InfluencerEntity {
     private int provinceId;
     @Column(name = "address")
     private String address;
-    @Column(name = "bank_id")
-    private int bankId;
+    @Column(name = "bank")
+    private String bankId;
     @Column(name = "account_number")
     private String accountNumber;
 
