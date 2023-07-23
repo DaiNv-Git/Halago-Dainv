@@ -10,6 +10,7 @@ import com.example.halagodainv.request.UserEditRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.UserService;
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -86,8 +87,10 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
             }
             user.get().setEmail(userEditRequest.getEmail());
-            user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
-            user.get().setPasswordHide(userEditRequest.getPassword());
+            if(!Strings.isNullOrEmpty(userEditRequest.getPassword())){
+                user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
+                user.get().setPasswordHide(userEditRequest.getPassword());
+            }
             user.get().setUserName(userEditRequest.getUserName());
             user.get().setRole(userEditRequest.getRole());
             userRepository.save(user.get());
