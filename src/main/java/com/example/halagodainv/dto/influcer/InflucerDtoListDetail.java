@@ -20,7 +20,7 @@ public class InflucerDtoListDetail {
     private String phone;
     private int sex;
     private String birtYear;
-    private int classify;
+    private String classify;
     private int provinceId;
     private String address;
     private String bankId;

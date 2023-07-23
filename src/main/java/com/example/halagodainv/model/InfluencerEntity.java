@@ -36,8 +36,12 @@ public class InfluencerEntity {
     private String email;
     @Column(name = "industry")
     private String industry;
+    @Column(name = "industry_name")
+    private String industryName;
     @Column(name = "classify_id")
-    private int classifyId;
+    private String classifyId;
+    @Column(name = "classify_Name")
+    private String classifyName;
     @Column(name = "province_id")
     private int provinceId;
     @Column(name = "address")

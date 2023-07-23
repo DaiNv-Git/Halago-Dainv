@@ -22,8 +22,8 @@ import java.util.List;
 public class InfluencerExcel {
 
     private static final int SHEET_ZERO = 0;
-    private static final String FONT_NAME = "MS UI Gothic";
-    private static final Short FONT_SIZE = 180;
+    private static final String FONT_NAME = "Calibri";
+    private static final Short FONT_SIZE = 200;
     private static final int ROW_COUNT = 1;
     private Workbook workbook;
     private List<InfluencerExportExcelDto> datas;
