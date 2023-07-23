@@ -11,6 +11,6 @@ public class SexEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name")
+    @Column(name = "name_sex")
     private String name;
 }
