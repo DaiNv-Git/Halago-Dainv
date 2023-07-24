@@ -4,7 +4,10 @@ package com.example.halagodainv.service.impl;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.influcer.*;
 import com.example.halagodainv.excel.InfluencerExcel;
+import com.example.halagodainv.excel.imports.DownFileImportExcel;
+import com.example.halagodainv.excel.imports.InfluencerImportExcel;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.ClassifyEntity;
 import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.model.InfluencerDetailEntity;
@@ -27,8 +30,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -39,6 +44,8 @@ public class InfluencerServiceImpl implements InfluencerService {
     private final InfluencerExcel influencerExcel;
     private final IndustryRepository industryRepository;
     private final ClassifyRepository classifyRepository;
+    private final InfluencerImportExcel influencerImportExcel;
+    private final DownFileImportExcel downFileImportExcel;
 
     @Override
     public Object getInfluMenu(InfluencerSearch search) {
@@ -150,9 +157,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                         }
                     });
             dtoDetailsSet.add(dtoDetails);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm thành công", dtoDetailsSet);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetailsSet);
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Thêm thất bại", null);
+            return new ErrorResponse(Constant.FAILED, "Tìm thất bại", null);
         }
     }
 
@@ -358,21 +365,41 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
+    @Override
+    public void importExcel(MultipartFile file) throws GeneralException, IOException {
+        influencerImportExcel.ImportFileExcel(file);
+    }
+    @Override
+    public byte[] downFileImportExcel() {
+        try {
+            downFileImportExcel.initializeData("template/InfluencerImport.xls");
+            return downFileImportExcel.export();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public static List<Integer> parseStringToListOfIntegers(String input) {
         List<Integer> integerList = new ArrayList<>();
-        String[] numberStrings = input.split(",");
-        for (String numberString : numberStrings) {
-            int number = Integer.parseInt(numberString.trim());
-            integerList.add(number);
+        if (!Strings.isBlank(input)) {
+            String[] numberStrings = input.split(",");
+            for (String numberString : numberStrings) {
+                int number = Integer.parseInt(numberString.trim());
+                integerList.add(number);
+            }
         }
         return integerList;
     }
 
+
     public static String parseListIntegerToString(List<Integer> inputs) {
-        StringJoiner joiner = new StringJoiner(",");
-        for (Integer integer : inputs) {
-            joiner.add(String.valueOf(integer));
+        if (inputs.size() > 0) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (Integer integer : inputs) {
+                joiner.add(String.valueOf(integer));
+            }
+            return joiner.toString();
         }
-        return joiner.toString();
+        return "";
     }
 }
