@@ -95,7 +95,6 @@ public class BrandServiceImpl implements BrandService {
             userEntity.setUserName(brandAddRequest.getRegisterName());
             userEntity.setPasswordHide(brandAddRequest.getPassword());
             userEntity.setRole(2);
-            userEntity = userRepository.save(userEntity);
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
@@ -105,6 +104,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(brandAddRequest.getLogo());
             brandEntity.setCreated(new Date());
+            userEntity = userRepository.save(userEntity);
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity, userEntity.getPasswordHide()));
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class BrandServiceImpl implements BrandService {
         }
         brandEntity.get().setBrandName(brandEditRequest.getBrandName());
         brandEntity.get().setWebsite(brandEditRequest.getWebsite());
-        brandEntity.get().setBrandPhone('0' + String.valueOf(brandEditRequest.getPhoneNumber()));
+        brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());

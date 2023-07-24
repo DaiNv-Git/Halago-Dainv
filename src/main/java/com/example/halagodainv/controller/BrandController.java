@@ -38,14 +38,12 @@ public class BrandController {
 
     @PostMapping("/add-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandAddRequest brandAddRequest) throws GeneralException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.add(brandAddRequest, email));
+        return ResponseEntity.ok(brandService.add(brandAddRequest, brandAddRequest.getEmail()));
     }
 
     @PostMapping("/edit-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.edit(brandEditRequest, email));
+        return ResponseEntity.ok(brandService.edit(brandEditRequest, brandEditRequest.getEmail()));
     }
 
     @PostMapping("/delete-brand")
