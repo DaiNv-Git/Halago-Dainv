@@ -32,20 +32,17 @@ public class BrandController {
 
     @PostMapping("/detail")
     public ResponseEntity<Object> getByBrands(@RequestParam(value = "branId") int branId) throws ParseException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.getByDetail(branId, email));
+        return ResponseEntity.ok(brandService.getByDetail(branId));
     }
 
     @PostMapping("/add-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandAddRequest brandAddRequest) throws GeneralException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.add(brandAddRequest, email));
+        return ResponseEntity.ok(brandService.add(brandAddRequest, brandAddRequest.getEmail()));
     }
 
     @PostMapping("/edit-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.edit(brandEditRequest, email));
+        return ResponseEntity.ok(brandService.edit(brandEditRequest, brandEditRequest.getEmail()));
     }
 
     @PostMapping("/delete-brand")

@@ -67,14 +67,12 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Object getByDetail(int brandId, String email) throws ParseException {
-        UserDetails user = userServiceConfig.loadUserByUsername(email);
-        Optional<UserEntity> userEntity = userRepository.findByEmail(user.getUsername());
+    public Object getByDetail(int brandId) throws ParseException {
         Optional<BrandEntity> brandEntity = brandRepository.findById(brandId);
         if (!brandEntity.isPresent()) {
             return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Dữ liệu chi tiết không tồn tại", null);
         }
-        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu chi tiết thành công", new BrandDto(brandEntity.get(), userEntity.get().getPasswordHide()));
+        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu chi tiết thành công", new BrandDto(brandEntity.get()));
     }
 
     @Override
@@ -95,7 +93,6 @@ public class BrandServiceImpl implements BrandService {
             userEntity.setUserName(brandAddRequest.getRegisterName());
             userEntity.setPasswordHide(brandAddRequest.getPassword());
             userEntity.setRole(2);
-            userEntity = userRepository.save(userEntity);
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
@@ -105,8 +102,9 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(brandAddRequest.getLogo());
             brandEntity.setCreated(new Date());
+            userRepository.save(userEntity);
             brandEntity = brandRepository.save(brandEntity);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity, userEntity.getPasswordHide()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
         } catch (Exception e) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm dữ liệu thất bại", null);
         }
@@ -125,7 +123,7 @@ public class BrandServiceImpl implements BrandService {
         }
         brandEntity.get().setBrandName(brandEditRequest.getBrandName());
         brandEntity.get().setWebsite(brandEditRequest.getWebsite());
-        brandEntity.get().setBrandPhone('0' + String.valueOf(brandEditRequest.getPhoneNumber()));
+        brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());

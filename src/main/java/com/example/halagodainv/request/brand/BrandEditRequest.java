@@ -15,7 +15,7 @@ public class BrandEditRequest {
     private String brandName;
     private String email;
     private String website;
-    private int phoneNumber;
+    private String phoneNumber;
     private String logo;
     private String description;
     public boolean validate(List<ErrorResponse> response) {

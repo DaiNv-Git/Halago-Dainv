@@ -10,7 +10,7 @@ import java.text.ParseException;
 
 public interface BrandService {
     Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate,String endDate) throws ParseException;
-    Object getByDetail(int brandId,String email) throws ParseException;
+    Object getByDetail(int brandId) throws ParseException;
     Object add(BrandAddRequest brandAddRequest, String email) throws GeneralException;
     Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException;
     Object deleteByBranId(int brandId);
