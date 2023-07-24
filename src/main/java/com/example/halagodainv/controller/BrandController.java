@@ -32,8 +32,7 @@ public class BrandController {
 
     @PostMapping("/detail")
     public ResponseEntity<Object> getByBrands(@RequestParam(value = "branId") int branId) throws ParseException {
-        String email = userAuthenConfig.getUser();
-        return ResponseEntity.ok(brandService.getByDetail(branId, email));
+        return ResponseEntity.ok(brandService.getByDetail(branId));
     }
 
     @PostMapping("/add-brand")

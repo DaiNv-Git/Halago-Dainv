@@ -20,18 +20,6 @@ public class BrandDto {
     private String website;
     private String description;
 
-    public BrandDto(BrandEntity brandEntity,String passwordHide) {
-        this.id = brandEntity.getId();
-        this.brandName = brandEntity.getBrandName();
-        this.logo = brandEntity.getLogo();
-        this.registerName = brandEntity.getRepresentativeName();
-        this.email = brandEntity.getBrandEmail();
-        this.phoneNumber = brandEntity.getBrandPhone();
-        this.passwordHide = passwordHide;
-        this.website = brandEntity.getWebsite();
-        this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
-        this.description = brandEntity.getDescription();
-    }
     public BrandDto(BrandEntity brandEntity) {
         this.id = brandEntity.getId();
         this.brandName = brandEntity.getBrandName();
