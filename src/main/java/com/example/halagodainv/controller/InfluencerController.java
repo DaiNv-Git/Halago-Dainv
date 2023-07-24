@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.Constant;
+import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.repository.BankRepository;
 import com.example.halagodainv.repository.CityRepository;
 import com.example.halagodainv.repository.ClassifyRepository;
@@ -18,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -91,5 +94,20 @@ public class InfluencerController {
     @PostMapping("/export-excel")
     public ResponseEntity<Object> exportExcel(@RequestBody InfluceRequestExportExcel search) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.exportExcel(search)));
+    }
+
+    @PostMapping("/import-excel")
+    public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file) throws GeneralException, IOException {
+        try {
+            influencerService.importExcel(file);
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", null));
+        } catch (IOException ex) {
+            throw new GeneralException(ex.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/down-file-import-excel")
+    public ResponseEntity<Object> downFileImportExcel() {
+        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.downFileImportExcel()));
     }
 }
