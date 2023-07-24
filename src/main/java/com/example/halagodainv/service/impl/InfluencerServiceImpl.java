@@ -118,7 +118,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                         dtoDetails.setName(influencer.getName());
                         dtoDetails.setAddress(influencer.getAddress());
                         dtoDetails.setBankId(influencer.getBankId().toUpperCase());
-                        dtoDetails.setClassifyId(influencer.getClassify());
+                        dtoDetails.setClassifyId(parseStringToListOfIntegers(influencer.getClassify()));
                         dtoDetails.setBankNumber(influencer.getBankNumber());
                         dtoDetails.setBirtYear(influencer.getBirtYear());
                         dtoDetails.setSex(influencer.getSex());
@@ -127,7 +127,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                         dtoDetails.setBirtYear(influencer.getBirtYear());
                         dtoDetails.setCreateHistory(DateFormatUtils.format(influencer.getCreateHistory(), "yyyy-MM-dd"));
                         dtoDetails.setPhone(influencer.getPhone());
-                        dtoDetails.setIndustry(influencer.getIndustry());
+                        dtoDetails.setIndustry(parseStringToListOfIntegers(influencer.getIndustry()));
                         if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
                             dtoDetails.setLinkFb(influencer.getLink());
                             dtoDetails.setExpenseFb(influencer.getExpense());
@@ -164,17 +164,16 @@ public class InfluencerServiceImpl implements InfluencerService {
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
             influencer.setInflucerName(request.getName());
             influencer.setHistoryCreated(new Date());
-            influencer.setSex(Strings.isBlank(request.getSex()) ? 0 : Integer.valueOf(request.getSex()).intValue());
+            influencer.setSex(request.getSex());
             influencer.setPhone(request.getPhone());
             influencer.setYearOld(request.getBirtYear());
             influencer.setEmail(request.getEmail());
             influencer.setBankId(request.getBankId().toUpperCase());
             influencer.setAccountNumber(request.getBankNumber());
-            influencer.setIndustry(request.getIndustry());
             influencer.setCreated(new Date());
-            if (!Strings.isBlank(request.getIndustry())) {
-                List<Integer> integers = parseStringToListOfIntegers(request.getIndustry());
-                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(integers);
+            if (request.getIndustry().size() > 0) {
+                influencer.setIndustry(parseListIntegerToString(request.getIndustry()));
+                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
                 StringJoiner stringJoiner = new StringJoiner(", ");
                 industryEntities.forEach(industryEntity -> {
                     stringJoiner.add(industryEntity.getIndustryName());
@@ -182,11 +181,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencer.setIndustryName(stringJoiner.toString());
             }
             influencer.setAddress(request.getAddress());
-            influencer.setProvinceId(Strings.isBlank(request.getProvinceId()) ? 0 : Integer.valueOf(request.getProvinceId()).intValue());
-            influencer.setClassifyId(request.getClassifyId());
-            if (!Strings.isBlank(request.getClassifyId())) {
-                List<Integer> integers = parseStringToListOfIntegers(request.getClassifyId());
-                List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(integers);
+            influencer.setProvinceId(request.getProvinceId());
+            if (request.getClassifyId().size() > 0) {
+                influencer.setClassifyId(parseListIntegerToString(request.getClassifyId()));
+                List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
                 StringJoiner stringJoiner = new StringJoiner(", ");
                 classifyEntities.forEach(classifyEntity -> {
                     stringJoiner.add(classifyEntity.getName());
@@ -249,36 +247,35 @@ public class InfluencerServiceImpl implements InfluencerService {
             if (entity.isPresent()) {
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
-                entity.get().setSex(Strings.isBlank(request.getSex()) ? 0 : Integer.valueOf(request.getSex()).intValue());
+                entity.get().setSex(request.getSex());
                 entity.get().setPhone(request.getPhone());
                 entity.get().setYearOld(request.getBirtYear());
                 entity.get().setEmail(request.getEmail());
                 entity.get().setBankId(request.getBankId().toUpperCase());
                 entity.get().setAccountNumber(request.getBankNumber());
-                entity.get().setIndustry(request.getIndustry());
-                if (!Strings.isBlank(request.getIndustry())) {
-                    List<Integer> integers = parseStringToListOfIntegers(request.getIndustry());
-                    List<IndustryEntity> industryEntities = industryRepository.findByIdIn(integers);
+                if (request.getIndustry().size() > 0) {
+                    entity.get().setIndustry(parseListIntegerToString(request.getIndustry()));
+                    List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
                     StringJoiner stringJoiner = new StringJoiner(", ");
                     industryEntities.forEach(industryEntity -> {
                         stringJoiner.add(industryEntity.getIndustryName());
                     });
                     entity.get().setIndustryName(stringJoiner.toString());
-                } else {
-                    entity.get().setIndustryName("");
                 }
                 entity.get().setAddress(request.getAddress());
-                entity.get().setProvinceId(Strings.isBlank(request.getProvinceId()) ? 0 : Integer.valueOf(request.getProvinceId()).intValue());
-                entity.get().setClassifyId(request.getClassifyId());
-                if (!Strings.isBlank(request.getClassifyId())) {
-                    List<Integer> integers = parseStringToListOfIntegers(request.getClassifyId());
-                    List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(integers);
+                entity.get().setProvinceId(request.getProvinceId()
+
+                );
+                if (request.getClassifyId().size() > 0) {
+                    entity.get().setClassifyId(parseListIntegerToString(request.getClassifyId()));
+                    List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
                     StringJoiner stringJoiner = new StringJoiner(", ");
                     classifyEntities.forEach(classifyEntity -> {
                         stringJoiner.add(classifyEntity.getName());
                     });
                     entity.get().setClassifyName(stringJoiner.toString());
                 } else {
+                    entity.get().setClassifyId("");
                     entity.get().setClassifyName("");
                 }
                 entity.get().setFacebook(request.getIsFacebook());
@@ -369,5 +366,13 @@ public class InfluencerServiceImpl implements InfluencerService {
             integerList.add(number);
         }
         return integerList;
+    }
+
+    public static String parseListIntegerToString(List<Integer> inputs) {
+        StringJoiner joiner = new StringJoiner(",");
+        for (Integer integer : inputs) {
+            joiner.add(String.valueOf(integer));
+        }
+        return joiner.toString();
     }
 }

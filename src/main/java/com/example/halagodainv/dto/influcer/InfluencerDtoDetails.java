@@ -3,6 +3,9 @@ package com.example.halagodainv.dto.influcer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.LifecycleState;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -11,11 +14,11 @@ public class InfluencerDtoDetails {
     private long id;
     private String name;
     private String phone;
-    private String industry;
-    private int sex;
+    private List<Integer> industry;
+    private Integer sex;
     private String birtYear;
-    private String classifyId;
-    private int provinceId;
+    private List<Integer> classifyId;
+    private Integer provinceId;
     private String address;
     private String email;
     private String bankId;

@@ -19,7 +19,7 @@ public class InfluencerEntity {
     @Column(name = "created")
     private Date created;
     @Column(name = "sex")
-    private int sex;
+    private Integer sex;
     @Column(name = "phone")
     private String phone;
     @Column(name = "yearOld")
@@ -43,7 +43,7 @@ public class InfluencerEntity {
     @Column(name = "classify_Name")
     private String classifyName;
     @Column(name = "province_id")
-    private int provinceId;
+    private Integer provinceId;
     @Column(name = "address")
     private String address;
     @Column(name = "bank")
