@@ -47,9 +47,9 @@ public class BrandServiceImpl implements BrandService {
             if (pageNo > 0) {
                 offset = pageNo - 1;
             }
-            int countALlBrands = brandRepository.countAllBy(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(startDate));
+            int countALlBrands = brandRepository.countAllBy(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(endDate));
             Pageable pageable = PageRequest.of(offset, pageSize);
-            List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndCreatedDate(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(startDate), pageable);
+            List<BrandEntity> getBrandEntities = brandRepository.findByBrandNameAndCreatedDate(brandName, FormatTimeSearch.getStart(startDate), FormatTimeSearch.getEndDate(endDate), pageable);
             List<BrandDto> brandDtos = new ArrayList<>();
             getBrandEntities.forEach(brandEntity -> {
                 brandDtos.add(new BrandDto(brandEntity));
