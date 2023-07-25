@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserServiceConfig userServiceConfig;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
@@ -110,10 +112,11 @@ public class UserServiceImpl implements UserService {
 
 
     public void updateResetPasswordToken(String token, String email) {
-        Optional<UserEntity> customer = userRepository.findByEmail(email);
-        if (customer != null) {
-            customer.get().setResetPassword(token);
-            userRepository.save(customer.get());
+        UserDetails customer = userServiceConfig.loadUserByUsername(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(customer.getUsername());
+        if (userEntity.isPresent()) {
+            userEntity.get().setResetPassword(token);
+            userRepository.save(userEntity.get());
         } else {
             throw new RuntimeException("Could not find any customer with the email " + email);
         }
