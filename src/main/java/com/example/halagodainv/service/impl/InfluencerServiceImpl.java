@@ -199,16 +199,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencer.setClassifyName(stringJoiner.toString());
             }
             if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
-                influencer.setFacebook(request.getIsFacebook());
+                influencer.setFacebook(true);
             }
             if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
-                influencer.setTiktok(request.getIsTikTok());
+                influencer.setTiktok(true);
             }
             if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
-                influencer.setYoutube(request.getIsYoutube());
+                influencer.setYoutube(true);
             }
             if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
-                influencer.setInstagram(request.getIsInstagram());
+                influencer.setInstagram(true);
             }
             influencer = influencerEntityRepository.save(influencer);
             if (Boolean.TRUE.equals(request.getIsFacebook())) {
@@ -294,16 +294,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                     entity.get().setClassifyName("");
                 }
                 if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
-                    entity.get().setFacebook(request.getIsFacebook());
+                    entity.get().setFacebook(true);
                 }
                 if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
-                    entity.get().setTiktok(request.getIsTikTok());
+                    entity.get().setTiktok(true);
                 }
                 if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
-                    entity.get().setYoutube(request.getIsYoutube());
+                    entity.get().setYoutube(true);
                 }
                 if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
-                    entity.get().setInstagram(request.getIsInstagram());
+                    entity.get().setInstagram(true);
                 }
                 influencerEntityRepository.save(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
