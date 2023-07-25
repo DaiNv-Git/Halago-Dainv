@@ -198,16 +198,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                 });
                 influencer.setClassifyName(stringJoiner.toString());
             }
-            if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
+            if (!Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
                 influencer.setFacebook(true);
             }
-            if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
+            if (!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
                 influencer.setTiktok(true);
             }
-            if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
+            if (!Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
                 influencer.setYoutube(true);
             }
-            if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
+            if (!Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
                 influencer.setInstagram(true);
             }
             influencer = influencerEntityRepository.save(influencer);
@@ -293,16 +293,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                     entity.get().setClassifyId("");
                     entity.get().setClassifyName("");
                 }
-                if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
+                if (!Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
                     entity.get().setFacebook(true);
                 }
-                if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
+                if (!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
                     entity.get().setTiktok(true);
                 }
-                if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
+                if (!Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
                     entity.get().setYoutube(true);
                 }
-                if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
+                if (!Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
                     entity.get().setInstagram(true);
                 }
                 influencerEntityRepository.save(entity.get());
