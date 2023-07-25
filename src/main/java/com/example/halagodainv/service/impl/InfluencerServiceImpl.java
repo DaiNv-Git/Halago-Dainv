@@ -198,10 +198,18 @@ public class InfluencerServiceImpl implements InfluencerService {
                 });
                 influencer.setClassifyName(stringJoiner.toString());
             }
-            influencer.setFacebook(request.getIsFacebook());
-            influencer.setTiktok(request.getIsTikTok());
-            influencer.setYoutube(request.getIsYoutube());
-            influencer.setInstagram(request.getIsInstagram());
+            if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
+                influencer.setFacebook(request.getIsFacebook());
+            }
+            if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
+                influencer.setTiktok(request.getIsTikTok());
+            }
+            if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
+                influencer.setYoutube(request.getIsYoutube());
+            }
+            if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
+                influencer.setInstagram(request.getIsInstagram());
+            }
             influencer = influencerEntityRepository.save(influencer);
             if (Boolean.TRUE.equals(request.getIsFacebook())) {
                 InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
@@ -285,10 +293,18 @@ public class InfluencerServiceImpl implements InfluencerService {
                     entity.get().setClassifyId("");
                     entity.get().setClassifyName("");
                 }
-                entity.get().setFacebook(request.getIsFacebook());
-                entity.get().setTiktok(request.getIsTikTok());
-                entity.get().setYoutube(request.getIsYoutube());
-                entity.get().setInstagram(request.getIsInstagram());
+                if (Strings.isBlank(request.getFollowerFb()) || Strings.isBlank(request.getExpenseFb())) {
+                    entity.get().setFacebook(request.getIsFacebook());
+                }
+                if (Strings.isBlank(request.getFollowerTT()) || Strings.isBlank(request.getExpenseTT())) {
+                    entity.get().setTiktok(request.getIsTikTok());
+                }
+                if (Strings.isBlank(request.getFollowerYT()) || Strings.isBlank(request.getExpenseYT())) {
+                    entity.get().setYoutube(request.getIsYoutube());
+                }
+                if (Strings.isBlank(request.getFollowerIns()) || Strings.isBlank(request.getExpenseIns())) {
+                    entity.get().setInstagram(request.getIsInstagram());
+                }
                 influencerEntityRepository.save(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(request.getIsFacebook())) {
@@ -369,6 +385,7 @@ public class InfluencerServiceImpl implements InfluencerService {
     public void importExcel(MultipartFile file) throws GeneralException, IOException {
         influencerImportExcel.ImportFileExcel(file);
     }
+
     @Override
     public byte[] downFileImportExcel() {
         try {
