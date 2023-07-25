@@ -211,7 +211,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencer.setInstagram(true);
             }
             influencer = influencerEntityRepository.save(influencer);
-            if (Boolean.TRUE.equals(request.getIsFacebook())) {
+            if (Boolean.TRUE.equals(influencer.isFacebook())) {
                 InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
                 detailEntityFacebook.setChannel("FACEBOOK".toUpperCase());
                 detailEntityFacebook.setFollower(request.getFollowerFb());
@@ -220,7 +220,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 detailEntityFacebook.setInfluId(influencer.getId());
                 influencerDetailEntities.add(detailEntityFacebook);
             }
-            if (Boolean.TRUE.equals(request.getIsTikTok())) {
+            if (Boolean.TRUE.equals(influencer.isTiktok())) {
                 InfluencerDetailEntity detailEntityTikTok = new InfluencerDetailEntity();
                 detailEntityTikTok.setChannel("TIKTOK".toUpperCase());
                 detailEntityTikTok.setFollower(request.getFollowerTT());
@@ -229,7 +229,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 detailEntityTikTok.setInfluId(influencer.getId());
                 influencerDetailEntities.add(detailEntityTikTok);
             }
-            if (Boolean.TRUE.equals(request.getIsYoutube())) {
+            if (Boolean.TRUE.equals(influencer.isYoutube())) {
                 InfluencerDetailEntity detailEntityYoutube = new InfluencerDetailEntity();
                 detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                 detailEntityYoutube.setFollower(request.getFollowerYT());
@@ -238,7 +238,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 detailEntityYoutube.setInfluId(influencer.getId());
                 influencerDetailEntities.add(detailEntityYoutube);
             }
-            if (Boolean.TRUE.equals(request.getIsInstagram())) {
+            if (Boolean.TRUE.equals(influencer.isInstagram())) {
                 InfluencerDetailEntity detailEntityInstagram = new InfluencerDetailEntity();
                 detailEntityInstagram.setChannel("INSTAGRAM".toUpperCase());
                 detailEntityInstagram.setFollower(request.getFollowerIns());
@@ -295,19 +295,27 @@ public class InfluencerServiceImpl implements InfluencerService {
                 }
                 if (!Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
                     entity.get().setFacebook(true);
+                }else {
+                    entity.get().setFacebook(false);
                 }
                 if (!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
                     entity.get().setTiktok(true);
+                }else {
+                    entity.get().setTiktok(false);
                 }
                 if (!Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
                     entity.get().setYoutube(true);
+                }else {
+                    entity.get().setYoutube(false);
                 }
                 if (!Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
                     entity.get().setInstagram(true);
+                }else {
+                    entity.get().setInstagram(false);
                 }
                 influencerEntityRepository.save(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
-                if (Boolean.TRUE.equals(request.getIsFacebook())) {
+                if (Boolean.TRUE.equals(entity.get().isFacebook())) {
                     InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
                     detailEntityFacebook.setChannel("FACEBOOK".toUpperCase());
                     detailEntityFacebook.setFollower(request.getFollowerFb());
@@ -316,7 +324,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     detailEntityFacebook.setInfluId(entity.get().getId());
                     influencerDetailEntities.add(detailEntityFacebook);
                 }
-                if (Boolean.TRUE.equals(request.getIsTikTok())) {
+                if (Boolean.TRUE.equals(entity.get().isTiktok())) {
                     InfluencerDetailEntity detailEntityTikTok = new InfluencerDetailEntity();
                     detailEntityTikTok.setChannel("TIKTOK".toUpperCase());
                     detailEntityTikTok.setFollower(request.getFollowerTT());
@@ -325,16 +333,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                     detailEntityTikTok.setInfluId(entity.get().getId());
                     influencerDetailEntities.add(detailEntityTikTok);
                 }
-                if (Boolean.TRUE.equals(request.getIsYoutube())) {
+                if (Boolean.TRUE.equals(entity.get().isYoutube())) {
                     InfluencerDetailEntity detailEntityYoutube = new InfluencerDetailEntity();
                     detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
                     detailEntityYoutube.setFollower(request.getFollowerYT());
                     detailEntityYoutube.setExpense(request.getExpenseYT());
-                    detailEntityYoutube.setUrl(String.valueOf(request.getIsYoutube()));
+                    detailEntityYoutube.setUrl(String.valueOf(request.getLinkYT()));
                     detailEntityYoutube.setInfluId(entity.get().getId());
                     influencerDetailEntities.add(detailEntityYoutube);
                 }
-                if (Boolean.TRUE.equals(request.getIsInstagram())) {
+                if (Boolean.TRUE.equals(entity.get().isInstagram())) {
                     InfluencerDetailEntity detailEntityInstagram = new InfluencerDetailEntity();
                     detailEntityInstagram.setChannel("INSTAGRAM".toUpperCase());
                     detailEntityInstagram.setFollower(request.getFollowerIns());
