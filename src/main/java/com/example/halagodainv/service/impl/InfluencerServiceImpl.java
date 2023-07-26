@@ -313,7 +313,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 }else {
                     entity.get().setInstagram(false);
                 }
-                influencerEntityRepository.save(entity.get());
+                influencerEntityRepository.saveAndFlush(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
                     InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
@@ -421,7 +421,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         if (inputs.size() > 0) {
             StringJoiner joiner = new StringJoiner(",");
             for (Integer integer : inputs) {
-                joiner.add(String.valueOf(integer));
+                joiner.add(String.valueOf(integer).trim());
             }
             return joiner.toString();
         }

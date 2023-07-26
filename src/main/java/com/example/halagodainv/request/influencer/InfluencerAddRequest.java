@@ -13,10 +13,10 @@ public class InfluencerAddRequest {
     private String phone;
     private Integer sex;
     private String birtYear = "";
-    private Boolean isFacebook = null;
-    private Boolean isTikTok = null;
-    private Boolean isYoutube = null;
-    private Boolean isInstagram = null;
+    private Boolean isFacebook = false;
+    private Boolean isTikTok = false;
+    private Boolean isYoutube = false;
+    private Boolean isInstagram = false;
     private String email;
     private List<Integer> classifyId;
     private Integer provinceId;
