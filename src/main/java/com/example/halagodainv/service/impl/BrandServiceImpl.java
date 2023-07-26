@@ -83,16 +83,11 @@ public class BrandServiceImpl implements BrandService {
                 return errorResponses;
             }
             UserEntity userEntity = new UserEntity();
-            Optional<UserEntity> user = userRepository.findByEmail(brandAddRequest.getEmail());
-            if (user.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email đã tồn tại", null);
+            Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandAddRequest.getEmail());
+            Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandAddRequest.getBrandName());
+            if (emailBrand.isPresent() || braneName.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
             }
-            userEntity.setEmail(brandAddRequest.getEmail());
-            userEntity.setPassword(passwordEncoder.encode(brandAddRequest.getPassword()));
-            userEntity.setCreated(new Date());
-            userEntity.setUserName(brandAddRequest.getRegisterName());
-            userEntity.setPasswordHide(brandAddRequest.getPassword());
-            userEntity.setRole(2);
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
@@ -101,6 +96,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(brandAddRequest.getLogo());
+            brandEntity.setPartnerId(brandEntity.getPartnerId());
             brandEntity.setCreated(new Date());
             userRepository.save(userEntity);
             brandEntity = brandRepository.save(brandEntity);
@@ -117,6 +113,11 @@ public class BrandServiceImpl implements BrandService {
         if (!brandEntity.isPresent()) {
             return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "id is not exit", null);
         }
+        Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(email);
+        Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandEditRequest.getBrandName());
+        if (emailBrand.isPresent() || braneName.isPresent()) {
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
+        }
         List<ErrorResponse> errorResponses = new ArrayList<>();
         if (!brandEditRequest.validate(errorResponses)) {
             return errorResponses;
@@ -127,6 +128,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());
+        brandEntity.get().setPartnerId(brandEntity.get().getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
         return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new BrandDto(brandEntity.get()));

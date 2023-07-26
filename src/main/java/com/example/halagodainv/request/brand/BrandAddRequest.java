@@ -20,6 +20,7 @@ public class BrandAddRequest {
     private String phoneNumber;
     private String logo;
     private String description;
+    private int partnerId;
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
@@ -35,8 +36,8 @@ public class BrandAddRequest {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "email is not null or empty", null));
             isCheck = false;
         }
-        if (Strings.isBlank(password)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "password is not null or empty", null));
+        if (partnerId == 0) {
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "partnerId > 0", null));
             isCheck = false;
         }
         return isCheck;

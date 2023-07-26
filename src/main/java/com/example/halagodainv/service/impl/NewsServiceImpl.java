@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.web.servlet.oauth2.resourceserver.OpaqueTokenDsl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -66,7 +65,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public Object getDetail(int newId) {
         try {
-            List<NewDetails> newsRepositoryDetail = newsRepository.getDetail(newId);
+            List<NewDetails> newsRepositoryDetail = newsRepository.getHomeLanguage(newId);
             Set<NewDtoDetails> newDtoDetail = new HashSet<>();
             NewDtoDetails newewDtoDetailsss = new NewDtoDetails();
             newsRepositoryDetail.forEach(

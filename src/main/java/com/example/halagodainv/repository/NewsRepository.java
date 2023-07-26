@@ -1,6 +1,7 @@
 package com.example.halagodainv.repository;
 
 
+import com.example.halagodainv.dto.hompage.NewsTenDto;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.model.NewsEntity;
@@ -23,7 +24,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
     List<NewDto> getNewList(@Param("title") String title, @Param("startDate") String startDate,
                             @Param("endDate") String endDate, Pageable pageable);
 
-    @Query(nativeQuery = true,value = "select count(*) from news n left join news_language nl " +
+    @Query(nativeQuery = true, value = "select count(*) from news n left join news_language nl " +
             "on n.id_news = nl.new_id " +
             "left join category c on c.id = n.type where nl.language ='VN' and nl.title like concat('%',:title,'%') " +
             "and(n.created >=  STR_TO_DATE(:startDate, '%Y-%m-%d %H:%i:%s') AND " +
@@ -37,6 +38,12 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
             "from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
             "left join CategoryEntity c on c.id = n.type where n.idNews =:idNews ")
-    List<NewDetails> getDetail(@Param("idNews") int idNews);
+    List<NewDetails> getHomeLanguage(@Param("idNews") int idNews);
+
+    @Query(value = "select new com.example.halagodainv.dto.hompage.NewsTenDto(nl.title, n.thumbnail,n.created) " +
+            "from NewsEntity n left join NewsLanguageEntity nl " +
+            "on n.idNews = nl.newsEntity.idNews and nl.language = :language " +
+            "order by n.created desc " )
+    List<NewsTenDto> getHomeLanguage(@Param("language") String language, Pageable pageable);
 
 }
