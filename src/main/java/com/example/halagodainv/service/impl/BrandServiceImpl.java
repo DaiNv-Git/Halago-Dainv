@@ -13,7 +13,6 @@ import com.example.halagodainv.request.brand.BrandEditRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.BrandService;
-import com.example.halagodainv.service.auth.UserServiceConfig;
 import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,9 +33,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
-    private final UserServiceConfig userServiceConfig;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
