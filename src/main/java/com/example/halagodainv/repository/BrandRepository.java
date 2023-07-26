@@ -1,5 +1,6 @@
 package com.example.halagodainv.repository;
 
+import com.example.halagodainv.dto.brand.BrandLogoHomeDto;
 import com.example.halagodainv.dto.campain.CampaignBranDto;
 import com.example.halagodainv.model.BrandEntity;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
@@ -24,4 +26,12 @@ public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
 
     @Query("SELECT new com.example.halagodainv.dto.campain.CampaignBranDto(br.id, br.brandName) FROM BrandEntity br ")
     List<CampaignBranDto> findByBrandNameAndId();
+
+    Optional<BrandEntity> findByBrandEmail(String email);
+
+    Optional<BrandEntity> findByBrandName(String name);
+
+    @Query("SELECT new com.example.halagodainv.dto.brand.BrandLogoHomeDto(br.logo) FROM BrandEntity br " +
+            "where br.partnerId =:partnerId order by br.created desc ")
+    List<BrandLogoHomeDto> getByLogo(@Param("partnerId") int partnerId);
 }
