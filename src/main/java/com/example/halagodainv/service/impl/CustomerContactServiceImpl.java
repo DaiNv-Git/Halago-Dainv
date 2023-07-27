@@ -46,6 +46,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         contactCustomerEntity.setEmail(customerRequest.getEmail());
         contactCustomerEntity.setPhone(customerRequest.getPhone());
         contactCustomerEntity.setName(customerRequest.getUserName());
+        contactCustomerEntity.setProduct(customerRequest.getProduct());
         contactCustomerEntity.setNote(customerRequest.getNote());
         contactCustomerRepository.save(contactCustomerEntity);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", null);

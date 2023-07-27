@@ -295,22 +295,22 @@ public class InfluencerServiceImpl implements InfluencerService {
                 }
                 if (!Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
                     entity.get().setFacebook(true);
-                }else {
+                } else {
                     entity.get().setFacebook(false);
                 }
                 if (!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
                     entity.get().setTiktok(true);
-                }else {
+                } else {
                     entity.get().setTiktok(false);
                 }
                 if (!Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
                     entity.get().setYoutube(true);
-                }else {
+                } else {
                     entity.get().setYoutube(false);
                 }
                 if (!Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
                     entity.get().setInstagram(true);
-                }else {
+                } else {
                     entity.get().setInstagram(false);
                 }
                 influencerEntityRepository.saveAndFlush(entity.get());
@@ -426,5 +426,13 @@ public class InfluencerServiceImpl implements InfluencerService {
             return joiner.toString();
         }
         return "";
+    }
+
+    public static String parseStringToStringJoin(String input) {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        if (!Strings.isBlank(input)) {
+            stringJoiner.add(input);
+        }
+        return stringJoiner.toString();
     }
 }

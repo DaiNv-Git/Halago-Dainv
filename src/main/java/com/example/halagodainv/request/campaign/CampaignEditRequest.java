@@ -12,7 +12,7 @@ public class CampaignEditRequest {
     private int id;
     private int brandId;
     private String campaignName;
-    private int industryId;
+    private List<Integer> industryId;
     private String campaignImage;
     private String titleCampaign;
     private String startDate;
