@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/**").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh-token").permitAll()
-                .antMatchers("/api/forgot_password").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
