@@ -2,6 +2,8 @@ package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
+import com.example.halagodainv.model.Influencer;
+import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import com.example.halagodainv.until.DateUtilFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +19,7 @@ public class CampaignDto {
     private int id;
     private int brandId;
     private String campaignName;
-    private int industryId;
+    private List<Integer> industryId;
     private String industry;
     private String startDate;
     private String endDate;
@@ -34,7 +36,7 @@ public class CampaignDto {
         this.id = campaignEntity.getId();
         this.brandId = campaignEntity.getIdBrand();
         this.campaignName = campaignEntity.getCampaignName();
-        this.industryId = campaignEntity.getIndustryId();
+        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getIndustryId());
         this.startDate = DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
         this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "yyyy-MM-dd");
         this.campaignImage = campaignEntity.getImg();
