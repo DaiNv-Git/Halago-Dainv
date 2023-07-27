@@ -21,6 +21,8 @@ public class ContactCustomerEntity {
     private String email;
     @Column(name = "note")
     private String note;
+    @Column(name = "product")
+    private String product;
     @Column(name = "created")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "Asia/Ho_Chi_Minh")
     private Date created;

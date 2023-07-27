@@ -30,10 +30,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -86,10 +83,14 @@ public class CampaignServiceImpl implements CampaignService {
             }
             CampaignEntity campaignEntity = new CampaignEntity();
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
-            campaignEntity.setIndustryId(campaignAddRequest.getIndustryId());
-            Optional<IndustryEntity> industryEntity = industryRepository.findById(campaignAddRequest.getIndustryId());
-            if (industryEntity.isPresent()) {
-                campaignEntity.setIndustry(industryEntity.get().getIndustryName());
+            if (campaignAddRequest.getIndustryId().size() > 0) {
+                campaignEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignAddRequest.getIndustryId()));
+                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(campaignAddRequest.getIndustryId());
+                StringJoiner stringJoiner = new StringJoiner(", ");
+                industryEntities.forEach(industryEntity -> {
+                    stringJoiner.add(industryEntity.getIndustryName());
+                });
+                campaignEntity.setIndustry(stringJoiner.toString());
             }
             campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
@@ -112,9 +113,11 @@ public class CampaignServiceImpl implements CampaignService {
             });
             List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDto(campaignEntity, response));
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             return new ErrorResponse(Constant.FAILED, "Thêm mới không thành công", null);
         }
+
     }
 
     @Override
@@ -135,11 +138,16 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setImg(campaignEditRequest.getCampaignImage());
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
-            editEntity.setIndustryId(campaignEditRequest.getIndustryId());
-            Optional<IndustryEntity> industryEntity = industryRepository.findById(campaignEditRequest.getIndustryId());
-            if (industryEntity.isPresent()) {
-                editEntity.setIndustry(industryEntity.get().getIndustryName());
+            if (campaignEditRequest.getIndustryId().size() > 0) {
+                editEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getIndustryId()));
+                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(campaignEditRequest.getIndustryId());
+                StringJoiner stringJoiner = new StringJoiner(", ");
+                industryEntities.forEach(industryEntity -> {
+                    stringJoiner.add(industryEntity.getIndustryName());
+                });
+                editEntity.setIndustry(stringJoiner.toString());
             } else {
+                editEntity.setIndustryId("");
                 editEntity.setIndustry("");
             }
             editEntity.setIdBrand(campaignEditRequest.getBrandId());
