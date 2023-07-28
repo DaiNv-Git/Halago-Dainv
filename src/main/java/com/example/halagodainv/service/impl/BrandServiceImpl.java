@@ -79,7 +79,7 @@ public class BrandServiceImpl implements BrandService {
             }
             Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandAddRequest.getEmail());
             Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandAddRequest.getBrandName());
-            if (emailBrand.isPresent() && braneName.isPresent()) {
+            if (braneName.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
             }
             BrandEntity brandEntity = new BrandEntity();
@@ -108,7 +108,7 @@ public class BrandServiceImpl implements BrandService {
         }
         Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(email);
         Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandEditRequest.getBrandName());
-        if (emailBrand.isPresent() && braneName.isPresent()) {
+        if (braneName.isPresent()) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
         }
         List<ErrorResponse> errorResponses = new ArrayList<>();
