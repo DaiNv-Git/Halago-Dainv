@@ -77,7 +77,6 @@ public class BrandServiceImpl implements BrandService {
             if (!brandAddRequest.validate(errorResponses)) {
                 return errorResponses;
             }
-            UserEntity userEntity = new UserEntity();
             Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandAddRequest.getEmail());
             Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandAddRequest.getBrandName());
             if (emailBrand.isPresent() || braneName.isPresent()) {
@@ -93,7 +92,6 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setLogo(brandAddRequest.getLogo());
             brandEntity.setPartnerId(brandEntity.getPartnerId());
             brandEntity.setCreated(new Date());
-            userRepository.save(userEntity);
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
         } catch (Exception e) {

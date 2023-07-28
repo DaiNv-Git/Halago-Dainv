@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomePageDto {
+    OriginativeDto originative;
     List<AdvantageDto> advantages;
     EfficiencyOptimizationDto efficiencyOptimizations;
     List<NewsTenDto> halagoProject;

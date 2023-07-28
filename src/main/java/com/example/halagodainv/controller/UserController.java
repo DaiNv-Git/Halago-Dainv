@@ -117,16 +117,14 @@ public class UserController {
     }
 
     @PostMapping("/forgot_password")
-    public String processForgotPassword(HttpServletRequest request, @RequestParam("email") String email) {
+    public String processForgotPassword( @RequestParam("email") String email) {
         String token = RandomString.make(30);
         try {
             userService.updateResetPasswordToken(token, email);
             sendEmail(email, token);
             return "We have sent a reset password link to your email. Please check";
-        } catch (IOException ex) {
+        } catch (IOException | MessagingException ex) {
             throw new RuntimeException("error" + ex.getMessage());
-        } catch (MessagingException e) {
-            throw new RuntimeException("error" + e.getMessage());
         }
     }
 
@@ -137,8 +135,8 @@ public class UserController {
 
         helper.setFrom("halogohalogo939@gmail.com", "222222229#a");
         helper.setTo(recipientEmail);
-        helper.setSubject("Here's the link to reset your password");
-        helper.setText(link);
+        helper.setSubject("This is the token");
+        helper.setText(link,true);
 
         mailSender.send(message);
     }

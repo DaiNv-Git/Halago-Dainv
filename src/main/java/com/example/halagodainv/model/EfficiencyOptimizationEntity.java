@@ -20,4 +20,6 @@ public class EfficiencyOptimizationEntity {
     private String language;
     @Column(name = "created")
     private Date created;
+    @Column(name = "id_update")
+    private long idUpdate;
 }
