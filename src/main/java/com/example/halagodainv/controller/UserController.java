@@ -1,5 +1,6 @@
 package com.example.halagodainv.controller;
 
+import com.example.halagodainv.config.EmailConfig;
 import com.example.halagodainv.config.filter.JwtToken;
 import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,7 +54,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private JavaMailSenderImpl mailSender;
+    private JavaMailSender javaMailSender;
 
 
     @PostMapping("/user")
@@ -121,7 +124,7 @@ public class UserController {
         String token = RandomString.make(30);
         try {
             userService.updateResetPasswordToken(token, email);
-            sendEmail(email, token);
+            sendEmail(email, "token");
             return "We have sent a reset password link to your email. Please check";
         } catch (IOException | MessagingException ex) {
             throw new RuntimeException("error" + ex.getMessage());
@@ -130,14 +133,11 @@ public class UserController {
 
     public void sendEmail(String recipientEmail, String link)
             throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipientEmail);
+        message.setSubject("This is the token");
+        message.setText(link);
 
-        helper.setFrom("halogohalogo939@gmail.com", "222222229#a");
-        helper.setTo(recipientEmail);
-        helper.setSubject("This is the token");
-        helper.setText(link,true);
-
-        mailSender.send(message);
+        javaMailSender.send(message);
     }
 }
