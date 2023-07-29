@@ -2,8 +2,10 @@ package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.EmailConfig;
 import com.example.halagodainv.config.filter.JwtToken;
+import com.example.halagodainv.config.userconfig.UserAuthenConfig;
 import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserAddRequest;
@@ -54,7 +56,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private UserAuthenConfig authenConfig;
 
 
     @PostMapping("/user")
@@ -120,24 +122,33 @@ public class UserController {
     }
 
     @PostMapping("/forgot_password")
-    public String processForgotPassword( @RequestParam("email") String email) {
-        String token = RandomString.make(30);
+    public String processForgotPassword(@RequestParam("email") String email) throws GeneralException {
+        String codeResetPassWord = RandomString.make(8);
         try {
-            userService.updateResetPasswordToken(token, email);
-            sendEmail(email, "token");
+            userService.updateResetPasswordToken(codeResetPassWord, email);
+            userService.sendEmail(email, codeResetPassWord);
             return "We have sent a reset password link to your email. Please check";
-        } catch (IOException | MessagingException ex) {
-            throw new RuntimeException("error" + ex.getMessage());
+        } catch (MessagingException ex) {
+            throw new GeneralException("error: " + email);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void sendEmail(String recipientEmail, String link)
-            throws MessagingException, UnsupportedEncodingException {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(recipientEmail);
-        message.setSubject("This is the token");
-        message.setText(link);
-
-        javaMailSender.send(message);
+    @PostMapping("/change_password")
+    public ResponseEntity<BaseResponse<Object>> changePassword(@RequestParam("newPassword") String newPassword, @RequestParam("passwordAgain") String passwordAgain) throws GeneralException {
+        try {
+            UserDetails userDetails = authConfig.loadUserByUsername(authenConfig.getUser());
+            Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
+            if (userEntity.isPresent()){
+                if (newPassword.equalsIgnoreCase(passwordAgain)) {
+                    userService.updatePassword(userEntity.get(), newPassword);
+                    return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password success", null));
+                }
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password note success", null));
+        } catch (Exception ex) {
+            throw new GeneralException("error: " + ex.getMessage());
+        }
     }
 }

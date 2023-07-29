@@ -12,16 +12,23 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.UserService;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private final UserServiceConfig userServiceConfig;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+
+    private final JavaMailSender javaMailSender;
 
     public Object getAll(int pageNo, int pageSize, String userName) {
         try {
@@ -72,7 +81,6 @@ public class UserServiceImpl implements UserService {
             user.setUserName(userAddRequest.getUserName());
             user.setEmail(userAddRequest.getEmail());
             user.setPassword(passwordEncoder.encode(userAddRequest.getPassword()));
-            user.setPasswordHide(userAddRequest.getPassword());
             user.setRole(userAddRequest.getRole());
             user.setCreated(new Date());
             user = userRepository.save(user);
@@ -89,9 +97,8 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
             }
             user.get().setEmail(userEditRequest.getEmail());
-            if(!Strings.isNullOrEmpty(userEditRequest.getPassword())){
+            if (!Strings.isNullOrEmpty(userEditRequest.getPassword())) {
                 user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
-                user.get().setPasswordHide(userEditRequest.getPassword());
             }
             user.get().setUserName(userEditRequest.getUserName());
             user.get().setRole(userEditRequest.getRole());
@@ -111,27 +118,35 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public void updateResetPasswordToken(String token, String email) {
+    public void updateResetPasswordToken(String codeResetPassWord, String email) {
         UserDetails customer = userServiceConfig.loadUserByUsername(email);
         Optional<UserEntity> userEntity = userRepository.findByEmail(customer.getUsername());
         if (userEntity.isPresent()) {
-            userEntity.get().setResetPassword(token);
+            userEntity.get().setPassword(passwordEncoder.encode(codeResetPassWord));
             userRepository.save(userEntity.get());
         } else {
             throw new RuntimeException("Could not find any customer with the email " + email);
         }
     }
 
-    public UserEntity getByResetPasswordToken(String token) {
-        return userRepository.findByResetToken(token);
-    }
-
     public void updatePassword(UserEntity customer, String newPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(newPassword);
         customer.setPassword(encodedPassword);
-        customer.setResetPassword(null);
         userRepository.save(customer);
+    }
+
+    public void sendEmail(String recipientEmail, String code)
+            throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+        mailMessage.setFrom("halogohalogo939@gmail.com", "halago999");
+        mailMessage.setTo(recipientEmail);
+        mailMessage.setSubject("This is the code password");
+        String content = "<div><h3>New password: </h3>" +
+                "<span>" + code + "</span></div>";
+        mailMessage.setText(content, true);
+        javaMailSender.send(message);
     }
 
 }

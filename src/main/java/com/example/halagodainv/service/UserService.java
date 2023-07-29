@@ -4,6 +4,9 @@ import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.request.UserAddRequest;
 import com.example.halagodainv.request.UserEditRequest;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+
 public interface UserService {
     Object getAll(int pageNo, int pageSize, String userName);
 
@@ -17,7 +20,7 @@ public interface UserService {
     Object getRole();
     void updateResetPasswordToken(String token, String email);
 
-    UserEntity getByResetPasswordToken(String token);
-
+    void sendEmail(String recipientEmail, String code)
+            throws MessagingException, UnsupportedEncodingException ;
     void updatePassword(UserEntity customer, String newPassword);
 }

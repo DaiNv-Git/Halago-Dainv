@@ -23,9 +23,9 @@ public class HomePageDetail {
     private String contentEfficiencyOptimizationsVN;
     private String titleEfficiencyOptimizationsEN;
     private String contentEfficiencyOptimizationsEN;
-    List<AdvantageRequest> advantages = new ArrayList<>();
+    List<AdvantageMapEntityDto> advantages = new ArrayList<>();
 
-    public HomePageDetail(List<EfficiencyOptimizationEntity> efficiencyOptimizationDtos, List<EfficiencyOptimizationEntity> Creatives, List<AdvantageRequest> advantages) {
+    public HomePageDetail(List<EfficiencyOptimizationEntity> efficiencyOptimizationDtos, List<EfficiencyOptimizationEntity> Creatives, List<AdvantageMapEntityDto> advantages) {
         efficiencyOptimizationDtos.forEach(eff -> {
             if (eff.getLanguage().equals("VN")) {
                 this.titleEfficiencyOptimizationsVN = eff.getTitle();

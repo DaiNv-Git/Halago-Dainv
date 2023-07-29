@@ -16,7 +16,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByUserName(String userName);
 
     Optional<UserEntity> findByEmail(String email);
-    Optional<UserEntity> findByEmailOrUserName(String email,String userName);
+
+    Optional<UserEntity> findByEmailOrUserName(String email, String userName);
 
     @Query("select new com.example.halagodainv.dto.user.UserDto(u.id,u.email,u.userName,r.name) from UserEntity u left join RoleEntity r " +
             "on r.idRole = u.role where u.id =:userId ")
@@ -25,11 +26,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Query("select new com.example.halagodainv.dto.user.UserDto(u.id,u.email,u.userName,r.name) from UserEntity u left join RoleEntity r " +
             "on r.idRole = u.role where ifnull(u.userName,'') like concat('%',:userName,'%') ")
     List<UserDto> getAll(@Param("userName") String userName, Pageable pageable);
+
     @Query("select count(u) from UserEntity u left join RoleEntity r " +
             "on r.idRole = u.role where ifnull(u.userName,'')  like concat('%',:userName,'%')")
-    int  totalElementAll(@Param("userName") String userName);
-
-    UserEntity findByResetToken(String token);
-
-
+    int totalElementAll(@Param("userName") String userName);
 }

@@ -35,7 +35,7 @@ public class HomePage {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Object> edit(@RequestBody HomePageRequest homePageRequest) {
+    public ResponseEntity<Object> edit(@RequestBody HomePageRequest homePageRequest) throws GeneralException {
         return ResponseEntity.ok(homePageService.updateHomePage(homePageRequest));
     }
 

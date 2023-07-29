@@ -9,5 +9,5 @@ public interface HomePageService {
     Object getPartner(int partnerID) throws GeneralException;
     Object getDetail() throws GeneralException;
 
-    Object updateHomePage(HomePageRequest homePageRequest);
+    Object updateHomePage(HomePageRequest homePageRequest) throws GeneralException;
 }
