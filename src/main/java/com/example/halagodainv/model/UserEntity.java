@@ -15,8 +15,6 @@ public class UserEntity {
     private String userName;
     @Column(name = "password")
     private String password;
-    @Column(name = "password_hide")
-    private String passwordHide;
     @Column(name = "role")
     private int role;
     @Column(name = "created")
@@ -26,10 +24,4 @@ public class UserEntity {
     private int status;
     @Column(name = "email")
     private String email;
-
-    @Column(name = "reset_password")
-    private String resetPassword;
-
-    @Column(name = "reset_token")
-    private String resetToken;
 }

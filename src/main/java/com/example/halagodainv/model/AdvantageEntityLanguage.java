@@ -3,12 +3,11 @@ package com.example.halagodainv.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "advantage")
-public class AdvantageEntity {
+@Table(name = "advantage_language")
+public class AdvantageEntityLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,6 +15,8 @@ public class AdvantageEntity {
     private String title;
     @Column(name = "content")
     private String content;
-    @Column(name = "created")
-    private Date created;
+    @Column(name = "advan_id")
+    private long advanId;
+    @Column(name = "language")
+    private String language;
 }
