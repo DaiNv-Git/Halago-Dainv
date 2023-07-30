@@ -64,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
             groupEntity.setLink(groupAddRequest.getLink());
             groupEntity.setMemTotal(groupAddRequest.getMemberTotal());
             groupEntity.setExpense(groupAddRequest.getExpense());
-            groupEntity.setIndustryId(groupAddRequest.getIndustryId());
+            groupEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupAddRequest.getIndustryId()));
             groupEntity.setCreated(new Date());
             groupEntity = groupRepository.save(groupEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm dữ liệu thành công!", groupRepository.getDetail(groupEntity.getId()));
@@ -82,7 +82,7 @@ public class GroupServiceImpl implements GroupService {
                 groupEntity.get().setLink(groupEditRequest.getLink());
                 groupEntity.get().setMemTotal(groupEditRequest.getMemberTotal());
                 groupEntity.get().setExpense(groupEditRequest.getExpense());
-                groupEntity.get().setIndustryId(groupEditRequest.getIndustryId());
+                groupEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupEditRequest.getIndustryId()));
                 groupRepository.save(groupEntity.get());
                 return new BaseResponse<>(HttpStatus.CREATED.value(), "Sửa dữ liệu thành công!", groupRepository.getDetail(groupEntity.get().getId()));
             }

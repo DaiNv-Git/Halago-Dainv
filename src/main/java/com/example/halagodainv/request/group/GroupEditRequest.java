@@ -2,6 +2,8 @@ package com.example.halagodainv.request.group;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class GroupEditRequest {
     private long id;
@@ -10,5 +12,5 @@ public class GroupEditRequest {
     private String link;
     private String memberTotal;
     private String expense;
-    private int industryId;
+    private List<Integer> industryId;
 }

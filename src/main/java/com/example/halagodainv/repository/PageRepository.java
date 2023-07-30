@@ -14,20 +14,20 @@ import java.util.List;
 @Repository
 public interface PageRepository extends JpaRepository<PageEntity, Long> {
 
-    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created,p.industryId) from PageEntity p left join IndustryEntity i on p.industryId = i.id where p.id =:id")
+    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,p.industryId,p.created,p.industryId) from PageEntity p where p.id =:id")
     PageDto getDetailPage(@Param("id") long pageId);
 
-    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,i.industryName,p.created,p.industryId) " +
-            "from PageEntity p left join IndustryEntity i on p.industryId = i.id where " +
-            "ifnull(i.industryName,'') like concat('%',:industryName,'%') AND " +
+    @Query("select new com.example.halagodainv.dto.page.PageDto(p.id,p.namePage,p.phone,p.link,p.follower,p.expense,p.industryId,p.created,p.industryId) " +
+            "from PageEntity p where " +
+            "ifnull(p.industryId,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +
             "ifnull(p.follower ,'') like concat('%',:follower,'%') AND " +
             "ifnull(p.namePage ,'') like concat('%',:namePage,'%')")
     List<PageDto> getPages(@Param("industryName") String industryName, @Param("expense") String expense, @Param("follower") String follower, @Param("namePage") String namePage, Pageable pageable);
 
     @Query("select count (p)" +
-            "from PageEntity p left join IndustryEntity i on p.industryId = i.id where " +
-            "ifnull(i.industryName,'') like concat('%',:industryName,'%') AND " +
+            "from PageEntity p where " +
+            "ifnull(p.industryId,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +
             "ifnull(p.follower ,'') like concat('%',:follower,'%') AND " +
             "ifnull(p.namePage ,'') like concat('%',:namePage,'%')")

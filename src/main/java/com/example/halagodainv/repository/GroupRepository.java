@@ -12,19 +12,19 @@ import java.util.List;
 
 @Repository
 public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
-    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,i.industryName,p.industryId) from GroupEntity p left join IndustryEntity i on p.industryId = i.id where p.id =:id")
+    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industryId) from GroupEntity p where p.id =:id")
     GroupDto getDetail(@Param("id") long pageId);
 
-    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,i.industryName,p.industryId) " +
-            "from GroupEntity p left join IndustryEntity i on p.industryId = i.id where " +
-            "ifnull(i.industryName,'') like concat('%',:industryName,'%') AND " +
+    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industryId) " +
+            "from GroupEntity p where " +
+            "ifnull(p.industryId,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +
             "ifnull(p.memTotal ,'') like concat('%',:memTotal,'%') AND " +
             "ifnull(p.groupName ,'') like concat('%',:groupName,'%')")
     List<GroupDto> getGroups(@Param("industryName") String industryName, @Param("expense") String expense, @Param("memTotal") String memTotal, @Param("groupName") String groupName, Pageable pageable);
 
-    @Query("select count (p)" + "from GroupEntity p left join IndustryEntity i on p.industryId = i.id where " +
-            "ifnull(i.industryName,'') like concat('%',:industryName,'%') AND " +
+    @Query("select count (p)" + "from GroupEntity p where " +
+            "ifnull(p.industryId,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +
             "ifnull(p.memTotal ,'') like concat('%',:memTotal,'%') AND " +
             "ifnull(p.groupName ,'') like concat('%',:groupName,'%')")

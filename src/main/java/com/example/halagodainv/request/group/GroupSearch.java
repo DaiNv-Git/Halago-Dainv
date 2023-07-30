@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class GroupSearch extends SearchPageForm {
-    private String groupName;
-    private String expense;
-    private String memberTotal;
-    private String industry;
+    private String groupName = "";
+    private String expense = "";
+    private String memberTotal = "";
+    private String industry = "";
 }
