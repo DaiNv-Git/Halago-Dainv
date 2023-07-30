@@ -64,7 +64,7 @@ public class PageServiceImpl implements PageService {
             pageEntity.setLink(pageAddRequest.getLink());
             pageEntity.setFollower(pageAddRequest.getFollower());
             pageEntity.setExpense(pageAddRequest.getExpense());
-            pageEntity.setIndustryId(pageAddRequest.getIndustryId());
+            pageEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageAddRequest.getIndustryId()));
             pageEntity.setCreated(new Date());
             pageEntity = pageRepository.save(pageEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "thêm dữ liệu thành công!", pageRepository.getDetailPage(pageEntity.getId()));
@@ -82,7 +82,7 @@ public class PageServiceImpl implements PageService {
                 pageEntity.get().setLink(pageEditRequest.getLink());
                 pageEntity.get().setFollower(pageEditRequest.getFollower());
                 pageEntity.get().setExpense(pageEditRequest.getExpense());
-                pageEntity.get().setIndustryId(pageEditRequest.getIndustryId());
+                pageEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageEditRequest.getIndustryId()));
                 pageRepository.save(pageEntity.get());
                 return new BaseResponse<>(HttpStatus.CREATED.value(), "Sửa dữ liệu thành công!", pageRepository.getDetailPage(pageEntity.get().getId()));
             }

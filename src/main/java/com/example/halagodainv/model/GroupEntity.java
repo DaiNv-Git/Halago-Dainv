@@ -26,5 +26,5 @@ public class GroupEntity {
     @Column(name = "created")
     private Date created;
     @Column(name = "industry_id")
-    private int industryId;
+    private String industryId;
 }

@@ -2,6 +2,8 @@ package com.example.halagodainv.request.page;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PageEditRequest {
     private long id;
@@ -10,5 +12,5 @@ public class PageEditRequest {
     private String link;
     private String follower;
     private String expense;
-    private int industryId;
+    private List<Integer> industryId;
 }

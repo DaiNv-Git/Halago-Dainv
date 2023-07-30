@@ -1,6 +1,9 @@
 package com.example.halagodainv.request.group;
 
 import lombok.Data;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
 
 @Data
 public class GroupAddRequest {
@@ -9,5 +12,5 @@ public class GroupAddRequest {
     private String link;
     private String memberTotal;
     private String expense;
-    private int industryId;
+    private List<Integer> industryId;
 }

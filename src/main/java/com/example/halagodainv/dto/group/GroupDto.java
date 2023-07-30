@@ -1,11 +1,13 @@
 package com.example.halagodainv.dto.group;
 
+import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,10 +20,9 @@ public class GroupDto {
     private String memberTotal;
     private String expense;
     private String created;
-    private String industry;
-    private int industryId;
+    private List<Integer> industryId;
 
-    public GroupDto(long id, String groupName, String phone, String link, String memberTotal, String expense, Date created, String industry, int industryId) {
+    public GroupDto(long id, String groupName, String phone, String link, String memberTotal, String expense, Date created, String industryId) {
         this.id = id;
         this.groupName = groupName;
         this.phone = phone;
@@ -29,7 +30,6 @@ public class GroupDto {
         this.memberTotal = memberTotal;
         this.expense = expense;
         this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
-        this.industry = industry;
-        this.industryId = industryId;
+        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(industryId);
     }
 }
