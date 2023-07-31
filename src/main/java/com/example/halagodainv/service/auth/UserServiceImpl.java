@@ -12,13 +12,11 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.UserService;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -142,9 +140,9 @@ public class UserServiceImpl implements UserService {
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
         mailMessage.setFrom("halogohalogo939@gmail.com", "halago999");
         mailMessage.setTo(recipientEmail);
-        mailMessage.setSubject("This is the code password");
+        mailMessage.setSubject("This is the password code");
         String content = "<div><h3>New password: </h3>" +
-                "<span>" + code + "</span></div>";
+                        "<span>" + code + "</span></div>";
         mailMessage.setText(content, true);
         javaMailSender.send(message);
     }
