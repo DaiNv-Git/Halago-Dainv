@@ -85,7 +85,7 @@ public class BrandServiceImpl implements BrandService {
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
-            brandEntity.setBrandPhone('0' + String.valueOf(brandAddRequest.getPhoneNumber()));
+            brandEntity.setBrandPhone(brandAddRequest.getPhoneNumber());
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
