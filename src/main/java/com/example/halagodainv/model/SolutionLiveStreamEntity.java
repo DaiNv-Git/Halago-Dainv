@@ -15,7 +15,7 @@ public class SolutionLiveStreamEntity {
     @Column(name = "session")
     private String session;
     @Column(name = "satisfied_brand")
-    private String satisfied_brand;
+    private String satisfiedBrand;
     @Column(name = "sales")
     private String sales;
     @Column(name = "image_sale1")

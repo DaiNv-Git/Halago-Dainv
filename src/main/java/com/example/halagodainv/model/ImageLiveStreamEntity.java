@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "image_solution")
-public class ImageSolution {
+public class ImageLiveStreamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
