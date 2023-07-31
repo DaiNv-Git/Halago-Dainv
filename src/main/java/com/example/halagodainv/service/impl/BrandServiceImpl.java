@@ -106,11 +106,6 @@ public class BrandServiceImpl implements BrandService {
         if (!brandEntity.isPresent()) {
             return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "id is not exit", null);
         }
-        Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(email);
-        Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandEditRequest.getBrandName());
-        if (braneName.isPresent()) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
-        }
         List<ErrorResponse> errorResponses = new ArrayList<>();
         if (!brandEditRequest.validate(errorResponses)) {
             return errorResponses;
