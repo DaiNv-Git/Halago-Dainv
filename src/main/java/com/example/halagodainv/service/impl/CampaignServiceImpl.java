@@ -63,7 +63,7 @@ public class CampaignServiceImpl implements CampaignService {
         return pageResponse;
     }
 
-
+    @Override
     public Object getDetail(int campaignId) {
         Optional<CampaignEntity> editEntity = campaignRepository.findById(campaignId);
         if (editEntity.isPresent()) {
