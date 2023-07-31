@@ -13,5 +13,6 @@ public interface SolutionLiveStreamService {
     Object update(SolutionLiveStreamEdit solutionLiveStreamEdit);
 
     Object addImage(List<SolutionLiveStreamImageEdit> edits);
+
     void deleteImage(long imageId);
 }

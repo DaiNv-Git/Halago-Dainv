@@ -56,7 +56,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
     public Object getSolutionDetail() {
         try {
             SolutionLiveStreamMapEntity map = solutionLiveStreamRepository.getBySolution();
-            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map,imageSolutionRepository.getAllImage());
+            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map, imageSolutionRepository.getAllImage());
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), solutionLiveStreamDetailDto);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());

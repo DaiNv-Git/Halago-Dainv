@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface SolutionReviewService {
     Object getAll(String language);
+
     Object getDetail();
 
     Object updateImageReivew(List<SolutionReviewEditImage> images);
