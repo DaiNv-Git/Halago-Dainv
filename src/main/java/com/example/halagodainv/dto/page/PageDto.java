@@ -23,15 +23,15 @@ public class PageDto {
     private String created;
     private List<Integer> industryId;
 
-    public PageDto(long id, String pageName, String phone, String link, String follower, String expense,String industry, Date created,String industryId) {
+    public PageDto(long id, String pageName, String phone, String link, String follower, String expense, String industry, Date created, String industryId) {
         this.id = id;
         this.pageName = pageName;
         this.phone = phone;
         this.link = link;
         this.follower = follower;
         this.expense = expense;
-        this.industry = industry;
         this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(industryId);
+        this.industry = industry;
         this.created = DateFormatUtils.format(created, "yyyy-MM-dd");
     }
 }

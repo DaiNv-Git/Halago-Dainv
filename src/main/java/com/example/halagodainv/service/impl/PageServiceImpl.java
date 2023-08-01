@@ -2,7 +2,9 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.dto.page.PageDto;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.model.PageEntity;
+import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.repository.PageRepository;
 import com.example.halagodainv.request.page.PageAddRequest;
 import com.example.halagodainv.request.page.PageEditRequest;
@@ -22,11 +24,13 @@ import org.springframework.util.CollectionUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
 public class PageServiceImpl implements PageService {
     private final PageRepository pageRepository;
+    private final IndustryRepository industryRepository;
 
     public Object getPageAll(PageSearch pageSearch) {
         try {
@@ -64,7 +68,15 @@ public class PageServiceImpl implements PageService {
             pageEntity.setLink(pageAddRequest.getLink());
             pageEntity.setFollower(pageAddRequest.getFollower());
             pageEntity.setExpense(pageAddRequest.getExpense());
-            pageEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageAddRequest.getIndustryId()));
+            List<IndustryEntity> entities = industryRepository.findByIdIn(pageAddRequest.getIndustryId());
+            if (!entities.isEmpty()) {
+                StringJoiner joiner = new StringJoiner(", ");
+                entities.forEach(map -> {
+                    joiner.add(map.getIndustryName());
+                });
+                pageEntity.setIndustry(joiner.toString());
+                pageEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageAddRequest.getIndustryId()));
+            }
             pageEntity.setCreated(new Date());
             pageEntity = pageRepository.save(pageEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "thêm dữ liệu thành công!", pageRepository.getDetailPage(pageEntity.getId()));
@@ -82,7 +94,18 @@ public class PageServiceImpl implements PageService {
                 pageEntity.get().setLink(pageEditRequest.getLink());
                 pageEntity.get().setFollower(pageEditRequest.getFollower());
                 pageEntity.get().setExpense(pageEditRequest.getExpense());
-                pageEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageEditRequest.getIndustryId()));
+                List<IndustryEntity> entities = industryRepository.findByIdIn(pageEditRequest.getIndustryId());
+                if (!entities.isEmpty()) {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    entities.forEach(map -> {
+                        joiner.add(map.getIndustryName());
+                    });
+                    pageEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageEditRequest.getIndustryId()));
+                    pageEntity.get().setIndustry(joiner.toString());
+                }else {
+                    pageEntity.get().setIndustryId("");
+                    pageEntity.get().setIndustry("");
+                }
                 pageRepository.save(pageEntity.get());
                 return new BaseResponse<>(HttpStatus.CREATED.value(), "Sửa dữ liệu thành công!", pageRepository.getDetailPage(pageEntity.get().getId()));
             }

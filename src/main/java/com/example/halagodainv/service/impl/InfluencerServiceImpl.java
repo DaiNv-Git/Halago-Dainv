@@ -428,6 +428,22 @@ public class InfluencerServiceImpl implements InfluencerService {
         return "";
     }
 
+    public static String parseStringToString(String inputs) {
+        List<Integer> integerList = new ArrayList<>();
+        if (!Strings.isBlank(inputs)) {
+            String[] numberStrings = inputs.split(",");
+            for (String numberString : numberStrings) {
+                int number = Integer.parseInt(numberString.trim());
+                integerList.add(number);
+            }
+        }
+        StringJoiner joiner = new StringJoiner(", ");
+        for (Integer integer : integerList) {
+            joiner.add(String.valueOf(integer).trim());
+        }
+        return joiner.toString();
+    }
+
     public static String parseStringToStringJoin(String input) {
         StringJoiner stringJoiner = new StringJoiner(", ");
         if (!Strings.isBlank(input)) {

@@ -12,10 +12,10 @@ import java.util.List;
 
 @Repository
 public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
-    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industryId) from GroupEntity p where p.id =:id")
+    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industry,p.industryId) from GroupEntity p where p.id =:id")
     GroupDto getDetail(@Param("id") long pageId);
 
-    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industryId) " +
+    @Query("select new com.example.halagodainv.dto.group.GroupDto(p.id,p.groupName,p.phone,p.link,p.memTotal,p.expense,p.created,p.industry,p.industryId) " +
             "from GroupEntity p where " +
             "ifnull(p.industryId,'') like concat('%',:industryName,'%') AND " +
             "ifnull(p.expense,'') like concat('%',:expense,'%') AND " +

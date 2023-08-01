@@ -20,9 +20,10 @@ public class GroupDto {
     private String memberTotal;
     private String expense;
     private String created;
+    private String industry;
     private List<Integer> industryId;
 
-    public GroupDto(long id, String groupName, String phone, String link, String memberTotal, String expense, Date created, String industryId) {
+    public GroupDto(long id, String groupName, String phone, String link, String memberTotal, String expense, Date created,String industry, String industryId) {
         this.id = id;
         this.groupName = groupName;
         this.phone = phone;
@@ -31,5 +32,6 @@ public class GroupDto {
         this.expense = expense;
         this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
         this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(industryId);
+        this.industry = industry;
     }
 }
