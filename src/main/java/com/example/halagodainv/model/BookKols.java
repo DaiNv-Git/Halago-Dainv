@@ -1,7 +1,6 @@
 package com.example.halagodainv.model;
 
 
-
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,113 +12,21 @@ public class BookKols {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
-    @Column(name = "banner")
-    private String banner;
+    private long id;
     @Column(name = "title")
     private String title;
-    @Column(name = "description")
-    private String description;
-    @Column(name = "poster")
-    private String poster;
-    @Column(name = "img")
-    private String img;
-    @Column(name = "status")
-    private int status;
-    @Column(name = "total_register")
-    private String totalRegister;
-    @Column(name = "total_view")
-    private String totalView;
-    @Column(name = "total_duration_view")
-    private String totalDurationView;
-    @Column(name = "type")
-    private int type;
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getBanner() {
-        return banner;
-    }
-
-    public void setBanner(String banner) {
-        this.banner = banner;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getTotalRegister() {
-        return totalRegister;
-    }
-
-    public void setTotalRegister(String totalRegister) {
-        this.totalRegister = totalRegister;
-    }
-
-    public String getTotalView() {
-        return totalView;
-    }
-
-    public void setTotalView(String totalView) {
-        this.totalView = totalView;
-    }
-
-    public String getTotalDurationView() {
-        return totalDurationView;
-    }
-
-    public void setTotalDurationView(String totalDurationView) {
-        this.totalDurationView = totalDurationView;
-    }
+    @Column(name = "image_kol1")
+    private String imageKol1;
+    @Column(name = "image_kol2")
+    private String imageKol2;
+    @Column(name = "introduce")
+    private String introduce;
+    @Column(name = "introduce_detail")
+    private String introduceDetail;
+    @Column(name = "approach")
+    private String approach;
+    @Column(name = "interact")
+    private String interact;
+    @Column(name = "ratio_interact")
+    private String ratioInteract;
 }
