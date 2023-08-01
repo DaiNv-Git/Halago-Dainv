@@ -27,4 +27,6 @@ public class GroupEntity {
     private Date created;
     @Column(name = "industry_id")
     private String industryId;
+    @Column(name = "industry")
+    private String industry;
 }

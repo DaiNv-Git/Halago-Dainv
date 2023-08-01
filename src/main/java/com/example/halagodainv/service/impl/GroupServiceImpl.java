@@ -3,7 +3,9 @@ package com.example.halagodainv.service.impl;
 import com.example.halagodainv.dto.group.GroupDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.GroupEntity;
+import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.repository.GroupRepository;
+import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.group.GroupAddRequest;
 import com.example.halagodainv.request.group.GroupEditRequest;
 import com.example.halagodainv.request.group.GroupSearch;
@@ -22,11 +24,13 @@ import org.springframework.util.CollectionUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
+    private final IndustryRepository industryRepository;
 
     public Object getGroupAll(GroupSearch groupSearch) {
         try {
@@ -64,7 +68,15 @@ public class GroupServiceImpl implements GroupService {
             groupEntity.setLink(groupAddRequest.getLink());
             groupEntity.setMemTotal(groupAddRequest.getMemberTotal());
             groupEntity.setExpense(groupAddRequest.getExpense());
-            groupEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupAddRequest.getIndustryId()));
+            List<IndustryEntity> entities = industryRepository.findByIdIn(groupAddRequest.getIndustryId());
+            if (!entities.isEmpty()) {
+                StringJoiner joiner = new StringJoiner(", ");
+                entities.forEach(map -> {
+                    joiner.add(map.getIndustryName());
+                });
+                groupEntity.setIndustry(joiner.toString());
+                groupEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupAddRequest.getIndustryId()));
+            }
             groupEntity.setCreated(new Date());
             groupEntity = groupRepository.save(groupEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm dữ liệu thành công!", groupRepository.getDetail(groupEntity.getId()));
@@ -82,7 +94,15 @@ public class GroupServiceImpl implements GroupService {
                 groupEntity.get().setLink(groupEditRequest.getLink());
                 groupEntity.get().setMemTotal(groupEditRequest.getMemberTotal());
                 groupEntity.get().setExpense(groupEditRequest.getExpense());
-                groupEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupEditRequest.getIndustryId()));
+                List<IndustryEntity> entities = industryRepository.findByIdIn(groupEditRequest.getIndustryId());
+                if (!entities.isEmpty()) {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    entities.forEach(map -> {
+                        joiner.add(map.getIndustryName());
+                    });
+                    groupEntity.get().setIndustry(joiner.toString());
+                    groupEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupEditRequest.getIndustryId()));
+                }
                 groupRepository.save(groupEntity.get());
                 return new BaseResponse<>(HttpStatus.CREATED.value(), "Sửa dữ liệu thành công!", groupRepository.getDetail(groupEntity.get().getId()));
             }
