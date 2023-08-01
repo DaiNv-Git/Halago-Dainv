@@ -87,7 +87,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
 
     public Object updateContent(SolutionReviewRequestEdit edit) {
         try {
-            List<SolutionReviewEdit> solutionReviewEdits = edit.getSolutionReviewEdits();
+            List<SolutionReviewEdit> solutionReviewEdits = edit.getSolutionReview();
             List<SolutionReviewEntity> solutionReviewEntities = new ArrayList<>();
             List<SolutionReivewLanguageEntity> solutionReivewLanguageEntities = new ArrayList<>();
             for (SolutionReviewEdit reviewEdit : solutionReviewEdits) {

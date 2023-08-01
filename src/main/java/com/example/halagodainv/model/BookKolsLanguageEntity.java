@@ -15,10 +15,10 @@ public class BookKolsLanguageEntity {
     private long id;
     @Column(name = "title_en")
     private String titleEN;
-    @Column(name = "interact_en")
-    private String interactEN;
-    @Column(name = "ratio_interact_en")
-    private String ratioInteractEN;
+    @Column(name = "introduce_en")
+    private String introduceEN;
+    @Column(name = "dintroducet_detail_en")
+    private String introduceDetailEN;
     @Column(name = "kol_id")
     private long kolIdd;
 }
