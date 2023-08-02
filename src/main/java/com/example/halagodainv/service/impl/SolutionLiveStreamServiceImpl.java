@@ -84,12 +84,12 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 }
                 imageSolutionRepository.deleteAll();
                 List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
-                solutionLiveStreamEdit.getImagEdits().forEach(img -> {
+                for (SolutionLiveStreamImageEdit img:solutionLiveStreamEdit.getImagEdits()){
                     ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
                     imageLiveStreamEntity.setImage(img.getImage());
                     imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                     imageLiveStreamEntities.add(imageLiveStreamEntity);
-                });
+                }
                 imageSolutionRepository.saveAll(imageLiveStreamEntities);
             }
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), getSolutionDetail());
