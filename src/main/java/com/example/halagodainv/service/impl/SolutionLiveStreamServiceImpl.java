@@ -84,16 +84,16 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                     solutionLiveStreamLanguage.get().setContentThreeEN(solutionLiveStreamEdit.getContentThreeEN());
                     solutionLiveStreamLanguageRepository.save(solutionLiveStreamLanguage.get());
                 }
-                imageSolutionRepository.deleteAll();
-                List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
-                for (SolutionLiveStreamImageEdit img:solutionLiveStreamEdit.getImagEdits()){
-                    ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                    imageLiveStreamEntity.setImage(img.getImage());
-                    imageLiveStreamEntity.setSolutionLiveStreamId(1L);
-                    imageLiveStreamEntities.add(imageLiveStreamEntity);
-                }
-                imageSolutionRepository.saveAll(imageLiveStreamEntities);
             }
+            imageSolutionRepository.deleteAll();
+            List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
+            for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImagEdits()) {
+                ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
+                imageLiveStreamEntity.setImage(img.getImage());
+                imageLiveStreamEntity.setSolutionLiveStreamId(1L);
+                imageLiveStreamEntities.add(imageLiveStreamEntity);
+            }
+            imageSolutionRepository.saveAll(imageLiveStreamEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), getSolutionDetail());
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
