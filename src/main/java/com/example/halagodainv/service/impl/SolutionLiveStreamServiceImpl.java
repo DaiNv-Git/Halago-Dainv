@@ -70,6 +70,8 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 solutionLiveStream.get().setSales(solutionLiveStreamEdit.getSales());
                 solutionLiveStream.get().setSession(solutionLiveStreamEdit.getSession());
                 solutionLiveStream.get().setSatisfiedBrand(solutionLiveStreamEdit.getSatisfiedBrand());
+                solutionLiveStream.get().setImageSale1(solutionLiveStreamEdit.getImageSale1());
+                solutionLiveStream.get().setImageSale2(solutionLiveStreamEdit.getImageSale2());
                 solutionLiveStream.get().setContentOne(solutionLiveStreamEdit.getContentOne());
                 solutionLiveStream.get().setContentTwo(solutionLiveStreamEdit.getContentTwo());
                 solutionLiveStream.get().setContentThree(solutionLiveStreamEdit.getContentThree());
