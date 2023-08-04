@@ -397,7 +397,7 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Override
     public byte[] downFileImportExcel() {
         try {
-            downFileImportExcel.initializeData("template/InfluencerImport.xls");
+            downFileImportExcel.initializeData("template/InfluencerImport.xlsx");
             return downFileImportExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

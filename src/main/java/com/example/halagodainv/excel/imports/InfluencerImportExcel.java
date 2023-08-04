@@ -73,7 +73,7 @@ public class InfluencerImportExcel {
                     List<String> classify = parseStringToListStrings(isString(row.getCell(6)));
                     if (classify.size() > 0) {
                         List<ClassifyEntity> classifyEntities = classifyRepository.findByNameIn(classify);
-                        if (!CollectionUtils.isEmpty(classifyEntities)){
+                        if (!CollectionUtils.isEmpty(classifyEntities)) {
                             StringJoiner stringJoinerClassify = new StringJoiner(",");
                             classifyEntities.forEach(classifyEntity -> {
                                 stringJoinerClassify.add(String.valueOf(classifyEntity.getId()));
@@ -96,30 +96,30 @@ public class InfluencerImportExcel {
                     InfluencerDetailEntity influencerDetailIns = new InfluencerDetailEntity();
                     if (row.getCell(11) != null || (row.getCell(12) != null || row.getCell(13) != null)) {
                         influencer.setFacebook(true);
-                        influencerDetailFB.setUrl(row.getCell(11).getStringCellValue());
-                        influencerDetailFB.setFollower(row.getCell(12).getStringCellValue());
-                        influencerDetailFB.setExpense(row.getCell(13).getStringCellValue());
+                        influencerDetailFB.setUrl(isString(row.getCell(11)));
+                        influencerDetailFB.setFollower(isString(row.getCell(12)));
+                        influencerDetailFB.setExpense(isString(row.getCell(13)));
                         influencerDetailFB.setChannel("facebook".toUpperCase());
                     }
                     if (row.getCell(14) != null || row.getCell(15) != null || row.getCell(16) != null) {
                         influencer.setTiktok(true);
-                        influencerDetailTT.setUrl(row.getCell(14).getStringCellValue());
-                        influencerDetailTT.setFollower(row.getCell(15).getStringCellValue());
-                        influencerDetailTT.setExpense(row.getCell(16).getStringCellValue());
+                        influencerDetailTT.setUrl(isString(row.getCell(14)));
+                        influencerDetailTT.setFollower(isString(row.getCell(15)));
+                        influencerDetailTT.setExpense(isString(row.getCell(16)));
                         influencerDetailTT.setChannel("tiktok".toUpperCase());
                     }
                     if (row.getCell(17) != null || row.getCell(18) != null || row.getCell(19) != null) {
                         influencer.setYoutube(true);
-                        influencerDetailYT.setUrl(row.getCell(17).getStringCellValue());
-                        influencerDetailYT.setFollower(row.getCell(18).getStringCellValue());
-                        influencerDetailYT.setExpense(row.getCell(19).getStringCellValue());
+                        influencerDetailYT.setUrl(isString(row.getCell(17)));
+                        influencerDetailYT.setFollower(isString(row.getCell(18)));
+                        influencerDetailYT.setExpense(isString(row.getCell(19)));
                         influencerDetailYT.setChannel("youtube".toUpperCase());
                     }
                     if (row.getCell(20) != null || row.getCell(21) != null || row.getCell(22) != null) {
                         influencer.setInstagram(true);
-                        influencerDetailIns.setUrl(row.getCell(20).getStringCellValue());
-                        influencerDetailIns.setFollower(row.getCell(21).getStringCellValue());
-                        influencerDetailIns.setExpense(row.getCell(22).getStringCellValue());
+                        influencerDetailIns.setUrl(isString(row.getCell(20)));
+                        influencerDetailIns.setFollower(isString(row.getCell(21)));
+                        influencerDetailIns.setExpense(isString(row.getCell(12)));
                         influencerDetailIns.setChannel("instagram".toUpperCase());
                     }
                     influencerEntityRepository.save(influencer);
@@ -145,8 +145,21 @@ public class InfluencerImportExcel {
     }
 
     private static String isString(Cell cell) {
-        String value = cell != null ? cell.getStringCellValue() : "";
-        return value;
+        String value = "";
+        if (cell != null) {
+            if (cell instanceof Number) {
+                value = String.valueOf(cell.getNumericCellValue());
+            } else if (cell instanceof Date){
+                value = String.valueOf(cell.getDateCellValue());
+            }  else if (cell.getBooleanCellValue()){
+                value = String.valueOf(cell.getBooleanCellValue());
+            } else  {
+                value = cell.getStringCellValue();
+            }
+            return value;
+        }else {
+            return value;
+        }
     }
 
     public static List<String> parseStringToListStrings(String input) {
