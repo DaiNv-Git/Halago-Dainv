@@ -19,7 +19,6 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class DownFileImportExcel {
-    private List<InfluencerExportExcelDto> datas;
     private String sourceFile;
 
     private Workbook workbook;
