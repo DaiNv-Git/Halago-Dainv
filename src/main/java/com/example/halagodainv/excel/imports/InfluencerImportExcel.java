@@ -151,8 +151,6 @@ public class InfluencerImportExcel {
                 value = String.valueOf(cell.getNumericCellValue());
             } else if (cell instanceof Date){
                 value = String.valueOf(cell.getDateCellValue());
-            }  else if (cell.getBooleanCellValue()){
-                value = String.valueOf(cell.getBooleanCellValue());
             } else  {
                 value = cell.getStringCellValue();
             }
