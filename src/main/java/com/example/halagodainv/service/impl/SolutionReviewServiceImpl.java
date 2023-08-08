@@ -67,16 +67,15 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
     }
 
 
-    public Object updateImageReivew(List<SolutionReviewEditImage> images) {
+    public Object updateImageReview(List<SolutionReviewEditImage> images) {
         try {
+            imageSolutionReviewRepository.deleteAll();
             List<ImageReviewEntity> entities = new ArrayList<>();
             for (SolutionReviewEditImage image : images) {
-                Optional<ImageReviewEntity> optionalImageReviewEntity = imageSolutionReviewRepository.findById(image.getImageId());
-                if (optionalImageReviewEntity.isPresent()) {
-                    optionalImageReviewEntity.get().setImageReview(image.getImage());
-                    optionalImageReviewEntity.get().setLink(image.getLink());
-                    entities.add(optionalImageReviewEntity.get());
-                }
+                ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
+                optionalImageReviewEntity.setImageReview(image.getImage());
+                optionalImageReviewEntity.setLink(image.getLink());
+                entities.add(optionalImageReviewEntity);
             }
             entities = imageSolutionReviewRepository.saveAll(entities);
             return new BaseResponse<>(HttpStatus.OK.value(), "update image success", entities);
@@ -106,7 +105,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
                     }
                 }
             }
-            updateImageReivew(edit.getSolutionReviewEditImages());
+            updateImageReview(edit.getSolutionReviewEditImages());
             solutionReviewRepository.saveAll(solutionReviewEntities);
             solutionReviewLanguageRepository.saveAll(solutionReivewLanguageEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), "update image success", getDetail());
@@ -114,6 +113,4 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             throw new RuntimeException(ex.getMessage());
         }
     }
-
-
 }

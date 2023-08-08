@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.Style;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -22,16 +23,25 @@ import java.util.List;
 public class InfluencerExcel {
 
     private static final int SHEET_ZERO = 0;
+    private static final int SHEET_ONE = 1;
+    private static final int SHEET_TWO = 2;
+    private static final int SHEET_THREE = 3;
     private static final String FONT_NAME = "Calibri";
-    private static final Short FONT_SIZE = 200;
+    private static final Short FONT_SIZE = 220;
     private static final int ROW_COUNT = 1;
     private Workbook workbook;
-    private List<InfluencerExportExcelDto> datas;
+    private List<InfluencerExportExcelDto> facebooks;
+    private List<InfluencerExportExcelDto> tiktoks;
+    private List<InfluencerExportExcelDto> instagrams;
+    private List<InfluencerExportExcelDto> youtubes;
     private String sourceFile;
     private final ResourceLoader resourceLoader;
 
-    public void initializeData(List<InfluencerExportExcelDto> datas, String sourceFile) {
-        this.datas = datas;
+    public void initializeData(List<InfluencerExportExcelDto> facebooks, List<InfluencerExportExcelDto> tiktoks, List<InfluencerExportExcelDto> instagrams, List<InfluencerExportExcelDto> youtubes, String sourceFile) {
+        this.facebooks = facebooks;
+        this.tiktoks = tiktoks;
+        this.instagrams = instagrams;
+        this.youtubes = youtubes;
         this.sourceFile = sourceFile;
     }
 
@@ -39,27 +49,24 @@ public class InfluencerExcel {
         Resource resource = resourceLoader.getResource("classpath:" + sourceFile);
         InputStream inp = resource.getInputStream();
         workbook = WorkbookFactory.create(inp);
-        Sheet sheet = workbook.getSheetAt(SHEET_ZERO);
+        Sheet sheetFacebook = workbook.getSheetAt(SHEET_ZERO);
+        Sheet sheetTiktok = workbook.getSheetAt(SHEET_ONE);
+        Sheet sheetInstagram = workbook.getSheetAt(SHEET_TWO);
+        Sheet sheetYoutube = workbook.getSheetAt(SHEET_THREE);
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = (XSSFFont) workbook.createFont();
         font.setFontName(FONT_NAME);
         font.setFontHeight(FONT_SIZE);
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
-        int count = ROW_COUNT;
-        for (InfluencerExportExcelDto item : datas) {
-            Row row = sheet.createRow(count++);
-            int columnCount = 0;
-            createCell(row, columnCount++, count - 1, style);
-            createCell(row, columnCount++, item.getName(), style);
-            createCell(row, columnCount++, item.getSex(), style);
-            createCell(row, columnCount++, item.getLink(), style);
-            createCell(row, columnCount++, item.getFollower(), style);
-            createCell(row, columnCount++, item.getExpense(), style);
-            createCell(row, columnCount++, item.getAddress(), style);
-            createCell(row, columnCount++, item.getIndustry(), style);
-            createCell(row, columnCount, item.getClassify(), style);
-        }
+        int countFacebook = ROW_COUNT;
+        int countTiktok = ROW_COUNT;
+        int countInstagram = ROW_COUNT;
+        int countYoutube = ROW_COUNT;
+        getData(facebooks, countFacebook, sheetFacebook, style);
+        getData(tiktoks, countTiktok, sheetTiktok, style);
+        getData(instagrams, countInstagram, sheetInstagram, style);
+        getData(youtubes, countYoutube, sheetYoutube, style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -86,5 +93,21 @@ public class InfluencerExcel {
             workbook.close();
         }
         return bos.toByteArray();
+    }
+
+    public void getData(List<InfluencerExportExcelDto> data, int count, Sheet sheet, CellStyle style) {
+        for (InfluencerExportExcelDto item : data) {
+            Row row = sheet.createRow(count++);
+            int columnCount = 0;
+            createCell(row, columnCount++, count - 1, style);
+            createCell(row, columnCount++, item.getName(), style);
+            createCell(row, columnCount++, item.getSex(), style);
+            createCell(row, columnCount++, item.getLink(), style);
+            createCell(row, columnCount++, item.getFollower(), style);
+            createCell(row, columnCount++, item.getExpense(), style);
+            createCell(row, columnCount++, item.getAddress(), style);
+            createCell(row, columnCount++, item.getIndustry(), style);
+            createCell(row, columnCount, item.getClassify(), style);
+        }
     }
 }

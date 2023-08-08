@@ -10,7 +10,7 @@ public interface SolutionReviewService {
 
     Object getDetail();
 
-    Object updateImageReivew(List<SolutionReviewEditImage> images);
+    Object updateImageReview(List<SolutionReviewEditImage> images);
 
     Object updateContent(SolutionReviewRequestEdit edit);
 }

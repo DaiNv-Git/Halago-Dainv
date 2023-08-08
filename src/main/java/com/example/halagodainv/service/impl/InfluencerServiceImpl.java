@@ -377,12 +377,11 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
-            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
-            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
-            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
-            List<InfluencerExportExcelDto> influcerDtoSubMenus = influencerEntityRepository.getExportExcel(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            influencerExcel.initializeData(influcerDtoSubMenus, "template/Influencer.xls");
+            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null , null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            influencerExcel.initializeData(facebooks,tiktoks,instagrams,youtubes, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

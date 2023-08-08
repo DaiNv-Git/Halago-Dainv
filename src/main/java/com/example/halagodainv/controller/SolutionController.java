@@ -64,8 +64,6 @@ public class SolutionController {
 
     @PostMapping("/review/update-image")
     public ResponseEntity<Object> update(@RequestBody List<SolutionReviewEditImage> solutionLiveStreamEdit) {
-        return ResponseEntity.ok(solutionReviewService.updateImageReivew(solutionLiveStreamEdit));
+        return ResponseEntity.ok(solutionReviewService.updateImageReview(solutionLiveStreamEdit));
     }
-
-
 }

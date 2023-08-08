@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class SolutionReviewEditImage {
-    private long imageId;
     private String image;
     private String link;
 }
