@@ -8,7 +8,7 @@ import java.util.List;
 public class PageEditRequest {
     private long id;
     private String pageName;
-    private String phone;
+    private Long phone;
     private String link;
     private String follower;
     private String expense;

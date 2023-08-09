@@ -10,9 +10,9 @@ import java.util.List;
 public class InfluencerAddRequest {
     private long Id;
     private String name;
-    private long phone;
+    private Long phone;
     private Integer sex;
-    private String birtYear = "";
+    private Integer birtYear;
     private Boolean isFacebook = false;
     private Boolean isTikTok = false;
     private Boolean isYoutube = false;
@@ -22,7 +22,7 @@ public class InfluencerAddRequest {
     private Integer provinceId;
     private List<Integer> industry;
     private String bankId = "";
-    private long bankNumber;
+    private Long bankNumber;
     private String address;
     private String linkFb = "";
     private String followerFb = "";

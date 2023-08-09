@@ -64,7 +64,7 @@ public class PageServiceImpl implements PageService {
         try {
             PageEntity pageEntity = new PageEntity();
             pageEntity.setNamePage(pageAddRequest.getPageName());
-            pageEntity.setPhone(pageAddRequest.getPhone());
+            pageEntity.setPhone(String.valueOf(pageAddRequest.getPhone()));
             pageEntity.setLink(pageAddRequest.getLink());
             pageEntity.setFollower(pageAddRequest.getFollower());
             pageEntity.setExpense(pageAddRequest.getExpense());
@@ -90,7 +90,7 @@ public class PageServiceImpl implements PageService {
             Optional<PageEntity> pageEntity = pageRepository.findById(pageEditRequest.getId());
             if (pageEntity.isPresent()) {
                 pageEntity.get().setNamePage(pageEditRequest.getPageName());
-                pageEntity.get().setPhone(pageEditRequest.getPhone());
+                pageEntity.get().setPhone(String.valueOf(pageEditRequest.getPhone()));
                 pageEntity.get().setLink(pageEditRequest.getLink());
                 pageEntity.get().setFollower(pageEditRequest.getFollower());
                 pageEntity.get().setExpense(pageEditRequest.getExpense());

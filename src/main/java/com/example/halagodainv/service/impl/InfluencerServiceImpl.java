@@ -173,7 +173,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencer.setHistoryCreated(new Date());
             influencer.setSex(request.getSex());
             influencer.setPhone("0"+request.getPhone());
-            influencer.setYearOld(request.getBirtYear());
+            influencer.setYearOld(String.valueOf(request.getBirtYear()));
             influencer.setEmail(request.getEmail());
             influencer.setBankId(request.getBankId().toUpperCase());
             influencer.setAccountNumber(String.valueOf(request.getBankNumber()));
@@ -264,7 +264,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 entity.get().setHistoryCreated(new Date());
                 entity.get().setSex(request.getSex());
                 entity.get().setPhone("0"+request.getPhone());
-                entity.get().setYearOld(request.getBirtYear());
+                entity.get().setYearOld(String.valueOf(request.getBirtYear()));
                 entity.get().setEmail(request.getEmail());
                 entity.get().setBankId(request.getBankId().toUpperCase());
                 entity.get().setAccountNumber(String.valueOf(request.getBankNumber()));

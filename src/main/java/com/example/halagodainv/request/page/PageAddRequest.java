@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PageAddRequest {
     private String pageName;
-    private String phone;
+    private Long phone;
     private String link;
     private String follower;
     private String expense;
