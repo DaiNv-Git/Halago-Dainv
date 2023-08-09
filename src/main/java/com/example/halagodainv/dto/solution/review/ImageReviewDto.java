@@ -8,8 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageReviewDto {
-    private long imageId;
     private String image;
-    private String link;
-
 }

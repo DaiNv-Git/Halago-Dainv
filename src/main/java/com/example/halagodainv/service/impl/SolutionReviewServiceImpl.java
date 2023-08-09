@@ -74,7 +74,6 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             for (SolutionReviewEditImage image : images) {
                 ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
                 optionalImageReviewEntity.setImageReview(image.getImage());
-                optionalImageReviewEntity.setLink(image.getLink());
                 entities.add(optionalImageReviewEntity);
             }
             entities = imageSolutionReviewRepository.saveAll(entities);
