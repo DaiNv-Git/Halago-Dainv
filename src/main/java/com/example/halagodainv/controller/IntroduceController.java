@@ -5,6 +5,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IntroduceController {
     Logger logger = LoggerFactory.getLogger(IntroduceController.class);
-
-
 }

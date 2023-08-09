@@ -1,10 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.filebase.FirebaseStoreManager;
-import com.example.halagodainv.service.AttachFileService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +17,6 @@ import java.nio.file.FileAlreadyExistsException;
 @RequiredArgsConstructor
 @RequestMapping("/file")
 public class FileController {
-    Logger logger = LoggerFactory.getLogger(FileController.class);
     private final FirebaseStoreManager attachFileService;
 
     @PostMapping("")

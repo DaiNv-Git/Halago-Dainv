@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ImageSolutionReviewRepository extends JpaRepository<ImageReviewEntity, Long> {
-    @Query("select new com.example.halagodainv.dto.solution.review.ImageReviewDto(img.id,img.imageReview,img.link) from ImageReviewEntity img ")
+    @Query("select new com.example.halagodainv.dto.solution.review.ImageReviewDto(img.imageReview) from ImageReviewEntity img ")
     List<ImageReviewDto> getImages();
 };
