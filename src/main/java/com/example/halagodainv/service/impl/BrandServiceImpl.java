@@ -85,7 +85,7 @@ public class BrandServiceImpl implements BrandService {
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
-            brandEntity.setBrandPhone("0" + brandAddRequest.getPhoneNumber());
+            brandEntity.setBrandPhone(brandAddRequest.getPhoneNumber());
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
@@ -112,7 +112,7 @@ public class BrandServiceImpl implements BrandService {
         }
         brandEntity.get().setBrandName(brandEditRequest.getBrandName());
         brandEntity.get().setWebsite(brandEditRequest.getWebsite());
-        brandEntity.get().setBrandPhone("0" + brandEditRequest.getPhoneNumber());
+        brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ConcatCustomerRequest {
-    private long phone;
+    private String phone;
     private String email;
     private String userName;
     private String product;

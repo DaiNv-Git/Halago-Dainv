@@ -17,7 +17,7 @@ public class BrandAddRequest {
     private String email;
     private String password;
     private String website;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String logo;
     private String description;
     private int partnerId;

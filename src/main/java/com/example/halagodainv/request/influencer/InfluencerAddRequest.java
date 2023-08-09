@@ -10,7 +10,7 @@ import java.util.List;
 public class InfluencerAddRequest {
     private long Id;
     private String name;
-    private Long phone;
+    private String phone;
     private Integer sex;
     private Integer birtYear;
     private Boolean isFacebook = false;

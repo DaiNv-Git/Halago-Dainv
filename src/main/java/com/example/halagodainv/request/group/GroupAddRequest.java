@@ -8,9 +8,9 @@ import java.util.List;
 @Data
 public class GroupAddRequest {
     private String groupName;
-    private long phone;
+    private String phone;
     private String link;
-    private long memberTotal;
+    private String memberTotal;
     private String expense;
     private List<Integer> industryId;
 }

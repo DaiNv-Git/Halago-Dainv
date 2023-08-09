@@ -15,7 +15,7 @@ public class BrandEditRequest {
     private String brandName;
     private String email;
     private String website;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String logo;
     private String description;
     private int partnerId;

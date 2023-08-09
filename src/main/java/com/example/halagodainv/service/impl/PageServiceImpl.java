@@ -64,7 +64,7 @@ public class PageServiceImpl implements PageService {
         try {
             PageEntity pageEntity = new PageEntity();
             pageEntity.setNamePage(pageAddRequest.getPageName());
-            pageEntity.setPhone(String.valueOf(pageAddRequest.getPhone()));
+            pageEntity.setPhone(pageAddRequest.getPhone());
             pageEntity.setLink(pageAddRequest.getLink());
             pageEntity.setFollower(pageAddRequest.getFollower());
             pageEntity.setExpense(pageAddRequest.getExpense());
