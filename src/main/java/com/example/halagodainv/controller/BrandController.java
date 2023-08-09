@@ -20,10 +20,7 @@ import java.text.ParseException;
 @RequestMapping("/brand")
 public class BrandController {
     Logger logger = LoggerFactory.getLogger(BrandController.class);
-
     private final BrandService brandService;
-
-    private final UserAuthenConfig userAuthenConfig;
 
     @PostMapping("")
     public ResponseEntity<Object> getByBrands(@RequestBody BrandFormSearch brandSearch) throws ParseException {

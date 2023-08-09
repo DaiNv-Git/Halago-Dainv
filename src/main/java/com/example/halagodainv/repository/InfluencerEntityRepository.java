@@ -9,9 +9,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
+    Optional<InfluencerEntity> findByEmail(String email);
 
     @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone)  " +
             "FROM InfluencerEntity ie " +

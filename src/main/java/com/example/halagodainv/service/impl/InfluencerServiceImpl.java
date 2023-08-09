@@ -167,6 +167,10 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Transactional
     public Object add(InfluencerAddRequest request) {
         try {
+            Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
+            if (isCheckEmail.isPresent()) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Email đã tồn tại! ", Collections.singletonList(request.getEmail()));
+            }
             InfluencerEntity influencer = new InfluencerEntity();
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
             influencer.setInflucerName(request.getName());
@@ -257,9 +261,15 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public Object edit(InfluencerAddRequest request) {
         try {
-            Optional<InfluencerEntity> entity = influencerEntityRepository.findById(request.getId());
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
+            Optional<InfluencerEntity> entity = influencerEntityRepository.findById(request.getId());
             if (entity.isPresent()) {
+                entity.get().setEmail("");
+                influencerEntityRepository.save(entity.get());
+                Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
+                if (isCheckEmail.isPresent()) {
+                    return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Email đã tồn tại!", Collections.singletonList(request.getEmail()));
+                }
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
                 entity.get().setSex(request.getSex());
@@ -313,7 +323,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 } else {
                     entity.get().setInstagram(false);
                 }
-                influencerEntityRepository.saveAndFlush(entity.get());
+                influencerEntityRepository.save(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
                     InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
@@ -354,10 +364,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
             }
-            return new ErrorResponse(Constant.FAILED, "Sửa thất bại", null);
+            return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Dữ liệu không tồn tại!", null);
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Sửa thất bại", null);
-
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error server", Collections.singletonList(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         }
     }
 
@@ -378,10 +387,10 @@ public class InfluencerServiceImpl implements InfluencerService {
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
             List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null , null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
             List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
             List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            influencerExcel.initializeData(facebooks,tiktoks,instagrams,youtubes, "template/Influencer.xls");
+            influencerExcel.initializeData(facebooks, tiktoks, instagrams, youtubes, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,19 +26,19 @@ public class BrandAddRequest {
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
         if (Strings.isBlank(registerName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "registerName is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
             isCheck = false;
         }
         if (Strings.isBlank(brandName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "brandName is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
             isCheck = false;
         }
         if (Strings.isBlank(email)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "email is not null or empty", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
             isCheck = false;
         }
         if (partnerId == 0) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "partnerId > 0", null));
+            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
             isCheck = false;
         }
         return isCheck;
