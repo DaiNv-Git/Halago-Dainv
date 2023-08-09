@@ -172,11 +172,11 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencer.setInflucerName(request.getName());
             influencer.setHistoryCreated(new Date());
             influencer.setSex(request.getSex());
-            influencer.setPhone(request.getPhone());
+            influencer.setPhone("0"+request.getPhone());
             influencer.setYearOld(request.getBirtYear());
             influencer.setEmail(request.getEmail());
             influencer.setBankId(request.getBankId().toUpperCase());
-            influencer.setAccountNumber(request.getBankNumber());
+            influencer.setAccountNumber(String.valueOf(request.getBankNumber()));
             influencer.setCreated(new Date());
             if (request.getIndustry().size() > 0) {
                 influencer.setIndustry(parseListIntegerToString(request.getIndustry()));
@@ -263,11 +263,11 @@ public class InfluencerServiceImpl implements InfluencerService {
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
                 entity.get().setSex(request.getSex());
-                entity.get().setPhone(request.getPhone());
+                entity.get().setPhone("0"+request.getPhone());
                 entity.get().setYearOld(request.getBirtYear());
                 entity.get().setEmail(request.getEmail());
                 entity.get().setBankId(request.getBankId().toUpperCase());
-                entity.get().setAccountNumber(request.getBankNumber());
+                entity.get().setAccountNumber(String.valueOf(request.getBankNumber()));
                 if (request.getIndustry().size() > 0) {
                     entity.get().setIndustry(parseListIntegerToString(request.getIndustry()));
                     List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());

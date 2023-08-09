@@ -44,7 +44,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
         contactCustomerEntity.setCreated(new Date());
         contactCustomerEntity.setEmail(customerRequest.getEmail());
-        contactCustomerEntity.setPhone(customerRequest.getPhone());
+        contactCustomerEntity.setPhone("0"+customerRequest.getPhone());
         contactCustomerEntity.setName(customerRequest.getUserName());
         contactCustomerEntity.setProduct(customerRequest.getProduct());
         contactCustomerEntity.setNote(customerRequest.getNote());

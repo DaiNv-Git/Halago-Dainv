@@ -64,9 +64,9 @@ public class GroupServiceImpl implements GroupService {
         try {
             GroupEntity groupEntity = new GroupEntity();
             groupEntity.setGroupName(groupAddRequest.getGroupName());
-            groupEntity.setPhone(groupAddRequest.getPhone());
+            groupEntity.setPhone("0"+groupAddRequest.getPhone());
             groupEntity.setLink(groupAddRequest.getLink());
-            groupEntity.setMemTotal(groupAddRequest.getMemberTotal());
+            groupEntity.setMemTotal(String.valueOf(groupAddRequest.getMemberTotal()));
             groupEntity.setExpense(groupAddRequest.getExpense());
             List<IndustryEntity> entities = industryRepository.findByIdIn(groupAddRequest.getIndustryId());
             if (!entities.isEmpty()) {
@@ -90,9 +90,9 @@ public class GroupServiceImpl implements GroupService {
             Optional<GroupEntity> groupEntity = groupRepository.findById(groupEditRequest.getId());
             if (groupEntity.isPresent()) {
                 groupEntity.get().setGroupName(groupEditRequest.getGroupName());
-                groupEntity.get().setPhone(groupEditRequest.getPhone());
+                groupEntity.get().setPhone("0"+groupEditRequest.getPhone());
                 groupEntity.get().setLink(groupEditRequest.getLink());
-                groupEntity.get().setMemTotal(groupEditRequest.getMemberTotal());
+                groupEntity.get().setMemTotal(String.valueOf(groupEditRequest.getMemberTotal()));
                 groupEntity.get().setExpense(groupEditRequest.getExpense());
                 List<IndustryEntity> entities = industryRepository.findByIdIn(groupEditRequest.getIndustryId());
                 if (!entities.isEmpty()) {
