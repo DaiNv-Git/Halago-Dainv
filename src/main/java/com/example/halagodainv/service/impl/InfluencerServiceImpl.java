@@ -176,7 +176,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencer.setYearOld(String.valueOf(request.getBirtYear()));
             influencer.setEmail(request.getEmail());
             influencer.setBankId(request.getBankId().toUpperCase());
-            influencer.setAccountNumber(String.valueOf(request.getBankNumber()));
+            influencer.setAccountNumber(request.getBankNumber());
             influencer.setCreated(new Date());
             if (request.getIndustry().size() > 0) {
                 influencer.setIndustry(parseListIntegerToString(request.getIndustry()));
@@ -267,7 +267,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 entity.get().setYearOld(String.valueOf(request.getBirtYear()));
                 entity.get().setEmail(request.getEmail());
                 entity.get().setBankId(request.getBankId().toUpperCase());
-                entity.get().setAccountNumber(String.valueOf(request.getBankNumber()));
+                entity.get().setAccountNumber(request.getBankNumber());
                 if (request.getIndustry().size() > 0) {
                     entity.get().setIndustry(parseListIntegerToString(request.getIndustry()));
                     List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());

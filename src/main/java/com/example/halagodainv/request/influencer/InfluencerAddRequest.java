@@ -22,7 +22,7 @@ public class InfluencerAddRequest {
     private Integer provinceId;
     private List<Integer> industry;
     private String bankId = "";
-    private Long bankNumber;
+    private String bankNumber;
     private String address;
     private String linkFb = "";
     private String followerFb = "";
