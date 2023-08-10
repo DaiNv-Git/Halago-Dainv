@@ -77,11 +77,16 @@ public class BrandServiceImpl implements BrandService {
             if (!brandAddRequest.validate(errorResponses)) {
                 return errorResponses;
             }
+
             Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandAddRequest.getEmail());
             Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandAddRequest.getBrandName());
-            if (braneName.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email or BrandName đã tồn tại", null);
+            if (braneName.isPresent() && emailBrand.isPresent()) {
+                List<String> errors = new ArrayList<>();
+                errors.add(brandAddRequest.getBrandName());
+                errors.add(brandAddRequest.getEmail());
+                return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Đã tồn tại email và nhãn hàng", errors);
             }
+
             BrandEntity brandEntity = new BrandEntity();
             brandEntity.setBrandName(brandAddRequest.getBrandName());
             brandEntity.setWebsite(brandAddRequest.getWebsite());
@@ -95,7 +100,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm dữ liệu thất bại", null);
+            return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Dữ liệu không tồn tại", null);
         }
 
     }
@@ -103,13 +108,26 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException {
         Optional<BrandEntity> brandEntity = brandRepository.findById(brandEditRequest.getId());
-        if (!brandEntity.isPresent()) {
-            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "id is not exit", null);
+        if (brandEntity.isEmpty()) {
+            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Dữ liệu không tồn tại", null);
         }
         List<ErrorResponse> errorResponses = new ArrayList<>();
         if (!brandEditRequest.validate(errorResponses)) {
             return errorResponses;
         }
+        brandEntity.get().setBrandName("");
+        brandEntity.get().setBrandEmail("");
+        brandRepository.save(brandEntity.get());
+
+        Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandEditRequest.getEmail());
+        Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandEditRequest.getBrandName());
+        if (braneName.isPresent() && emailBrand.isPresent()) {
+            List<String> errors = new ArrayList<>();
+            errors.add(brandEditRequest.getBrandName());
+            errors.add(brandEditRequest.getEmail());
+            return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Đã tồn tại email và nhãn hàng", errors);
+        }
+
         brandEntity.get().setBrandName(brandEditRequest.getBrandName());
         brandEntity.get().setWebsite(brandEditRequest.getWebsite());
         brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
