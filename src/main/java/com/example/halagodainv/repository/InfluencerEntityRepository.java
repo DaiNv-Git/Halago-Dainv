@@ -21,7 +21,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and" +
             "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or ie.isInstagram =:#{#isInstagram}) and" +
             "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or ie.isTiktok =:#{#isTiktok}) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
             "ie.yearOld like concat('%',:#{#birtYear},'%') ")
@@ -40,7 +40,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and" +
             "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or ie.isInstagram =:#{#isInstagram}) and" +
             "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or ie.isTiktok =:#{#isTiktok}) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
             "ie.yearOld like concat('%',:#{#birtYear},'%') ")
@@ -59,7 +59,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and" +
             "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and" +
             "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
             "id.follower like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
@@ -83,7 +83,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and" +
             "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and" +
             "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
             "id.follower like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
@@ -107,7 +107,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
             "(:#{#isInstagram} is null or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
             "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
             "id.follower like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
@@ -131,7 +131,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
             "(:#{#isInstagram} is null or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
             "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
             "id.follower like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
@@ -155,7 +155,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:#{#isYoutube} is null or (ie.isYoutube = :#{#isYoutube} and id.channel ='YOUTUBE')) and " +
             "(:#{#isInstagram} is null or (ie.isInstagram = :#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
             "(:#{#isTiktok} is null or (ie.isTiktok = :#{#isTiktok} and id.channel ='TIKTOK')) and " +
-            "ie.industry like concat('%',:#{#industry},'%') and " +
+            "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "id.expense like concat('%',:#{#expense},'%') and " +
             "id.follower like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +

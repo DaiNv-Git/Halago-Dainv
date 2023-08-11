@@ -4,10 +4,7 @@ import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.*;
 import com.example.halagodainv.repository.*;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -147,17 +144,9 @@ public class InfluencerImportExcel {
     private static String isString(Cell cell) {
         String value = "";
         if (cell != null) {
-            if (cell instanceof Number) {
-                value = String.valueOf(cell.getNumericCellValue());
-            } else if (cell instanceof Date){
-                value = String.valueOf(cell.getDateCellValue());
-            } else  {
-                value = cell.getStringCellValue();
-            }
-            return value;
-        }else {
-            return value;
+            value = cell.getStringCellValue();
         }
+        return value;
     }
 
     public static List<String> parseStringToListStrings(String input) {
