@@ -1,4 +1,4 @@
-package com.example.halagodainv.controller;
+package com.example.halagodainv.controller.viewdisplay;
 
 import com.example.halagodainv.request.kolCeleb.KolCelebRequest;
 import com.example.halagodainv.service.KolCelebService;

@@ -1,4 +1,4 @@
-package com.example.halagodainv.controller;
+package com.example.halagodainv.controller.viewdisplay;
 
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
