@@ -3,11 +3,12 @@ package com.example.halagodainv.model.viewdisplayentity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
 @Table(name = "view_news")
-public class NewViewEntity {
+public class ViewNewsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,4 +25,8 @@ public class NewViewEntity {
     private String image1;
     @Column(name = "image2")
     private String image2;
+    @Column(name = "is_hot")
+    private Boolean isHot;
+    @Column(name = "create_date")
+    private Date createDate;
 }
