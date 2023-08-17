@@ -25,8 +25,8 @@ public class ViewNewsEntity {
     private String image1;
     @Column(name = "image2")
     private String image2;
-    @Column(name = "is_hot")
-    private Boolean isHot;
+    @Column(name = "topic_id")
+    private Long topicId;
     @Column(name = "create_date")
     private Date createDate;
 }

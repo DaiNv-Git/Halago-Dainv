@@ -24,8 +24,9 @@ public class ViewNewsMap {
     private String bodyEN;
     private String footerEN;
     private String createdDate;
+    private Long topic;
 
-    public ViewNewsMap(int id, String title, String herder, String body, String footer, String image1, String image2, String titleEN, String herderEN, String bodyEN, String footerEN, Date createdDate) {
+    public ViewNewsMap(int id, String title, String herder, String body, String footer, String image1, String image2, String titleEN, String herderEN, String bodyEN, String footerEN, Date createdDate, Long topic) {
         this.id = id;
         this.title = title;
         this.herder = herder;
@@ -38,5 +39,6 @@ public class ViewNewsMap {
         this.bodyEN = bodyEN;
         this.footerEN = footerEN;
         this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
+        this.topic = topic;
     }
 }
