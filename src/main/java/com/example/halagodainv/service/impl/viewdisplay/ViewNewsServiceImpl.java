@@ -4,8 +4,6 @@ import com.example.halagodainv.dto.viewnews.ViewNewsDetailDto;
 import com.example.halagodainv.dto.viewnews.ViewNewsDto;
 import com.example.halagodainv.dto.viewnews.ViewNewsMap;
 import com.example.halagodainv.model.viewdisplayentity.ViewNewsEntity;
-import com.example.halagodainv.model.viewdisplayentity.ViewNewsLanguageEntity;
-import com.example.halagodainv.repository.viewdisplay.ViewNewsLanguageRepository;
 import com.example.halagodainv.repository.viewdisplay.ViewNewsRepository;
 import com.example.halagodainv.request.news.ViewNewsRequest;
 import com.example.halagodainv.response.PageResponse;
@@ -27,7 +25,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ViewNewsServiceImpl implements ViewNewsService {
     private final ViewNewsRepository viewNewsRepository;
-    private final ViewNewsLanguageRepository viewNewsLanguageRepository;
 
     public PageResponse<?> getViewNews(int pageNo, int pageSize, String language, Long topicId) {
         PageResponse<?> pageResponse;
@@ -66,6 +63,7 @@ public class ViewNewsServiceImpl implements ViewNewsService {
         viewNewsDetailDto.setId(viewNewsMaps.getId());
         viewNewsDetailDto.setImage1(viewNewsMaps.getImage1());
         viewNewsDetailDto.setImage2(viewNewsMaps.getImage2());
+
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
         if (language.equals("VN")) {
             viewNewsDetailDto.setTitle(viewNewsMaps.getTitle());
@@ -99,21 +97,17 @@ public class ViewNewsServiceImpl implements ViewNewsService {
         for (ViewNewsRequest request : requests) {
             Optional<ViewNewsEntity> viewNews = viewNewsRepository.findById(request.getId());
             List<ViewNewsEntity> newsEntities = new ArrayList<>();
-            List<ViewNewsLanguageEntity> languageEntities = new ArrayList<>();
             if (viewNews.isPresent()) {
-                Optional<ViewNewsLanguageEntity> viewNewsLanguageEntity = viewNewsLanguageRepository.findById(viewNews.get().getId());
                 viewNews.get().setBody(request.getBody());
                 viewNews.get().setFooter(request.getFooter());
                 viewNews.get().setHerder(request.getHerder());
                 viewNews.get().setImage1(request.getImage1());
                 viewNews.get().setImage2(request.getImage2());
                 viewNews.get().setTopicId(request.getTopicId());
-                viewNewsLanguageEntity.get().setHerderEN(request.getHerderEN());
-                viewNewsLanguageEntity.get().setBodyEN(request.getBodyEN());
-                viewNewsLanguageEntity.get().setFooterEN(request.getFooterEN());
+                viewNews.get().setHerderEN(request.getHerderEN());
+                viewNews.get().setBodyEN(request.getBodyEN());
+                viewNews.get().setFooterEN(request.getFooterEN());
                 newsEntities.add(viewNews.get());
-                languageEntities.add(viewNewsLanguageEntity.get());
-
             } else {
                 ViewNewsEntity entity = new ViewNewsEntity();
                 entity.setBody(request.getBody());
@@ -123,17 +117,12 @@ public class ViewNewsServiceImpl implements ViewNewsService {
                 entity.setImage2(request.getImage2());
                 entity.setTopicId(request.getTopicId());
                 entity.setCreateDate(new Date());
-                entity = viewNewsRepository.save(entity);
-                ViewNewsLanguageEntity viewNewsLanguage = new ViewNewsLanguageEntity();
-                viewNewsLanguage.setHerderEN(request.getHerderEN());
-                viewNewsLanguage.setBodyEN(request.getBodyEN());
-                viewNewsLanguage.setFooterEN(request.getFooterEN());
-                viewNewsLanguage.setNewViewId(entity.getId());
-                viewNewsLanguageRepository.save(viewNewsLanguage);
+                entity.setHerderEN(request.getHerderEN());
+                entity.setBodyEN(request.getBodyEN());
+                entity.setFooterEN(request.getFooterEN());
+                newsEntities.add(entity);
             }
             viewNewsRepository.saveAll(newsEntities);
-            viewNewsLanguageRepository.saveAll(languageEntities);
-
         }
         return getDetail(1, 10);
     }

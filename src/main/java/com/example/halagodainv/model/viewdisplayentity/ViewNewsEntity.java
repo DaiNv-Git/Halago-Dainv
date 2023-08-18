@@ -21,6 +21,14 @@ public class ViewNewsEntity {
     private String body;
     @Column(name = "footer")
     private String footer;
+    @Column(name = "title_en")
+    private String titleEN;
+    @Column(name = "header_en")
+    private String herderEN;
+    @Column(name = "body_en")
+    private String bodyEN;
+    @Column(name = "footer_en")
+    private String footerEN;
     @Column(name = "image1")
     private String image1;
     @Column(name = "image2")
@@ -29,4 +37,5 @@ public class ViewNewsEntity {
     private Long topicId;
     @Column(name = "create_date")
     private Date createDate;
+
 }
