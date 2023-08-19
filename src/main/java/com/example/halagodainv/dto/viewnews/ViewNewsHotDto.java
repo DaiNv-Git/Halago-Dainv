@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewNewsDto {
-    private int id;
-    private String title;
+public class ViewNewsHotDto {
     private String image1;
-    private String createdDate;
+    private String title;
 }

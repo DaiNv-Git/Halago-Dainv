@@ -19,21 +19,11 @@ public class ViewNewController {
     @PostMapping("")
     public ResponseEntity<?> viewNews(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                      @RequestParam(value = "topicId", defaultValue = "0") Long topicId,
+                                      @RequestParam(value = "topicId") Long topicId,
+                                      @RequestParam(value = "tagId") Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getViewNews(pageNo, pageSize, language, topicId)));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @PostMapping("/view-detail")
-    public ResponseEntity<?> viewNews(@RequestParam(value = "viewId") int viewId,
-                                      @RequestParam(value = "topicId", defaultValue = "0") Long topicId,
-                                      @RequestParam(value = "language") String language) {
-        try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getViewNewsDetail(viewId, language, topicId)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getViewNews(pageNo, pageSize, language, topicId, tagId)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -49,6 +39,18 @@ public class ViewNewController {
         }
     }
 
+    @PostMapping("/view-detail")
+    public ResponseEntity<?> viewNews(@RequestParam(value = "viewId") int viewId,
+                                      @RequestParam(value = "topicId") Long topicId,
+                                      @RequestParam(value = "tagId") Long tagId,
+                                      @RequestParam(value = "language") String language) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getViewNewsDetail(viewId, language, topicId, tagId)));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     @PostMapping("/update")
     public ResponseEntity<?> detail(@RequestBody List<ViewNewsRequest> requests) {
         try {
@@ -58,4 +60,21 @@ public class ViewNewController {
         }
     }
 
+    @PostMapping("/news-hots")
+    public ResponseEntity<?> getNewsAndHot(@RequestParam(value = "language") String language) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getViewNewsAndHots(language)));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/topic")
+    public ResponseEntity<?> getTopics(@RequestParam(value = "language") String language) {
+        try {
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getTopic(language)));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

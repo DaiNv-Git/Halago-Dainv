@@ -1,4 +1,4 @@
-package com.example.halagodainv.controller;
+package com.example.halagodainv.controller.viewdisplay;
 
 import com.example.halagodainv.dto.story.StoryDetailDto;
 import com.example.halagodainv.service.StoryService;
