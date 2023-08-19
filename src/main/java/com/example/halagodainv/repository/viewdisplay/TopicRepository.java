@@ -1,4 +1,4 @@
-package com.example.halagodainv.repository;
+package com.example.halagodainv.repository.viewdisplay;
 
 import com.example.halagodainv.model.TopicEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

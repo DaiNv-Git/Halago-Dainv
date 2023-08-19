@@ -77,4 +77,13 @@ public class ViewNewController {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @PostMapping("/tags")
+    public ResponseEntity<?> getTags() {
+        try {
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", viewNewsService.getTag()));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

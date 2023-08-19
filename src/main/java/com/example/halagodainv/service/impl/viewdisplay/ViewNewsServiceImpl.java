@@ -3,8 +3,10 @@ package com.example.halagodainv.service.impl.viewdisplay;
 import com.example.halagodainv.dto.topic.TopicDto;
 import com.example.halagodainv.dto.viewnews.*;
 import com.example.halagodainv.model.TopicEntity;
+import com.example.halagodainv.model.viewdisplayentity.TagEntity;
 import com.example.halagodainv.model.viewdisplayentity.ViewNewsEntity;
-import com.example.halagodainv.repository.TopicRepository;
+import com.example.halagodainv.repository.viewdisplay.TagRepository;
+import com.example.halagodainv.repository.viewdisplay.TopicRepository;
 import com.example.halagodainv.repository.viewdisplay.ViewNewsRepository;
 import com.example.halagodainv.request.news.ViewNewsRequest;
 import com.example.halagodainv.response.PageResponse;
@@ -22,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
 public class ViewNewsServiceImpl implements ViewNewsService {
     private final ViewNewsRepository viewNewsRepository;
     private final TopicRepository topicRepository;
+    private final TagRepository tagRepository;
 
     public PageResponse<?> getViewNews(int pageNo, int pageSize, String language, Long topicId, Long tagId) {
         PageResponse<?> pageResponse;
@@ -222,7 +224,7 @@ public class ViewNewsServiceImpl implements ViewNewsService {
         return newsEntities;
     }
 
-    public Object getTopic(String language) {
+    public List<TopicDto> getTopic(String language) {
         List<TopicEntity> entities = topicRepository.findAll();
         List<TopicDto> topicDtos = new ArrayList<>();
         entities.forEach(map -> {
@@ -237,5 +239,9 @@ public class ViewNewsServiceImpl implements ViewNewsService {
             topicDtos.add(topicDto);
         });
         return topicDtos;
+    }
+
+    public List<TagEntity> getTag() {
+        return tagRepository.findAll();
     }
 }
