@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
+import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
 import com.example.halagodainv.service.ContactCustomerService;
 import io.swagger.models.Response;
 import org.slf4j.Logger;
@@ -26,6 +27,11 @@ public class ContactCustomerController {
     @PostMapping("/add")
     public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) {
         return ResponseEntity.ok(contactCustomerService.add(customerRequest));
+    }
+
+    @PostMapping("/add-free-consul")
+    public ResponseEntity<Object> save(@RequestBody FreeConsultationRequest customerRequest) {
+        return ResponseEntity.ok(contactCustomerService.addFreeConsul(customerRequest));
     }
 
 }

@@ -193,6 +193,7 @@ public class ViewNewsServiceImpl implements ViewNewsService {
                 viewNews.get().setImage1(request.getImage1());
                 viewNews.get().setImage2(request.getImage2());
                 viewNews.get().setTopicId(request.getTopicId());
+                viewNews.get().setIsHot(request.getIsHot());
 
                 viewNews.get().setTitleEN(request.getTitleEN());
                 viewNews.get().setHerderEN(request.getHerderEN());
@@ -210,6 +211,7 @@ public class ViewNewsServiceImpl implements ViewNewsService {
                 entity.setImage1(request.getImage1());
                 entity.setImage2(request.getImage2());
                 entity.setTopicId(request.getTopicId());
+                entity.setIsHot(request.getIsHot());
                 entity.setCreateDate(new Date());
 
                 entity.setTitleEN(request.getTitleEN());

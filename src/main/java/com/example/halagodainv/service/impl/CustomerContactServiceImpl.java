@@ -2,8 +2,11 @@ package com.example.halagodainv.service.impl;
 
 
 import com.example.halagodainv.model.ContactCustomerEntity;
+import com.example.halagodainv.model.viewdisplayentity.FreeConsultationEntity;
 import com.example.halagodainv.repository.ContactCustomerRepository;
+import com.example.halagodainv.repository.FreeConsultationRepository;
 import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
+import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ContactCustomerService;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerContactServiceImpl implements ContactCustomerService {
     private final ContactCustomerRepository contactCustomerRepository;
+    private final FreeConsultationRepository freeConsultationRepository;
 
     public Object getListCustomers(int pageNo, int pageSize) {
         int offset = 0;
@@ -50,6 +54,22 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         contactCustomerEntity.setNote(customerRequest.getNote());
         contactCustomerRepository.save(contactCustomerEntity);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", null);
+    }
+
+    public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) {
+        FreeConsultationEntity freeConsultationEntity = new FreeConsultationEntity();
+        freeConsultationEntity.setName(request.getName());
+        freeConsultationEntity.setEmail(request.getEmail());
+        freeConsultationEntity.setPhone(request.getPhone());
+        freeConsultationEntity.setWebsite(request.getWebsite());
+        freeConsultationEntity.setIsAdvertisementVTC(request.getIsAdvertisementVTC());
+        freeConsultationEntity.setIsBrandAmbassador(request.getIsBrandAmbassador());
+        freeConsultationEntity.setIsEvent(request.getIsEvent());
+        freeConsultationEntity.setIsLiveStream(request.getIsLiveStream());
+        freeConsultationEntity.setIsReview(request.getIsReview());
+        freeConsultationEntity.setIsOther(request.getIsOther());
+        freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
+        return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
     }
 
 }

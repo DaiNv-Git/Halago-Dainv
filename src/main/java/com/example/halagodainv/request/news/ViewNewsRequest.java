@@ -17,4 +17,5 @@ public class ViewNewsRequest {
     private String footerEN;
     private Long topicId;
     private Long tagId;
+    private Boolean isHot;
 }
