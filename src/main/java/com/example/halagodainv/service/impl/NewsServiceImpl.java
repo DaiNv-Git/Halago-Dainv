@@ -5,26 +5,35 @@ import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.news.NewDtoDetails;
+import com.example.halagodainv.dto.topic.TopicDto;
+import com.example.halagodainv.dto.viewnews.*;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.NewsLanguageEntity;
+import com.example.halagodainv.model.TopicEntity;
+import com.example.halagodainv.model.viewdisplayentity.TagEntity;
+import com.example.halagodainv.model.viewdisplayentity.ViewNewsEntity;
 import com.example.halagodainv.repository.NewsLanguageRepository;
 import com.example.halagodainv.repository.NewsRepository;
 import com.example.halagodainv.repository.NewsTypeRepository;
+import com.example.halagodainv.repository.viewdisplay.TagRepository;
+import com.example.halagodainv.repository.viewdisplay.TopicRepository;
 import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
-import com.example.halagodainv.until.FormatTimeSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -33,12 +42,14 @@ import java.util.*;
 public class NewsServiceImpl implements NewsService {
     @Autowired
     NewsLanguageRepository newsLanguageRepository;
-
     @Autowired
     NewsTypeRepository newsTypeRepository;
-
+    @Autowired
+    TopicRepository topicRepository;
     @Autowired
     NewsRepository newsRepository;
+    @Autowired
+    TagRepository tagRepository;
 
     @Override
     public Object getNews(NewsFormSearch newsSearch) {
@@ -47,9 +58,9 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()));
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle());
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), FormatTimeSearch.getStart(newsSearch.getStartDate()), FormatTimeSearch.getEndDate(newsSearch.getEndDate()), pageable);
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), pageable);
             PageResponse pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
@@ -76,14 +87,24 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setStatus(i.getStatus());
                         newewDtoDetailsss.setLinkPost(i.getLinkPost());
                         newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
+                        newewDtoDetailsss.setImage1(i.getImage1());
+                        newewDtoDetailsss.setImage2(i.getImage2());
+                        newewDtoDetailsss.setTopicId(i.getTopicId());
+                        newewDtoDetailsss.setTagId(i.getTagId());
                         if (i.getLanguage().equals("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
                             newewDtoDetailsss.setTitleVN(i.getTitle());
+                            newewDtoDetailsss.setHerderVN(i.getHerder());
+                            newewDtoDetailsss.setBodyVN(i.getBody());
+                            newewDtoDetailsss.setFooterVN(i.getFooter());
                         } else {
                             newewDtoDetailsss.setTitleEN(i.getTitle());
                             newewDtoDetailsss.setDescriptionEN(i.getDescription());
                             newewDtoDetailsss.setContentEN(i.getContent());
+                            newewDtoDetailsss.setHerderEN(i.getHerder());
+                            newewDtoDetailsss.setBodyEN(i.getBody());
+                            newewDtoDetailsss.setFooterEN(i.getFooter());
                         }
                     });
             newDtoDetail.add(newewDtoDetailsss);
@@ -91,6 +112,108 @@ public class NewsServiceImpl implements NewsService {
         } catch (Exception e) {
             return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
         }
+    }
+
+    public PageResponse<?> getViewNews(int pageNo, int pageSize, String language, Long topicId, Long tagId) {
+        PageResponse<?> pageResponse;
+        int offset = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNews(topicId, tagId, language, pageable);
+        if (CollectionUtils.isEmpty(viewNewsMaps)) {
+            pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
+            return pageResponse;
+        }
+        pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, viewNewsMaps.size()));
+        return pageResponse;
+    }
+
+    public ViewNewsDetailDto getViewNewsDetail(int id, String language, Long topicId, Long tagId) {
+        ViewNewsMap viewNewsMaps = newsRepository.getDetailView(topicId, tagId, language, id);
+        if (ObjectUtils.isEmpty(viewNewsMaps)) {
+            return null;
+        }
+        ViewNewsDetailDto viewNewsDetailDto = new ViewNewsDetailDto();
+        viewNewsDetailDto.setId(viewNewsMaps.getId());
+        viewNewsDetailDto.setTitle(viewNewsMaps.getTitle());
+        viewNewsDetailDto.setHerder(viewNewsMaps.getHerder());
+        viewNewsDetailDto.setImage1(viewNewsMaps.getImage1());
+        viewNewsDetailDto.setBody(viewNewsMaps.getBody());
+        viewNewsDetailDto.setImage2(viewNewsMaps.getImage2());
+        viewNewsDetailDto.setFooter(viewNewsMaps.getFooter());
+        viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
+        return viewNewsDetailDto;
+    }
+
+    public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
+        Pageable pageable = PageRequest.of(0, 3);
+        Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNewTotalTopic(0L, 0L, language, true);
+        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language, pageable);
+        List<ViewNewsMap> viewNews = newsRepository.getViewNews(0L, 0L, language, pageableViewNews);
+        int count1 = 0;
+        int count2 = 0;
+        int count3 = 0;
+        int count4 = 0;
+        int count5 = 0;
+        int count6 = 0;
+        ViewTopicDto viewTopicDto = new ViewTopicDto();
+        ViewTopicDto viewTopicDto1 = new ViewTopicDto();
+        ViewTopicDto viewTopicDto2 = new ViewTopicDto();
+        ViewTopicDto viewTopicDto3 = new ViewTopicDto();
+        ViewTopicDto viewTopicDto4 = new ViewTopicDto();
+        ViewTopicDto viewTopicDto5 = new ViewTopicDto();
+        List<ViewTopicDto> viewNewsTopicDto = new ArrayList<>();
+        for (ViewNewsMap viewMap : viewNewsMaps) {
+            if (viewMap.getTopicId() == 1) {
+                count1++;
+            } else if (viewMap.getTopicId() == 2) {
+                count2++;
+            } else if (viewMap.getTopicId() == 3) {
+                count3++;
+            } else if (viewMap.getTopicId() == 4) {
+                count4++;
+            } else if (viewMap.getTopicId() == 5) {
+                count5++;
+            } else if (viewMap.getTopicId() == 6) {
+                count6++;
+            }
+        }
+        viewTopicDto.setTitle(topicRepository.findAll().get(0).getTopicName());
+        viewTopicDto1.setTitle(topicRepository.findAll().get(1).getTopicName());
+        viewTopicDto2.setTitle(topicRepository.findAll().get(2).getTopicName());
+        viewTopicDto3.setTitle(topicRepository.findAll().get(3).getTopicName());
+        viewTopicDto4.setTitle(topicRepository.findAll().get(4).getTopicName());
+        viewTopicDto5.setTitle(topicRepository.findAll().get(4).getTopicName());
+
+        viewTopicDto.setCount(count1);
+        viewTopicDto1.setCount(count2);
+        viewTopicDto2.setCount(count3);
+        viewTopicDto3.setCount(count4);
+        viewTopicDto4.setCount(count5);
+        viewTopicDto5.setCount(count6);
+
+        viewNewsTopicDto.add(viewTopicDto);
+        viewNewsTopicDto.add(viewTopicDto1);
+        viewNewsTopicDto.add(viewTopicDto2);
+        viewNewsTopicDto.add(viewTopicDto3);
+        viewNewsTopicDto.add(viewTopicDto4);
+
+        List<ViewNewsHotDto> viewNewDtos = new ArrayList<>();
+        List<ViewNewsHotDto> viewNewHots = new ArrayList<>();
+        viewNews.forEach(viewMap -> {
+            ViewNewsHotDto viewNew = new ViewNewsHotDto();
+            viewNew.setTitle(viewMap.getTitle());
+            viewNew.setImage1(viewMap.getImage1());
+            viewNewDtos.add(viewNew);
+        });
+
+        viewNewHotsMap.forEach(viewMap -> {
+            ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
+            viewNewsHotDto.setTitle(viewMap.getTitle());
+            viewNewsHotDto.setImage1(viewMap.getImage1());
+            viewNewHots.add(new ViewNewsHotDto());
+        });
+        return new ViewNewsAndHotDetailDto(viewNewsTopicDto, viewNewDtos, viewNewHots);
     }
 
     @Override
@@ -105,13 +228,20 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
-            newsEntity.setStatus(request.getStatus());
+            newsEntity.setImage1(request.getImage1());
+            newsEntity.setImage2(request.getImage2());
+            newsEntity.setTopicId(request.getTopicId());
+            newsEntity.setTagId(request.getTagId());
+            newsEntity.setIsHot(false);
             newsRepository.save(newsEntity);
             //add news language
             //add en
             newsEN.setTitle(request.getTitleEN());
             newsEN.setContent(request.getContentEN());
             newsEN.setDescription(request.getDescriptionEN());
+            newsEN.setHerder(request.getHerderEN());
+            newsEN.setBody(request.getBodyEN());
+            newsEN.setFooter(request.getFooterEN());
             newsEN.setLanguage(String.valueOf(Language.EN));
             newsEN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsEN);
@@ -119,6 +249,9 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setTitle(request.getTitleVN());
             newsVN.setContent(request.getContentVN());
             newsVN.setDescription(request.getDescriptionVN());
+            newsVN.setHerder(request.getHerderVN());
+            newsVN.setBody(request.getBodyVN());
+            newsVN.setFooter(request.getFooterVN());
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsVN);
@@ -143,6 +276,11 @@ public class NewsServiceImpl implements NewsService {
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
+            news.get().setType(newsAddRequest.getType());
+            news.get().setImage1(newsAddRequest.getImage1());
+            news.get().setImage2(newsAddRequest.getImage2());
+            news.get().setTopicId(newsAddRequest.getTopicId());
+            news.get().setTagId(newsAddRequest.getTagId());
             newsRepository.save(news.get());
             //add detail
             newsLanguageRepository.deleteByNewId(news.get().getIdNews());
@@ -151,6 +289,9 @@ public class NewsServiceImpl implements NewsService {
             newsEN.setTitle(newsAddRequest.getTitleEN());
             newsEN.setContent(newsAddRequest.getContentEN());
             newsEN.setDescription(newsAddRequest.getDescriptionEN());
+            newsEN.setHerder(newsAddRequest.getHerderEN());
+            newsEN.setBody(newsAddRequest.getBodyEN());
+            newsEN.setFooter(newsAddRequest.getFooterEN());
             newsEN.setLanguage(String.valueOf(Language.EN));
             newsEN.setNewsEntity(news.get());
             newsLanguageRepository.save(newsEN);
@@ -158,6 +299,9 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setTitle(newsAddRequest.getTitleVN());
             newsVN.setContent(newsAddRequest.getContentVN());
             newsVN.setDescription(newsAddRequest.getDescriptionVN());
+            newsVN.setHerder(newsAddRequest.getHerderVN());
+            newsVN.setBody(newsAddRequest.getBodyVN());
+            newsVN.setFooter(newsAddRequest.getFooterVN());
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(news.get());
             newsLanguageRepository.save(newsVN);
@@ -179,5 +323,45 @@ public class NewsServiceImpl implements NewsService {
             return new BaseResponse(Constant.FAILED, "Xóa tin tức  thất bại", new BaseResponse(0, "Xóa tin tức  thất bại\"", null));
         }
 
+    }
+
+    public List<TopicDto> getTopic(String language) {
+        List<TopicEntity> entities = topicRepository.findAll();
+        List<com.example.halagodainv.dto.topic.TopicDto> topicDtos = new ArrayList<>();
+        entities.forEach(map -> {
+            com.example.halagodainv.dto.topic.TopicDto topicDto = new com.example.halagodainv.dto.topic.TopicDto();
+            if (language.equals("VN")) {
+                topicDto.setId(map.getId());
+                topicDto.setTopicName(map.getTopicName());
+            } else if (language.equals("EN")) {
+                topicDto.setId(map.getId());
+                topicDto.setTopicName(map.getTopicNameEN());
+            }
+            topicDtos.add(topicDto);
+        });
+        return topicDtos;
+    }
+
+    public List<TagEntity> getTag() {
+        return tagRepository.findAll();
+    }
+
+    public void setIsHot(int idNew, Boolean isHot) throws GeneralException {
+        List<NewsEntity> newsEntities = newsRepository.findAll();
+        int count = 1;
+        for (NewsEntity news : newsEntities) {
+            if (isHot == news.getIsHot()) {
+                count++;
+            }
+        }
+        if (count > 3) {
+            throw new GeneralException("new hot only 3 articles");
+        }
+        Optional<NewsEntity> entity = newsRepository.findById(idNew);
+        if (entity.isPresent()){
+            entity.get().setIsHot(isHot);
+        }else {
+            throw new GeneralException("New is not exits");
+        }
     }
 }

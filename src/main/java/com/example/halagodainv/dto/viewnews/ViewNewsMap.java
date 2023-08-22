@@ -18,15 +18,11 @@ public class ViewNewsMap {
     private String footer;
     private String image1;
     private String image2;
-    private String titleEN;
-    private String herderEN;
-    private String bodyEN;
-    private String footerEN;
     private String createdDate;
     private Long topicId;
     private Long tagId;
 
-    public ViewNewsMap(int id, String title, String herder, String body, String footer, String image1, String image2, String titleEN, String herderEN, String bodyEN, String footerEN, Date createdDate, Long topicId, Long tagId) {
+    public ViewNewsMap(int id, String title, String herder, String body, String footer, String image1, String image2, Date createdDate, Long topicId, Long tagId) {
         this.id = id;
         this.title = title;
         this.herder = herder;
@@ -34,10 +30,6 @@ public class ViewNewsMap {
         this.footer = footer;
         this.image1 = image1;
         this.image2 = image2;
-        this.titleEN = titleEN;
-        this.herderEN = herderEN;
-        this.bodyEN = bodyEN;
-        this.footerEN = footerEN;
         this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
         this.topicId = topicId;
         this.tagId = tagId;

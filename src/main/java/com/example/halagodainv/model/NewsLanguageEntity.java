@@ -18,6 +18,12 @@ public class NewsLanguageEntity {
     String description;
     @Column(name = "content")
     String content;
+    @Column(name = "header")
+    private String herder;
+    @Column(name = "body")
+    private String body;
+    @Column(name = "footer")
+    private String footer;
     @Column(name = "language")
     String language;
     @ManyToOne(fetch = FetchType.EAGER)

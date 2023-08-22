@@ -20,5 +20,15 @@ public class NewDtoDetails {
     private Integer status;
     private String photoTitle;
     private String linkPost;
+    private String herderVN;
+    private String herderEN;
+    private String bodyVN;
+    private String bodyEN;
+    private String footerVN;
+    private String footerEN;
+    private String image1;
+    private String image2;
+    private Long topicId;
+    private Long tagId;
 
 }

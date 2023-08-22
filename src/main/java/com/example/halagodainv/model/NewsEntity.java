@@ -23,7 +23,7 @@ public class NewsEntity {
     String thumbnail;
     @Column(name = "created")
     @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
-    Date created;
+    private Date created;
     @Column(name = "type")
     int type;
     @Column(name = "status")
@@ -32,6 +32,16 @@ public class NewsEntity {
     String titleSeo;
     @Column(name = "link_papers")
     String linkPapers;
+    @Column(name = "image_view1")
+    private String image1;
+    @Column(name = "image_view2")
+    private String image2;
+    @Column(name = "topic_id")
+    private Long topicId;
+    @Column(name = "tagId")
+    private Long tagId;
+    @Column(name = "is_hot")
+    private Boolean isHot;
     @JsonIgnore
     @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();
