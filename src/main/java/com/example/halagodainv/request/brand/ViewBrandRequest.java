@@ -1,11 +1,9 @@
 package com.example.halagodainv.request.brand;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Column;
 @Data
-public class VieBrandRequest {
+public class ViewBrandRequest {
     private Long id;
     private String logoBrand;
     private String name;

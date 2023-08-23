@@ -149,7 +149,7 @@ public class NewsServiceImpl implements NewsService {
         Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
         List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNewTotalTopic(0L, 0L, language, true);
         List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language, pageable);
-        List<ViewNewsMap> viewNews = newsRepository.getViewNews(0L, 0L, language, pageableViewNews);
+        List<ViewNewsMap> viewNews = newsRepository.getViewNew(0L, 0L, language, pageableViewNews);
         int count1 = 0;
         int count2 = 0;
         int count3 = 0;
@@ -346,11 +346,11 @@ public class NewsServiceImpl implements NewsService {
         return tagRepository.findAll();
     }
 
-    public void setIsHot(int idNew, Boolean isHot) throws GeneralException {
+    public void setIsHot(int idNew) throws GeneralException {
         List<NewsEntity> newsEntities = newsRepository.findAll();
         int count = 1;
         for (NewsEntity news : newsEntities) {
-            if (isHot == news.getIsHot()) {
+            if (Boolean.TRUE.equals(news.getIsHot())) {
                 count++;
             }
         }
@@ -358,9 +358,18 @@ public class NewsServiceImpl implements NewsService {
             throw new GeneralException("new hot only 3 articles");
         }
         Optional<NewsEntity> entity = newsRepository.findById(idNew);
-        if (entity.isPresent()){
-            entity.get().setIsHot(isHot);
-        }else {
+        if (entity.isPresent()) {
+            entity.get().setIsHot(true);
+        } else {
+            throw new GeneralException("New is not exits");
+        }
+    }
+
+    public void setIsNotHot(int idNew) throws GeneralException {
+        Optional<NewsEntity> entity = newsRepository.findById(idNew);
+        if (entity.isPresent()) {
+            entity.get().setIsHot(false);
+        } else {
             throw new GeneralException("New is not exits");
         }
     }

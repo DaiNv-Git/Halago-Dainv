@@ -98,9 +98,19 @@ public class NewsController {
     }
 
     @PostMapping("/view/hot")
-    public ResponseEntity<?> setViewHot(@RequestParam(value = "idNew") int idNew, @RequestParam(value = "isHot") Boolean isHot) {
+    public ResponseEntity<?> setViewHot(@RequestParam(value = "idNew") int idNew) {
         try {
-            newsService.setIsHot(idNew, isHot);
+            newsService.setIsHot(idNew);
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "set success", null));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/view/not-hot")
+    public ResponseEntity<?> setNotViewHot(@RequestParam(value = "idNew") int idNew) {
+        try {
+            newsService.setIsNotHot(idNew);
             return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "set success", null));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

@@ -21,8 +21,9 @@ public class ViewBrandEntity {
     private String name;
     @Column(name = "position_id")
     private Integer positionId;
-    @Column(name = "description")
-    private String description;
-    @Column(name = "language")
-    private String language;
+    @Column(name = "description_vn")
+    private String descriptionVN;
+    @Column(name = "description_en")
+    private String descriptionEN;
+
 }

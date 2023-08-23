@@ -32,7 +32,9 @@ public interface NewsService {
 
     List<TagEntity> getTag();
 
-    void setIsHot(int idNew, Boolean isHot) throws GeneralException;
+    void setIsHot(int idNew) throws GeneralException;
+
+    void setIsNotHot(int idNew) throws GeneralException;
 
 
 }
