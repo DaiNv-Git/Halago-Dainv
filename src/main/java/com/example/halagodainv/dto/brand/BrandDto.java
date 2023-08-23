@@ -1,8 +1,13 @@
 package com.example.halagodainv.dto.brand;
 
 import com.example.halagodainv.model.BrandEntity;
+import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import com.example.halagodainv.until.DateUtilFormat;
 import lombok.*;
+import org.apache.catalina.LifecycleState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +24,7 @@ public class BrandDto {
     private String passwordHide;
     private String website;
     private String description;
-    private int partnerId;
+    private List<Integer> partnerId = new ArrayList<>();
 
     public BrandDto(BrandEntity brandEntity) {
         this.id = brandEntity.getId();
@@ -31,6 +36,6 @@ public class BrandDto {
         this.website = brandEntity.getWebsite();
         this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
         this.description = brandEntity.getDescription();
-        this.partnerId = brandEntity.getPartnerId();
+        this.partnerId = InfluencerServiceImpl.parseStringToListOfIntegers(brandEntity.getPartnerId());
     }
 }

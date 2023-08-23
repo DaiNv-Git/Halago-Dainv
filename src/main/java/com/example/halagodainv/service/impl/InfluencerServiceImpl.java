@@ -427,7 +427,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public static String parseListIntegerToString(List<Integer> inputs) {
         if (inputs.size() > 0) {
-            StringJoiner joiner = new StringJoiner(",");
+            StringJoiner joiner = new StringJoiner(", ");
             for (Integer integer : inputs) {
                 joiner.add(String.valueOf(integer).trim());
             }

@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -26,6 +27,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         String message = "msg_Hasexpired_0";
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), message);
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), messageSource.getMessage(message, request.getCookies(), Locale.ENGLISH));
     }
 }

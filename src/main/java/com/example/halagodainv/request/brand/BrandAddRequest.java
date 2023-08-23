@@ -21,7 +21,7 @@ public class BrandAddRequest {
     private String phoneNumber;
     private String logo;
     private String description;
-    private int partnerId;
+    private List<Integer> partnerId;
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
@@ -34,10 +34,6 @@ public class BrandAddRequest {
             isCheck = false;
         }
         if (Strings.isBlank(email)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
-            isCheck = false;
-        }
-        if (partnerId == 0) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Cần phải nhập dữ liệu", null));
             isCheck = false;
         }

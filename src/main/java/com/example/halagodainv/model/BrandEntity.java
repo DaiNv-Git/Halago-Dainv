@@ -37,5 +37,5 @@ public class BrandEntity implements Serializable {
     @Column(name = "logo")
     private String logo;
     @Column(name = "partner_id")
-    private Integer partnerId;
+    private String partnerId;
 }

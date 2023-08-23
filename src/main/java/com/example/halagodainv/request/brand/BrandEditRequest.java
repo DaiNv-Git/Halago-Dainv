@@ -18,7 +18,7 @@ public class BrandEditRequest {
     private String phoneNumber;
     private String logo;
     private String description;
-    private int partnerId;
+    private List<Integer> partnerId;
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
         if (Strings.isBlank(registerName)) {
@@ -31,10 +31,6 @@ public class BrandEditRequest {
         }
         if (Strings.isBlank(email)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "email is not null or empty", null));
-            isCheck = false;
-        }
-        if (partnerId == 0) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "partnerId > 0", null));
             isCheck = false;
         }
         return isCheck;
