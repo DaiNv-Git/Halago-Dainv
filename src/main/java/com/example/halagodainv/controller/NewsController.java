@@ -97,7 +97,7 @@ public class NewsController {
         }
     }
 
-    @PostMapping("/view/hot")
+    @PostMapping("/view/set-hot")
     public ResponseEntity<?> setViewHot(@RequestParam(value = "idNew") int idNew) {
         try {
             newsService.setIsHot(idNew);
@@ -107,7 +107,7 @@ public class NewsController {
         }
     }
 
-    @PostMapping("/view/not-hot")
+    @PostMapping("/view/set-not-hot")
     public ResponseEntity<?> setNotViewHot(@RequestParam(value = "idNew") int idNew) {
         try {
             newsService.setIsNotHot(idNew);

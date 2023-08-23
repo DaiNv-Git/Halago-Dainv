@@ -118,7 +118,7 @@ public class NewsServiceImpl implements NewsService {
         PageResponse<?> pageResponse;
         int offset = pageNo > 0 ? pageNo - 1 : 0;
         Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNews(topicId, tagId, language, pageable);
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, tagId, language, pageable);
         if (CollectionUtils.isEmpty(viewNewsMaps)) {
             pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
             return pageResponse;
@@ -145,10 +145,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
-        Pageable pageable = PageRequest.of(0, 3);
         Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
         List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNewTotalTopic(0L, 0L, language, true);
-        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language, pageable);
+        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language);
         List<ViewNewsMap> viewNews = newsRepository.getViewNew(0L, 0L, language, pageableViewNews);
         int count1 = 0;
         int count2 = 0;
@@ -163,7 +162,7 @@ public class NewsServiceImpl implements NewsService {
         ViewTopicDto viewTopicDto4 = new ViewTopicDto();
         ViewTopicDto viewTopicDto5 = new ViewTopicDto();
         List<ViewTopicDto> viewNewsTopicDto = new ArrayList<>();
-        for (ViewNewsMap viewMap : viewNewsMaps) {
+        for (ViewNewsMap viewMap : viewNewHotsMap) {
             if (viewMap.getTopicId() == 1) {
                 count1++;
             } else if (viewMap.getTopicId() == 2) {
@@ -207,7 +206,7 @@ public class NewsServiceImpl implements NewsService {
             viewNewDtos.add(viewNew);
         });
 
-        viewNewHotsMap.forEach(viewMap -> {
+        viewNewsMaps.forEach(viewMap -> {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
             viewNewsHotDto.setImage1(viewMap.getImage1());
@@ -360,6 +359,7 @@ public class NewsServiceImpl implements NewsService {
         Optional<NewsEntity> entity = newsRepository.findById(idNew);
         if (entity.isPresent()) {
             entity.get().setIsHot(true);
+            newsRepository.save(entity.get());
         } else {
             throw new GeneralException("New is not exits");
         }
@@ -369,6 +369,7 @@ public class NewsServiceImpl implements NewsService {
         Optional<NewsEntity> entity = newsRepository.findById(idNew);
         if (entity.isPresent()) {
             entity.get().setIsHot(false);
+            newsRepository.save(entity.get());
         } else {
             throw new GeneralException("New is not exits");
         }
