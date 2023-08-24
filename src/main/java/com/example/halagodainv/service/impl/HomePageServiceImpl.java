@@ -1,6 +1,7 @@
 package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.dto.hompage.*;
+import com.example.halagodainv.dto.viewnews.ViewNewsMap;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.AdvantageEntity;
 import com.example.halagodainv.model.AdvantageEntityLanguage;

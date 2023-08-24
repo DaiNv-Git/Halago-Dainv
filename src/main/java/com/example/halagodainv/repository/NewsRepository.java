@@ -38,7 +38,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
     List<NewDetails> getHomeLanguage(@Param("idNews") int idNews);
 
     @Query(value = "select new com.example.halagodainv.dto.hompage.NewsTenDto(n.titleSeo, n.thumbnail,n.created) " +
-            "from NewsEntity n " +
+            "from NewsEntity n where n.topicId=1l " +
             "order by n.created desc ")
     List<NewsTenDto> getHomeLanguage(Pageable pageable);
 
