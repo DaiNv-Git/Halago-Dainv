@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Component
 public class JwtToken {
     private final String JWT_SECRET = "morHn10/05/2023@!123!!!###$$%%(())";
-    private final long JWT_EXPIRATION = 604800000L;
+    private final long JWT_EXPIRATION = 30 * 24 * 3600;
     //lay token
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
