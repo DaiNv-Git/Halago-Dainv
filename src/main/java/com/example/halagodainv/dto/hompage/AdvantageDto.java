@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdvantageDto {
-    private String title;
-    private String content;
+    private Long id;
+    private String follow;
 }

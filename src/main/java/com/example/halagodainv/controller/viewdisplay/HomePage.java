@@ -29,14 +29,15 @@ public class HomePage {
         return ResponseEntity.ok(homePageService.getPartner(partnerId));
     }
 
-    @PostMapping("/detail")
-    public ResponseEntity<Object> detail() throws GeneralException {
-        return ResponseEntity.ok(homePageService.getDetail());
-    }
+//    @PostMapping("/detail")
+//    public ResponseEntity<Object> detail() throws GeneralException {
+//        return ResponseEntity.ok(homePageService.getDetail());
+//    }
 
     @PostMapping("/edit")
-    public ResponseEntity<Object> edit(@RequestBody HomePageRequest homePageRequest) throws GeneralException {
-        return ResponseEntity.ok(homePageService.updateHomePage(homePageRequest));
+    public ResponseEntity<Object> edit(@RequestParam(value = "id") Long id,
+                                       @RequestParam(value = "follow") String follow) throws GeneralException {
+        return ResponseEntity.ok(homePageService.updateHomePage(id, follow));
     }
 
     @PostMapping("/add-contact")

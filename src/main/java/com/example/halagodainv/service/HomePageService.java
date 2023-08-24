@@ -7,7 +7,8 @@ public interface HomePageService {
     Object getHomePage(String language) throws GeneralException;
 
     Object getPartner(int partnerID) throws GeneralException;
+
     Object getDetail() throws GeneralException;
 
-    Object updateHomePage(HomePageRequest homePageRequest) throws GeneralException;
+    Object updateHomePage(Long id, String follow) throws GeneralException;
 }

@@ -32,6 +32,6 @@ public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
     Optional<BrandEntity> findByBrandName(String name);
 
     @Query("SELECT new com.example.halagodainv.dto.brand.BrandLogoHomeDto(br.logo) FROM BrandEntity br " +
-            "where br.partnerId =:partnerId order by br.created desc ")
-    List<BrandLogoHomeDto> getByLogo(@Param("partnerId") int partnerId);
+            "where br.partnerId like concat('%',:partnerId,'%') order by br.created desc ")
+    List<BrandLogoHomeDto> getByLogo(@Param("partnerId") String partnerId);
 }

@@ -13,11 +13,13 @@ import java.util.Date;
 public class NewsTenDto {
     private String title;
     private String image;
+    private String description;
     private String created;
 
-    public NewsTenDto(String title, String image, Date created) {
+    public NewsTenDto(String title, String image,String description, Date created) {
         this.title = title;
         this.image = image;
+        this.description = description;
         this.created = DateFormatUtils.format(created, "yyyy-MM-dd HH:ss aa");
     }
 }

@@ -37,10 +37,10 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
             "left join CategoryEntity c on c.id = n.type where n.idNews =:idNews ")
     List<NewDetails> getHomeLanguage(@Param("idNews") int idNews);
 
-    @Query(value = "select new com.example.halagodainv.dto.hompage.NewsTenDto(n.titleSeo, n.thumbnail,n.created) " +
-            "from NewsEntity n where n.topicId=1l " +
-            "order by n.created desc ")
-    List<NewsTenDto> getHomeLanguage(Pageable pageable);
+    @Query(value = "select new com.example.halagodainv.dto.hompage.NewsTenDto(n.titleSeo, n.thumbnail,pl.description,n.created) " +
+            "from NewsEntity n left join NewsLanguageEntity pl on pl.newsEntity.idNews=n.idNews where n.topicId=1l " +
+            "and pl.language =:language order by n.created desc ")
+    List<NewsTenDto> getHomeLanguage(@Param("language")String language, Pageable pageable);
 
 
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.herder,nl.body,nl.footer,n.image1,n.image2,n.created,n.topicId,n.tagId) from  NewsEntity n " +
