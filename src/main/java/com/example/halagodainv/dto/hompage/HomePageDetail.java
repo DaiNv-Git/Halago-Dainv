@@ -1,8 +1,6 @@
 package com.example.halagodainv.dto.hompage;
 
-import com.example.halagodainv.model.AdvantageEntity;
 import com.example.halagodainv.model.EfficiencyOptimizationEntity;
-import com.example.halagodainv.request.homepage.AdvantageRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

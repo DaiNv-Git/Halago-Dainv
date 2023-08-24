@@ -1,6 +1,6 @@
 package com.example.halagodainv.dto.hompage;
 
-import com.example.halagodainv.model.viewdisplayentity.HompageEntitty;
+import com.example.halagodainv.model.viewdisplayentity.HomepageEntitty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomePageDto {
-    List<HompageEntitty> follows;
+    List<HomepageEntitty> follows;
     List<NewsTenDto> halagoProject;
 
 }

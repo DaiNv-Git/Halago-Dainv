@@ -15,5 +15,5 @@ public class HomePageRequest {
     private String contentEfficiencyOptimizationsVN;
     private String titleEfficiencyOptimizationsEN;
     private String contentEfficiencyOptimizationsEN;
-    List<AdvantageRequest> advantages;
+    List<HomeUpdateRequest> advantages;
 }
