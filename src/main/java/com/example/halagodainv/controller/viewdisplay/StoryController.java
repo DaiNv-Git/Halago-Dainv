@@ -37,7 +37,7 @@ public class StoryController {
         return ResponseEntity.ok(storyService.deleteHalago(id));
     }
 
-    @PostMapping("/update-activities")
+    @PostMapping("/delete-activities")
     public ResponseEntity<Object> update(@RequestParam("id") long id) {
         return ResponseEntity.ok(storyService.deleteHalagoActivities(id));
     }

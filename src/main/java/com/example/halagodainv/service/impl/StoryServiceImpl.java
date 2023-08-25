@@ -115,7 +115,7 @@ public class StoryServiceImpl implements StoryService {
     public Object deleteHalagoActivities(long id) {
         try {
             storyTypicalActivitiesRepository.deleteById(id);
-            return new BaseResponse<>(HttpStatus.OK.value(), "thêm thành công", detailHalago());
+            return new BaseResponse<>(HttpStatus.OK.value(), "Xóa thành công", detailHalago());
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
