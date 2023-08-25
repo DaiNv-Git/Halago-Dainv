@@ -11,4 +11,5 @@ public class SolutionReviewDto {
     private String title;
     private String content;
     private String contentDetail;
+    private String img;
 }

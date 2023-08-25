@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImageSolutionDto {
     private String image;
+    private String imageName;
 }

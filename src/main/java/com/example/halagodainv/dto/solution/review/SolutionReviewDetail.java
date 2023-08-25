@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class SolutionReviewDetail {
     List<SolutionReviewMapEntity> solutionReview = new ArrayList<>();
-    List<ImageReviewDto> solutionReviewEditImages = new ArrayList<>();
+    List<ImageReviewDto> project = new ArrayList<>();
 }

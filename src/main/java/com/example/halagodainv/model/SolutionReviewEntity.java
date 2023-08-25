@@ -15,6 +15,8 @@ public class SolutionReviewEntity {
     private String title;
     @Column(name = "content")
     private String content;
+    @Column(name = "img")
+    private String img;
     @Column(name = "content_detail")
     private String contentDetail;
 }

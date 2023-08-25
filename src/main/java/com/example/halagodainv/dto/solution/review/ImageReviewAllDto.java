@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageReviewDto {
-    private String image;
+public class ImageReviewAllDto {
+    private String img;
     private String name;
-    private String nameEN;
     private String link;
 }

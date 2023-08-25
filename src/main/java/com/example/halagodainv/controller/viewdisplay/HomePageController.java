@@ -35,7 +35,7 @@ public class HomePageController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<Object> edit(@RequestBody List<HomeUpdateRequest> requests) throws GeneralException {
+    public ResponseEntity<Object> edit(@RequestBody HomeUpdateRequest requests) throws GeneralException {
         return ResponseEntity.ok(homePageService.updateHomePage(requests));
     }
 

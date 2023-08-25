@@ -15,4 +15,8 @@ public class ImageReviewEntity {
     private String imageReview;
     @Column(name = "link")
     private String link;
+    @Column(name = "name_vn")
+    private String nameVN;
+    @Column(name = "name_en")
+    private String nameEN;
 }

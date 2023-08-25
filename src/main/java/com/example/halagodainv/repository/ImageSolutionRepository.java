@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ImageSolutionRepository extends JpaRepository<ImageLiveStreamEntity, Long> {
-    @Query("select new com.example.halagodainv.dto.solution.livestream.ImageSolutionDto(i.image) from ImageLiveStreamEntity i where i.solutionLiveStreamId = 1")
-    List<ImageSolutionDto> getAllImage();
+    @Query("select i from ImageLiveStreamEntity i where i.solutionLiveStreamId = 1")
+    List<ImageLiveStreamEntity> getAllImage();
 }

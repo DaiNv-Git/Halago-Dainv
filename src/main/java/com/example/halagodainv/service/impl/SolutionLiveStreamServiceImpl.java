@@ -1,5 +1,6 @@
 package com.example.halagodainv.service.impl;
 
+import com.example.halagodainv.dto.solution.livestream.ImageSolutionDto;
 import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamDTO;
 import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamDetailDto;
 import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamMapEntity;
@@ -31,23 +32,19 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
     public Object getSolution(String language) {
         try {
             SolutionLiveStreamMapEntity map = solutionLiveStreamRepository.getBySolution();
-            SolutionLiveStreamDTO mapDto = new SolutionLiveStreamDTO();
-            mapDto.setSales(map.getSales());
-            mapDto.setSession(map.getSession());
-            mapDto.setSatisfiedBrand(map.getSatisfiedBrand());
-            mapDto.setImageSale1(map.getImageSale1());
-            mapDto.setImageSale2(map.getImageSale2());
-            if (language.toUpperCase().equals("VN")) {
-                mapDto.setContentOne(map.getContentOne());
-                mapDto.setContentThree(map.getContentThree());
-                mapDto.setContentTwo(map.getContentTwo());
-            } else {
-                mapDto.setContentOne(map.getContentOneEN());
-                mapDto.setContentThree(map.getContentThreeEN());
-                mapDto.setContentTwo(map.getContentTwoEN());
-            }
-            mapDto.setSolutionDtos(imageSolutionRepository.getAllImage());
-            return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), mapDto);
+            List<ImageSolutionDto> imageSolutionDtos = new ArrayList<>();
+            imageSolutionRepository.getAllImage().forEach(i -> {
+                ImageSolutionDto imageSolutionDto = new ImageSolutionDto();
+                imageSolutionDto.setImage(i.getImage());
+                if (language.equals("EN")) {
+                    imageSolutionDto.setImageName(i.getImageNameEN());
+                } else if (language.equals("VN")) {
+                    imageSolutionDto.setImageName(i.getImageNameVN());
+                }
+                imageSolutionDtos.add(imageSolutionDto);
+            });
+            map.setImgSlider(imageSolutionDtos);
+            return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), map);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -67,23 +64,12 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
         try {
             Optional<SolutionLiveStreamEntity> solutionLiveStream = solutionLiveStreamRepository.findById(1L);
             if (solutionLiveStream.isPresent()) {
-                solutionLiveStream.get().setSales(solutionLiveStreamEdit.getSales());
-                solutionLiveStream.get().setSession(solutionLiveStreamEdit.getSession());
-                solutionLiveStream.get().setSatisfiedBrand(solutionLiveStreamEdit.getSatisfiedBrand());
+                solutionLiveStream.get().setLive(solutionLiveStreamEdit.getLive());
+                solutionLiveStream.get().setBrand(solutionLiveStreamEdit.getBrand());
+                solutionLiveStream.get().setMoney(solutionLiveStreamEdit.getMoney());
                 solutionLiveStream.get().setImageSale1(solutionLiveStreamEdit.getImageSale1());
                 solutionLiveStream.get().setImageSale2(solutionLiveStreamEdit.getImageSale2());
-                solutionLiveStream.get().setContentOne(solutionLiveStreamEdit.getContentOne());
-                solutionLiveStream.get().setContentTwo(solutionLiveStreamEdit.getContentTwo());
-                solutionLiveStream.get().setContentThree(solutionLiveStreamEdit.getContentThree());
                 solutionLiveStreamRepository.save(solutionLiveStream.get());
-
-                Optional<SolutionLiveStreamLanguageEntity> solutionLiveStreamLanguage = solutionLiveStreamLanguageRepository.findById(solutionLiveStream.get().getId());
-                if (solutionLiveStreamLanguage.isPresent()) {
-                    solutionLiveStreamLanguage.get().setContentOneEN(solutionLiveStreamEdit.getContentOneEN());
-                    solutionLiveStreamLanguage.get().setContentTwoEN(solutionLiveStreamEdit.getContentTwoEN());
-                    solutionLiveStreamLanguage.get().setContentThreeEN(solutionLiveStreamEdit.getContentThreeEN());
-                    solutionLiveStreamLanguageRepository.save(solutionLiveStreamLanguage.get());
-                }
             }
             imageSolutionRepository.deleteAll();
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
@@ -91,6 +77,8 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
                 imageLiveStreamEntity.setImage(img.getImage());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
+                imageLiveStreamEntity.setImageNameEN(img.getImageNameEN());
+                imageLiveStreamEntity.setImageNameVN(img.getImageNameVN());
                 imageLiveStreamEntities.add(imageLiveStreamEntity);
             }
             imageSolutionRepository.saveAll(imageLiveStreamEntities);

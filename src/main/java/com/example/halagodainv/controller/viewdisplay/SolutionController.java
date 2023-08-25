@@ -36,10 +36,10 @@ public class SolutionController {
         return ResponseEntity.ok(solutionLiveStreamService.update(solutionLiveStreamEdit));
     }
 
-    @PostMapping("/live-stream/add-image")
-    public ResponseEntity<Object> addImage(@RequestBody List<SolutionLiveStreamImageEdit> imageRequests) {
-        return ResponseEntity.ok(solutionLiveStreamService.addImage(imageRequests));
-    }
+//    @PostMapping("/live-stream/add-image")
+//    public ResponseEntity<Object> addImage(@RequestBody List<SolutionLiveStreamImageEdit> imageRequests) {
+//        return ResponseEntity.ok(solutionLiveStreamService.addImage(imageRequests));
+//    }
 
     @PostMapping("/live-stream/delete-image")
     public ResponseEntity<Object> deleteImage(@RequestParam("imageId") long imageId) {

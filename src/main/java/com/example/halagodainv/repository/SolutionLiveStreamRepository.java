@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SolutionLiveStreamRepository extends JpaRepository<SolutionLiveStreamEntity, Long> {
 
-    @Query("select new com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamMapEntity(s.session,s.satisfiedBrand,s.sales,s.imageSale1,s.imageSale2,s.contentOne,s.contentTwo,s.contentThree,sl.contentOneEN,sl.contentTwoEN,sl.contentThreeEN) from SolutionLiveStreamEntity s " +
-            "left join SolutionLiveStreamLanguageEntity sl on s.id = sl.solutionId where s.id =1 ")
+    @Query("select new com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamMapEntity(s.live,s.brand,s.money,s.imageSale1,s.imageSale2) from SolutionLiveStreamEntity s " +
+            "where s.id =1 ")
     SolutionLiveStreamMapEntity getBySolution();
 }

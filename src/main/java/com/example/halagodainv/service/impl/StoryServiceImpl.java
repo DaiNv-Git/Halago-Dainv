@@ -51,7 +51,7 @@ public class StoryServiceImpl implements StoryService {
                 }
                 storyMediaDtos.add(storyMediaDto);
             });
-            StoryDto storyDto = new StoryDto(map.getSession(), map.getSatisfiedBrand(), map.getSales(), storyMediaDtos);
+            StoryDto storyDto = new StoryDto(map.getLive(), map.getBrand(), map.getMoney(), storyMediaDtos);
             return new BaseResponse<>(HttpStatus.OK.value(), "success", storyDto);
         } catch (Exception ex) {
             logger.error(ex.getMessage());

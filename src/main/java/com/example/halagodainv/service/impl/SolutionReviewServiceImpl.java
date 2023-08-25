@@ -1,9 +1,6 @@
 package com.example.halagodainv.service.impl;
 
-import com.example.halagodainv.dto.solution.review.SolutionReview;
-import com.example.halagodainv.dto.solution.review.SolutionReviewDetail;
-import com.example.halagodainv.dto.solution.review.SolutionReviewDto;
-import com.example.halagodainv.dto.solution.review.SolutionReviewMapEntity;
+import com.example.halagodainv.dto.solution.review.*;
 import com.example.halagodainv.model.ImageReviewEntity;
 import com.example.halagodainv.model.SolutionReivewLanguageEntity;
 import com.example.halagodainv.model.SolutionReviewEntity;
@@ -37,19 +34,33 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             mapEntities.forEach(mapEntitiy -> {
                 if (language.toUpperCase().equals("VN")) {
                     SolutionReviewDto map = new SolutionReviewDto();
+                    map.setImg(mapEntitiy.getImg());
                     map.setTitle(mapEntitiy.getTitle());
                     map.setContent(mapEntitiy.getContent());
                     map.setContentDetail(mapEntitiy.getContentDetail());
                     mapDto.add(map);
                 } else {
                     SolutionReviewDto map = new SolutionReviewDto();
+                    map.setImg(mapEntitiy.getImg());
                     map.setTitle(mapEntitiy.getTitleEN());
                     map.setContent(mapEntitiy.getContentEN());
                     map.setContentDetail(mapEntitiy.getContentDetail());
                     mapDto.add(map);
                 }
             });
-            SolutionReview solutionReview = new SolutionReview(mapDto, imageSolutionReviewRepository.getImages());
+            List<ImageReviewAllDto> list = new ArrayList<>();
+            imageSolutionReviewRepository.getImages().forEach(i -> {
+                ImageReviewAllDto imageReviewAllDto = new ImageReviewAllDto();
+                imageReviewAllDto.setImg(i.getImage());
+                imageReviewAllDto.setLink(i.getLink());
+                if (language.toUpperCase().equals("VN")) {
+                    imageReviewAllDto.setName(i.getName());
+                } else {
+                    imageReviewAllDto.setName(i.getNameEN());
+                }
+                list.add(imageReviewAllDto);
+            });
+            SolutionReview solutionReview = new SolutionReview(mapDto, list);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), solutionReview);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
@@ -74,6 +85,9 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             for (SolutionReviewEditImage image : images) {
                 ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
                 optionalImageReviewEntity.setImageReview(image.getImage());
+                optionalImageReviewEntity.setNameVN(image.getName());
+                optionalImageReviewEntity.setNameEN(image.getNameEN());
+                optionalImageReviewEntity.setLink(image.getLink());
                 entities.add(optionalImageReviewEntity);
             }
             entities = imageSolutionReviewRepository.saveAll(entities);

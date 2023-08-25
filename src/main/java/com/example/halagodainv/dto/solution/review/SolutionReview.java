@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class SolutionReview {
     List<SolutionReviewDto> solutionReviewDtos = new ArrayList<>();
-    List<ImageReviewDto> imageReviewDtos = new ArrayList<>();
+    List<ImageReviewAllDto> project = new ArrayList<>();
 }

@@ -43,18 +43,16 @@ public class HomePageServiceImpl implements HomePageService {
         return null;
     }
 
-    public Object updateHomePage(List<HomeUpdateRequest> requests) throws GeneralException {
+    public Object updateHomePage(HomeUpdateRequest request) throws GeneralException {
         try {
-            List<HomepageEntitty> hompageEntitties = new ArrayList<>();
-            for (HomeUpdateRequest request : requests) {
-                Optional<HomepageEntitty> home = homePageRepository.findById(request.getId());
-                if (home.isPresent()) {
-                    home.get().setFollow(request.getFollow());
-                    hompageEntitties.add(home.get());
-                }
-            }
-            homePageRepository.saveAll(hompageEntitties);
-            return new BaseResponse<>(HttpStatus.OK.value(), "edit success", hompageEntitties);
+            homePageRepository.deleteAll();
+            HomepageEntitty homepageEntitty = new HomepageEntitty();
+            homepageEntitty.setForeignBrands(request.getForeignBrands());
+            homepageEntitty.setDomesticBrands(request.getDomesticBrands());
+            homepageEntitty.setSuccessfulCampaign(request.getSuccessfulCampaign());
+            homepageEntitty.setKOLsInformational(request.getKOLsInformational());
+            homepageEntitty = homePageRepository.save(homepageEntitty);
+            return new BaseResponse<>(HttpStatus.OK.value(), "edit success", homepageEntitty);
         } catch (Exception e) {
             throw new GeneralException(e.getLocalizedMessage());
         }

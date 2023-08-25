@@ -7,16 +7,10 @@ import java.util.List;
 
 @Data
 public class SolutionLiveStreamEdit {
-    private String session;
-    private String satisfiedBrand;
-    private String sales;
+    private String live;
+    private String brand;
+    private String money;
     private String imageSale1;
     private String imageSale2;
-    private String contentOne;
-    private String contentTwo;
-    private String contentThree;
-    private String contentOneEN;
-    private String contentTwoEN;
-    private String contentThreeEN;
     List<SolutionLiveStreamImageEdit> imagEdits = new ArrayList<>();
 }

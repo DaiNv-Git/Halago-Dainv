@@ -11,8 +11,10 @@ import java.util.HashMap;
 @Slf4j
 @Component
 public class JwtToken {
-    private final String JWT_SECRET = "morHn10/05/2023@!123!!!###$$%%(())";
+    private final String JWT_SECRET = "Halago-25/08/2023@!123!!!###$$%%(())**''";
     private final long JWT_EXPIRATION = 30 * 24 * 3600;
+    private final long JWT_EXPIRATION_REFRESH = 90 * 24 * 3600;
+
     //lay token
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
@@ -25,13 +27,19 @@ public class JwtToken {
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)// phan quyen user
                 .compact();
     }
+
     //refresh token de lay token moi thay the token het han
     public String generateRefreshToken(UserDetails userDetails) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_REFRESH);
         return Jwts.builder().setClaims(new HashMap<>())
                 .setSubject(userDetails.getUsername())
+                .setSubject(userDetails.getUsername())
+                .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
                 .compact();
     }
+
     // Lấy thông tin user từ jwt
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token).getBody();

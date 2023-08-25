@@ -14,7 +14,7 @@ public interface HomePageService {
 
     Object getDetail() throws GeneralException;
 
-    Object updateHomePage(List<HomeUpdateRequest> requests) throws GeneralException;
+    Object updateHomePage(HomeUpdateRequest requests) throws GeneralException;
 
     Object updateLogo(List<PartnerRequest> partnerRequests);
 

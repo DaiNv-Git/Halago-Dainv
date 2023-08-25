@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SolutionReviewMapEntity {
     private long Id;
+    private String img;
     private String title;
     private String content;
     private String contentDetail;

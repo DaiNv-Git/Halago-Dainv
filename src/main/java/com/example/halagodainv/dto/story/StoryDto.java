@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryDto {
-    private String session;
-    private String satisfiedBrand;
-    private String sales;
+    private String live;
+    private String brand;
+    private String money;
     List<StoryMediaDto> storyMediaDtos = new ArrayList<>();
 }

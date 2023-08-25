@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomeUpdateRequest {
-    private Long id;
-    private String follow;
+    private String DomesticBrands;
+    private String ForeignBrands;
+    private String SuccessfulCampaign;
+    private String KOLsInformational;
 }
