@@ -1,9 +1,6 @@
 package com.example.halagodainv.service.impl;
 
-import com.example.halagodainv.dto.solution.livestream.ImageSolutionDto;
-import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamDTO;
-import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamDetailDto;
-import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamMapEntity;
+import com.example.halagodainv.dto.solution.livestream.*;
 import com.example.halagodainv.model.ImageLiveStreamEntity;
 import com.example.halagodainv.model.SolutionLiveStreamEntity;
 import com.example.halagodainv.model.SolutionLiveStreamLanguageEntity;
@@ -53,7 +50,15 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
     public Object getSolutionDetail() {
         try {
             SolutionLiveStreamMapEntity map = solutionLiveStreamRepository.getBySolution();
-            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map, imageSolutionRepository.getAllImage());
+            List<ImageSolutionDetailDto> imageSolutionDtos = new ArrayList<>();
+            imageSolutionRepository.getAllImage().forEach(i -> {
+                ImageSolutionDetailDto imageSolutionDto = new ImageSolutionDetailDto();
+                imageSolutionDto.setImage(i.getImage());
+                imageSolutionDto.setImageNameVN(i.getImageNameEN());
+                imageSolutionDto.setImageNameEN(i.getImageNameVN());
+                imageSolutionDtos.add(imageSolutionDto);
+            });
+            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map,imageSolutionDtos);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), solutionLiveStreamDetailDto);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());

@@ -17,9 +17,9 @@ public class SolutionLiveStreamDetailDto {
     private String money;
     private String imageSale1;
     private String imageSale2;
-    List<ImageLiveStreamEntity> imgSlider = new ArrayList<>();
+    List<ImageSolutionDetailDto> imgSlider = new ArrayList<>();
 
-    public SolutionLiveStreamDetailDto(SolutionLiveStreamMapEntity map, List<ImageLiveStreamEntity> entities) {
+    public SolutionLiveStreamDetailDto(SolutionLiveStreamMapEntity map, List<ImageSolutionDetailDto> entities) {
         this.live = map.getLive();
         this.brand = map.getBrand();
         this.money = map.getMoney();
