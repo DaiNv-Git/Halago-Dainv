@@ -68,20 +68,15 @@ public class HomePageServiceImpl implements HomePageService {
 
     public Object updateLogo(List<PartnerRequest> partnerRequests) {
         List<PartnerEntity> partnerEntities = new ArrayList<>();
+        partnerRepository.deleteByPartnerId(partnerRequests.get(0).getPartnerId());
         for (PartnerRequest partnerRequest : partnerRequests) {
-            Optional<PartnerEntity> partnerEntity = partnerRepository.findById(partnerRequest.getId());
-            if (partnerEntity.isPresent()) {
-                partnerEntity.get().setPartnerId(partnerRequest.getPartnerId());
-                partnerEntity.get().setLogo(partnerRequest.getLogo());
-                partnerEntities.add(partnerEntity.get());
-            } else {
-                PartnerEntity partnerNew = new PartnerEntity();
-                partnerNew.setLogo(partnerRequest.getLogo());
-                partnerNew.setPartnerId(partnerRequest.getPartnerId());
-                partnerEntities.add(partnerNew);
-            }
+            PartnerEntity partnerNew = new PartnerEntity();
+            partnerNew.setLogo(partnerRequest.getLogo());
+            partnerNew.setPartnerId(partnerRequest.getPartnerId());
+            partnerEntities.add(partnerNew);
         }
-        return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.saveAll(partnerEntities));
+        partnerRepository.saveAll(partnerEntities);
+        return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerEntities);
     }
 
     public void deleteLogo(Long id) {

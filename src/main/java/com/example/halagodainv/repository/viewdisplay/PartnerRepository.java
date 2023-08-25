@@ -10,4 +10,6 @@ import java.util.List;
 public interface PartnerRepository extends JpaRepository<PartnerEntity, Long> {
 
     List<PartnerEntity> findByPartnerId(Integer partnerId);
+
+    void deleteByPartnerId(Integer partnerId);
 }
