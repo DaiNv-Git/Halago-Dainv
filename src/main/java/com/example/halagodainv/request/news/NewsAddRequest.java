@@ -27,5 +27,6 @@ public class NewsAddRequest {
     private String image2;
     private Long topicId;
     private Long tagId;
+    private Boolean isHot =false;
 
 }

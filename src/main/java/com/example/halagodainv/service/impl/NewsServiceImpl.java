@@ -146,7 +146,8 @@ public class NewsServiceImpl implements NewsService {
 
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
         Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getViewNewTotalTopic(0L, 0L, language, true);
+        Pageable pageableIsHot = PageRequest.of(0, 3);
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(0L, 0L, language, pageableIsHot);
         List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language);
         List<ViewNewsMap> viewNews = newsRepository.getViewNew(0L, 0L, language, pageableViewNews);
         int count1 = 0;
@@ -231,7 +232,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setImage2(request.getImage2());
             newsEntity.setTopicId(request.getTopicId());
             newsEntity.setTagId(request.getTagId());
-            newsEntity.setIsHot(false);
+            newsEntity.setIsHot(request.getIsHot());
             newsRepository.save(newsEntity);
             //add news language
             //add en
@@ -280,6 +281,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setImage2(newsAddRequest.getImage2());
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setTagId(newsAddRequest.getTagId());
+            news.get().setIsHot(newsAddRequest.getIsHot());
             newsRepository.save(news.get());
             //add detail
             newsLanguageRepository.deleteByNewId(news.get().getIdNews());

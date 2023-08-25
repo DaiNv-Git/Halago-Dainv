@@ -50,17 +50,12 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.herder,nl.body,nl.footer,n.image1,n.image2,n.created,n.topicId,n.tagId) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
-            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and (:#{#tagId} = 0l or n.tagId=:#{#tagId}) and nl.language =:#{#language} ")
+            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and (:#{#tagId} = 0l or n.tagId=:#{#tagId}) and nl.language =:#{#language} and n.isHot = true ")
     List<ViewNewsMap> getPageViewNews(@Param("topicId") Long topicId, @Param("tagId") Long tagId, @Param("language") String language,Pageable pageable);
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.herder,nl.body,nl.footer,n.image1,n.image2,n.created,n.topicId,n.tagId) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
-            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and (:#{#tagId} = 0l or n.tagId=:#{#tagId}) and nl.language =:#{#language} and n.idNews =:#{#id} ")
+            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and (:#{#tagId} = 0l or n.tagId=:#{#tagId}) and nl.language =:#{#language} and n.idNews =:#{#id} and n.isHot = true")
     ViewNewsMap getDetailView(@Param("topicId") Long topicId, @Param("tagId") Long tagId, @Param("language") String language, @Param("id") Integer id);
-
-    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.herder,nl.body,nl.footer,n.image1,n.image2,n.created,n.topicId,n.tagId) from  NewsEntity n " +
-            "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
-            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and (:#{#tagId} = 0l or n.tagId=:#{#tagId}) and nl.language =:#{#language} and n.isHot= :#{#isHot}")
-    List<ViewNewsMap> getViewNewTotalTopic(@Param("topicId") Long topicId, @Param("tagId") Long tagId, @Param("language") String language, @Param("isHot") Boolean isHot);
 
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.herder,nl.body,nl.footer,n.image1,n.image2,n.created,n.topicId,n.tagId) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
