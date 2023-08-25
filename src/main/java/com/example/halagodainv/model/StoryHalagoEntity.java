@@ -1,7 +1,6 @@
 package com.example.halagodainv.model;
 
 import lombok.Data;
-import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
 
@@ -13,7 +12,7 @@ public class StoryHalagoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "image")
-    private String image;
+    private String img;
     @Column(name = "content")
     private String content;
     @Column(name = "content_en")

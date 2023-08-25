@@ -31,7 +31,7 @@ public class StoryServiceImpl implements StoryService {
             SolutionLiveStreamMapEntity map = solutionLiveStreamRepository.getBySolution();
             Optional<StoryHalagoEntity> entities = storyHalagoRepository.findById(2L);
             StoryMediaDto storyMediaDto = new StoryMediaDto();
-            storyMediaDto.setImage(entities.get().getImage());
+            storyMediaDto.setImage(entities.get().getImg());
             if (language.toUpperCase().equals("VN")) {
                 storyMediaDto.setContent(entities.get().getContent());
             } else {
@@ -59,7 +59,7 @@ public class StoryServiceImpl implements StoryService {
             Optional<StoryHalagoEntity> entities = storyHalagoRepository.findById(2L);
             entities.get().setContent(request.getContent());
             entities.get().setContentEN(request.getContentEN());
-            entities.get().setImage(request.getImg());
+            entities.get().setImg(request.getImg());
             storyHalagoRepository.save(entities.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "thêm thành công", entities);
         } catch (Exception ex) {
