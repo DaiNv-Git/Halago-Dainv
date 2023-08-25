@@ -10,9 +10,6 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryMediaDto {
-    private long id;
     private String image;
-    private String title;
     private String content;
-    private String contentDetail;
 }

@@ -17,11 +17,6 @@ public class StoryController {
         return ResponseEntity.ok(storyService.getStoryHalago(language));
     }
 
-    @PostMapping("/activities")
-    public ResponseEntity<Object> getHalagoActivities(@RequestParam("language") String language) {
-        return ResponseEntity.ok(storyService.getStoryHalagoActivities(language));
-    }
-
     @PostMapping("/detail")
     public ResponseEntity<Object> getDetail() {
         return ResponseEntity.ok(storyService.detailHalago());
@@ -30,15 +25,5 @@ public class StoryController {
     @PostMapping("/update")
     public ResponseEntity<Object> update(@RequestBody StoryDetailDto request) {
         return ResponseEntity.ok(storyService.update(request));
-    }
-
-    @PostMapping("/delete-halago")
-    public ResponseEntity<Object> deleteHalato(@RequestParam("id") long id) {
-        return ResponseEntity.ok(storyService.deleteHalago(id));
-    }
-
-    @PostMapping("/delete-activities")
-    public ResponseEntity<Object> update(@RequestParam("id") long id) {
-        return ResponseEntity.ok(storyService.deleteHalagoActivities(id));
     }
 }

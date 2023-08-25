@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryDetailDto {
-    List<StoryHalagoEntity> storyHalagoEntities = new ArrayList<>();
-    List<StoryTypicalActivitiesEntity> typicalActivitiesEntities = new ArrayList<>();
+    private String img;
+    private String content;
+    private String contentEN;
 }

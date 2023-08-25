@@ -14,17 +14,10 @@ public class StoryHalagoEntity {
     private long id;
     @Column(name = "image")
     private String image;
-    @Column(name = "title")
-    private String title;
-    @Column(name = "title_en")
-    private String titleEN;
     @Column(name = "content")
     private String content;
     @Column(name = "content_en")
     private String contentEN;
-    @Column(name = "content_detail")
-    private String contentDetail;
-    @Column(name = "content_detail_en")
-    private String contentDetailEN;
+
 
 }

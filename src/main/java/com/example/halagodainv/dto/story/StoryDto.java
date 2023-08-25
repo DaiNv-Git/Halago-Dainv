@@ -14,5 +14,5 @@ public class StoryDto {
     private String live;
     private String brand;
     private String money;
-    List<StoryMediaDto> storyMediaDtos = new ArrayList<>();
+    StoryMediaDto storyMediaDtos;
 }
