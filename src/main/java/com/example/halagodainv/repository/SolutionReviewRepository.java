@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface SolutionReviewRepository extends JpaRepository<SolutionReviewEntity, Long> {
-    @Query("select new com.example.halagodainv.dto.solution.review.SolutionReviewMapEntity(i.id,i.img,i.title,i.content,i.contentDetail,ie.titleEN,ie.contentEN,ie.contentDetailEN) from " +
+    @Query("select new com.example.halagodainv.dto.solution.review.SolutionReviewMapEntity(i.img,i.title,i.content,i.contentDetail,ie.titleEN,ie.contentEN,ie.contentDetailEN) from " +
             "SolutionReviewEntity i left join SolutionReivewLanguageEntity ie on i.id = ie.solutionReviewId ")
     List<SolutionReviewMapEntity> getByAll();
 }

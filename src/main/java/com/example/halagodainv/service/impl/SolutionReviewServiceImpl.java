@@ -100,27 +100,23 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
     public Object updateContent(SolutionReviewRequestEdit edit) {
         try {
             List<SolutionReviewEdit> solutionReviewEdits = edit.getSolutionReview();
-            List<SolutionReviewEntity> solutionReviewEntities = new ArrayList<>();
-            List<SolutionReivewLanguageEntity> solutionReivewLanguageEntities = new ArrayList<>();
+            solutionReviewRepository.deleteAll();
+            solutionReviewLanguageRepository.deleteAll();
             for (SolutionReviewEdit reviewEdit : solutionReviewEdits) {
-                Optional<SolutionReviewEntity> solutionReview = solutionReviewRepository.findById(reviewEdit.getId());
-                if (solutionReview.isPresent()) {
-                    solutionReview.get().setTitle(reviewEdit.getTitle());
-                    solutionReview.get().setContent(reviewEdit.getContent());
-                    solutionReview.get().setContentDetail(reviewEdit.getContentDetail());
-                    solutionReviewEntities.add(solutionReview.get());
-                    Optional<SolutionReivewLanguageEntity> solutionReivewLanguage = solutionReviewLanguageRepository.findBySolutionReviewId(reviewEdit.getId());
-                    if (solutionReivewLanguage.isPresent()) {
-                        solutionReivewLanguage.get().setTitleEN(reviewEdit.getTitleEN());
-                        solutionReivewLanguage.get().setContentEN(reviewEdit.getContentEN());
-                        solutionReivewLanguage.get().setContentDetailEN(reviewEdit.getContentDetailEN());
-                        solutionReivewLanguageEntities.add(solutionReivewLanguage.get());
-                    }
-                }
+                SolutionReviewEntity solutionReview = new SolutionReviewEntity();
+                solutionReview.setTitle(reviewEdit.getTitle());
+                solutionReview.setContent(reviewEdit.getContent());
+                solutionReview.setContentDetail(reviewEdit.getContentDetail());
+                solutionReview = solutionReviewRepository.save(solutionReview);
+
+                SolutionReivewLanguageEntity solutionReivewLanguage = new SolutionReivewLanguageEntity();
+                solutionReivewLanguage.setTitleEN(reviewEdit.getTitleEN());
+                solutionReivewLanguage.setContentEN(reviewEdit.getContentEN());
+                solutionReivewLanguage.setContentDetailEN(reviewEdit.getContentDetailEN());
+                solutionReivewLanguage.setSolutionReviewId(solutionReview.getId());
+                solutionReivewLanguage = solutionReviewLanguageRepository.save(solutionReivewLanguage);
             }
             updateImageReview(edit.getSolutionReviewEditImages());
-            solutionReviewRepository.saveAll(solutionReviewEntities);
-            solutionReviewLanguageRepository.saveAll(solutionReivewLanguageEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), "update image success", getDetail());
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
