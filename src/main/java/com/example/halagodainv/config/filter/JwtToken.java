@@ -12,8 +12,8 @@ import java.util.HashMap;
 @Component
 public class JwtToken {
     private final String JWT_SECRET = "Halago-25/08/2023@!123!!!###$$%%(())**''";
-    private final long JWT_EXPIRATION = 30 * 24 * 3600;
-    private final long JWT_EXPIRATION_REFRESH = 90 * 24 * 3600;
+    private final long JWT_EXPIRATION = 30 * 24 * 3600 * 100;
+    private final long JWT_EXPIRATION_REFRESH = 90 * 24 * 3600 * 100;
 
     //lay token
     public String generateToken(UserDetails userDetails) {
