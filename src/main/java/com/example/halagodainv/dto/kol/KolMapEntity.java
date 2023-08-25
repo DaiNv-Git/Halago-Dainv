@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BestPickDto {
-    private long id;
+public class KolMapEntity {
     private String image;
+    private String name;
+    private String nameEN;
+    private String job;
+    private String jobEN;
 }

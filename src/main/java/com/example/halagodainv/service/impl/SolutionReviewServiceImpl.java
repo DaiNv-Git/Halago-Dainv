@@ -116,7 +116,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
                 solutionReivewLanguage.setSolutionReviewId(solutionReview.getId());
                 solutionReivewLanguage = solutionReviewLanguageRepository.save(solutionReivewLanguage);
             }
-            updateImageReview(edit.getSolutionReviewEditImages());
+            updateImageReview(edit.getProject());
             return new BaseResponse<>(HttpStatus.OK.value(), "update image success", getDetail());
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());

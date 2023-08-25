@@ -12,5 +12,5 @@ public class SolutionLiveStreamEdit {
     private String money;
     private String imageSale1;
     private String imageSale2;
-    List<SolutionLiveStreamImageEdit> imagEdits = new ArrayList<>();
+    List<SolutionLiveStreamImageEdit> imgSlider = new ArrayList<>();
 }

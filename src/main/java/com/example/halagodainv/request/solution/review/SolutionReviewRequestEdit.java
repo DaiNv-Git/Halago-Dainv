@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class SolutionReviewRequestEdit {
     private List<SolutionReviewEdit> solutionReview;
-    private List<SolutionReviewEditImage> solutionReviewEditImages;
+    private List<SolutionReviewEditImage> project;
 }

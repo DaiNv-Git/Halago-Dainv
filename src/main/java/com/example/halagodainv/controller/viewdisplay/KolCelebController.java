@@ -23,10 +23,10 @@ public class KolCelebController {
         return ResponseEntity.ok(kolCelebService.getDetail());
     }
 
-    @PostMapping("/detail-celeb")
-    public ResponseEntity<Object> getDetailCeleb(@RequestParam(value = "id", defaultValue = "0", required = false) long id, @RequestParam("language") String language) {
-        return ResponseEntity.ok(kolCelebService.getDetailCeleb(id, language));
-    }
+//    @PostMapping("/detail-celeb")
+//    public ResponseEntity<Object> getDetailCeleb(@RequestParam(value = "id", defaultValue = "0", required = false) long id, @RequestParam("language") String language) {
+//        return ResponseEntity.ok(kolCelebService.getDetailCeleb(id, language));
+//    }
 
     @PostMapping("/update")
     public ResponseEntity<Object> update(@RequestBody KolCelebRequest request) {

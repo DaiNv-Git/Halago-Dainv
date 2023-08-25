@@ -78,7 +78,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
             }
             imageSolutionRepository.deleteAll();
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
-            for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImagEdits()) {
+            for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
                 imageLiveStreamEntity.setImage(img.getImage());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
