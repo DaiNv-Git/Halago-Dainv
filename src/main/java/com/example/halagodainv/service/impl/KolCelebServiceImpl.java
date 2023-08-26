@@ -44,7 +44,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<KolDetailDto> mapsDto = new ArrayList<>();
             for (KolMapEntity bestMap : kolMapEntities) {
                 KolDetailDto bestPickDto = new KolDetailDto();
-                bestPickDto.setImage(bestMap.getImage());
+                bestPickDto.setImage(bestMap.getImg());
                 if ("VN".equals(language.toUpperCase())) {
                     bestPickDto.setName(bestMap.getName());
                     bestPickDto.setJob(bestMap.getJob());
@@ -96,7 +96,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<BestKolEntity> bestKolEntities = new ArrayList<>();
             for (KolMapEntity kolMapEntity : request.getKol()) {
                 BestKolEntity bestKolEntity = new BestKolEntity();
-                bestKolEntity.setImage(kolMapEntity.getImage());
+                bestKolEntity.setImage(kolMapEntity.getImg());
                 bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntity.setNameEN(kolMapEntity.getNameEN());
                 bestKolEntity.setJob(kolMapEntity.getJob());
