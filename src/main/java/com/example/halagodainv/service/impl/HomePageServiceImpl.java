@@ -72,7 +72,7 @@ public class HomePageServiceImpl implements HomePageService {
         for (PartnerRequest partnerRequest : partnerRequests) {
             PartnerEntity partnerNew = new PartnerEntity();
             partnerNew.setLogo(partnerRequest.getLogo());
-            partnerNew.setPartnerId(partnerRequest.getPartnerId());
+            partnerNew.setPartnerId(partnerRequests.get(0).getPartnerId());
             partnerEntities.add(partnerNew);
         }
         partnerRepository.saveAll(partnerEntities);
