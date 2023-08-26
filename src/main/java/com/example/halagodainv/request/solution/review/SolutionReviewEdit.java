@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class SolutionReviewEdit {
+    private String img;
     private String title;
     private String content;
     private String contentDetail;

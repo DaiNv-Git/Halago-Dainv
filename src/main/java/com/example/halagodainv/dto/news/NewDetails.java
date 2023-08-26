@@ -18,12 +18,9 @@ public class NewDetails {
     private String photoTitle;
     private String linkPost;
     private String language;
-    private String herder;
-    private String body;
-    private String footer;
-    private String image1;
-    private String image2;
     private Long topicId;
-    private Long tagId;
+    private String tagId;
+    private Boolean isHot;
+    private Boolean isView;
 
 }

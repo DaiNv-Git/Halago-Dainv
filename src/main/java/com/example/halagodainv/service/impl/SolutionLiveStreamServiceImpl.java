@@ -3,7 +3,6 @@ package com.example.halagodainv.service.impl;
 import com.example.halagodainv.dto.solution.livestream.*;
 import com.example.halagodainv.model.ImageLiveStreamEntity;
 import com.example.halagodainv.model.SolutionLiveStreamEntity;
-import com.example.halagodainv.model.SolutionLiveStreamLanguageEntity;
 import com.example.halagodainv.repository.ImageSolutionRepository;
 import com.example.halagodainv.repository.SolutionLiveStreamLanguageRepository;
 import com.example.halagodainv.repository.SolutionLiveStreamRepository;
@@ -80,7 +79,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
             for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImage());
+                imageLiveStreamEntity.setImage(img.getImg());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntity.setImageNameEN(img.getImageNameEN());
                 imageLiveStreamEntity.setImageNameVN(img.getImageNameVN());
@@ -98,7 +97,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
         try {
             edits.forEach(img -> {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImage());
+                imageLiveStreamEntity.setImage(img.getImg());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntities.add(imageLiveStreamEntity);
             });

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +50,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             List<ImageReviewAllDto> list = new ArrayList<>();
             imageSolutionReviewRepository.getImages().forEach(i -> {
                 ImageReviewAllDto imageReviewAllDto = new ImageReviewAllDto();
-                imageReviewAllDto.setImg(i.getImage());
+                imageReviewAllDto.setImg(i.getImg());
                 imageReviewAllDto.setLink(i.getLink());
                 if (language.toUpperCase().equals("VN")) {
                     imageReviewAllDto.setName(i.getName());
@@ -84,7 +83,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             List<ImageReviewEntity> entities = new ArrayList<>();
             for (SolutionReviewEditImage image : images) {
                 ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
-                optionalImageReviewEntity.setImageReview(image.getImage());
+                optionalImageReviewEntity.setImageReview(image.getImg());
                 optionalImageReviewEntity.setNameVN(image.getName());
                 optionalImageReviewEntity.setNameEN(image.getNameEN());
                 optionalImageReviewEntity.setLink(image.getLink());
@@ -105,6 +104,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             for (SolutionReviewEdit reviewEdit : solutionReviewEdits) {
                 SolutionReviewEntity solutionReview = new SolutionReviewEntity();
                 solutionReview.setTitle(reviewEdit.getTitle());
+                solutionReview.setImg(reviewEdit.getImg());
                 solutionReview.setContent(reviewEdit.getContent());
                 solutionReview.setContentDetail(reviewEdit.getContentDetail());
                 solutionReview = solutionReviewRepository.save(solutionReview);

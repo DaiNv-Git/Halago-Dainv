@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewNewsHotDto {
-    private String image1;
+    private String img;
     private String title;
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageReviewDto {
-    private String image;
+    private String img;
     private String name;
     private String nameEN;
     private String link;

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,7 +13,7 @@ public class NewDtoDetails {
     private Integer idNews;
     private String titleVN;
     private String titleEN;
-    private String thumbnail;
+    private String img;
     private String descriptionVN;
     private String descriptionEN;
     private String contentVN;
@@ -20,15 +22,9 @@ public class NewDtoDetails {
     private Integer status;
     private String photoTitle;
     private String linkPost;
-    private String herderVN;
-    private String herderEN;
-    private String bodyVN;
-    private String bodyEN;
-    private String footerVN;
-    private String footerEN;
-    private String image1;
-    private String image2;
     private Long topicId;
-    private Long tagId;
+    private Boolean isHot;
+    private Boolean isView;
+    private List<Integer> tagId;
 
 }

@@ -32,16 +32,14 @@ public class NewsEntity {
     String titleSeo;
     @Column(name = "link_papers")
     String linkPapers;
-    @Column(name = "image_view1")
-    private String image1;
-    @Column(name = "image_view2")
-    private String image2;
     @Column(name = "topic_id")
     private Long topicId;
     @Column(name = "tagId")
-    private Long tagId;
+    private String tagId;
     @Column(name = "is_hot")
     private Boolean isHot;
+    @Column(name = "is_view")
+    private Boolean isVew;
     @JsonIgnore
     @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();

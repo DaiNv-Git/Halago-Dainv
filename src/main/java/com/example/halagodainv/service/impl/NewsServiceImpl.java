@@ -13,7 +13,6 @@ import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.NewsLanguageEntity;
 import com.example.halagodainv.model.TopicEntity;
 import com.example.halagodainv.model.viewdisplayentity.TagEntity;
-import com.example.halagodainv.model.viewdisplayentity.ViewNewsEntity;
 import com.example.halagodainv.repository.NewsLanguageRepository;
 import com.example.halagodainv.repository.NewsRepository;
 import com.example.halagodainv.repository.NewsTypeRepository;
@@ -58,9 +57,9 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle());
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "");
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), pageable);
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", pageable);
             PageResponse pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
@@ -82,29 +81,23 @@ public class NewsServiceImpl implements NewsService {
             newsRepositoryDetail.forEach(
                     i -> {
                         newewDtoDetailsss.setIdNews(i.getIdNews());
-                        newewDtoDetailsss.setThumbnail(i.getThumbnail());
+                        newewDtoDetailsss.setImg(i.getThumbnail());
                         newewDtoDetailsss.setType(i.getType());
                         newewDtoDetailsss.setStatus(i.getStatus());
                         newewDtoDetailsss.setLinkPost(i.getLinkPost());
                         newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
-                        newewDtoDetailsss.setImage1(i.getImage1());
-                        newewDtoDetailsss.setImage2(i.getImage2());
                         newewDtoDetailsss.setTopicId(i.getTopicId());
-                        newewDtoDetailsss.setTagId(i.getTagId());
+                        newewDtoDetailsss.setTagId(InfluencerServiceImpl.parseStringToListOfIntegers(i.getTagId()));
+                        newewDtoDetailsss.setIsHot(i.getIsHot());
+                        newewDtoDetailsss.setIsView(i.getIsView());
                         if (i.getLanguage().equals("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
                             newewDtoDetailsss.setTitleVN(i.getTitle());
-                            newewDtoDetailsss.setHerderVN(i.getHerder());
-                            newewDtoDetailsss.setBodyVN(i.getBody());
-                            newewDtoDetailsss.setFooterVN(i.getFooter());
                         } else {
                             newewDtoDetailsss.setTitleEN(i.getTitle());
                             newewDtoDetailsss.setDescriptionEN(i.getDescription());
                             newewDtoDetailsss.setContentEN(i.getContent());
-                            newewDtoDetailsss.setHerderEN(i.getHerder());
-                            newewDtoDetailsss.setBodyEN(i.getBody());
-                            newewDtoDetailsss.setFooterEN(i.getFooter());
                         }
                     });
             newDtoDetail.add(newewDtoDetailsss);
@@ -118,38 +111,40 @@ public class NewsServiceImpl implements NewsService {
         PageResponse<?> pageResponse;
         int offset = pageNo > 0 ? pageNo - 1 : 0;
         Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, tagId, language, pageable);
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, (tagId != 0L) ? String.valueOf(tagId) : "", language, pageable);
+        List<ViewNewsDto> newsDtos = new ArrayList<>();
+        viewNewsMaps.forEach(i->{
+            newsDtos.add(new ViewNewsDto(i.getImg(),i.getTitle(),i.getCreatedDate()));
+        });
         if (CollectionUtils.isEmpty(viewNewsMaps)) {
             pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
             return pageResponse;
         }
-        pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, viewNewsMaps.size()));
+        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId != null ? String.valueOf(tagId) : "", language);
+        pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, viewCountNewsMaps));
         return pageResponse;
     }
 
     public ViewNewsDetailDto getViewNewsDetail(int id, String language, Long topicId, Long tagId) {
-        ViewNewsMap viewNewsMaps = newsRepository.getDetailView(topicId, tagId, language, id);
+        ViewNewsMap viewNewsMaps = newsRepository.getDetailView(topicId, (tagId != 0L) ? String.valueOf(tagId) : "", language, id);
         if (ObjectUtils.isEmpty(viewNewsMaps)) {
             return null;
         }
         ViewNewsDetailDto viewNewsDetailDto = new ViewNewsDetailDto();
         viewNewsDetailDto.setId(viewNewsMaps.getId());
         viewNewsDetailDto.setTitle(viewNewsMaps.getTitle());
-        viewNewsDetailDto.setHerder(viewNewsMaps.getHerder());
-        viewNewsDetailDto.setImage1(viewNewsMaps.getImage1());
-        viewNewsDetailDto.setBody(viewNewsMaps.getBody());
-        viewNewsDetailDto.setImage2(viewNewsMaps.getImage2());
-        viewNewsDetailDto.setFooter(viewNewsMaps.getFooter());
+        viewNewsDetailDto.setContent(viewNewsMaps.getContent());
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
+        viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
         return viewNewsDetailDto;
     }
 
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
         Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
         Pageable pageableIsHot = PageRequest.of(0, 3);
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(0L, 0L, language, pageableIsHot);
-        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, 0L, language);
-        List<ViewNewsMap> viewNews = newsRepository.getViewNew(0L, 0L, language, pageableViewNews);
+        List<ViewNewAndHot> viewNewsMaps = newsRepository.getViewhots(0L, "", language, pageableIsHot);
+        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, "", language);
+        List<ViewNewAndHot> viewNews = newsRepository.getViewNew(0L, "", language, pageableViewNews);
         int count1 = 0;
         int count2 = 0;
         int count3 = 0;
@@ -203,14 +198,14 @@ public class NewsServiceImpl implements NewsService {
         viewNews.forEach(viewMap -> {
             ViewNewsHotDto viewNew = new ViewNewsHotDto();
             viewNew.setTitle(viewMap.getTitle());
-            viewNew.setImage1(viewMap.getImage1());
+            viewNew.setImg(viewMap.getImage());
             viewNewDtos.add(viewNew);
         });
 
         viewNewsMaps.forEach(viewMap -> {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
-            viewNewsHotDto.setImage1(viewMap.getImage1());
+            viewNewsHotDto.setImg(viewMap.getImage());
             viewNewHots.add(new ViewNewsHotDto());
         });
         return new ViewNewsAndHotDetailDto(viewNewsTopicDto, viewNewDtos, viewNewHots);
@@ -223,25 +218,25 @@ public class NewsServiceImpl implements NewsService {
             NewsEntity newsEntity = new NewsEntity();
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
-            newsEntity.setThumbnail(request.getThumbnail());
+            newsEntity.setThumbnail(request.getImg());
             newsEntity.setCreated(new Date());
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
-            newsEntity.setImage1(request.getImage1());
-            newsEntity.setImage2(request.getImage2());
             newsEntity.setTopicId(request.getTopicId());
-            newsEntity.setTagId(request.getTagId());
+            if (request.getTagId().size() > 0) {
+                newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
+            } else {
+                newsEntity.setTagId("");
+            }
             newsEntity.setIsHot(request.getIsHot());
+            newsEntity.setIsVew(request.getIsView());
             newsRepository.save(newsEntity);
             //add news language
             //add en
             newsEN.setTitle(request.getTitleEN());
             newsEN.setContent(request.getContentEN());
             newsEN.setDescription(request.getDescriptionEN());
-            newsEN.setHerder(request.getHerderEN());
-            newsEN.setBody(request.getBodyEN());
-            newsEN.setFooter(request.getFooterEN());
             newsEN.setLanguage(String.valueOf(Language.EN));
             newsEN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsEN);
@@ -249,13 +244,10 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setTitle(request.getTitleVN());
             newsVN.setContent(request.getContentVN());
             newsVN.setDescription(request.getDescriptionVN());
-            newsVN.setHerder(request.getHerderVN());
-            newsVN.setBody(request.getBodyVN());
-            newsVN.setFooter(request.getFooterVN());
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", newsEntity);
+            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", getDetail(newsEntity.getIdNews()));
         } catch (Exception e) {
             return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", null);
         }
@@ -272,16 +264,19 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
-            news.get().setThumbnail(newsAddRequest.getThumbnail());
+            news.get().setThumbnail(newsAddRequest.getImg());
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
             news.get().setType(newsAddRequest.getType());
-            news.get().setImage1(newsAddRequest.getImage1());
-            news.get().setImage2(newsAddRequest.getImage2());
             news.get().setTopicId(newsAddRequest.getTopicId());
-            news.get().setTagId(newsAddRequest.getTagId());
+            if (newsAddRequest.getTagId().size() > 0) {
+                news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
+            } else {
+                news.get().setTagId("");
+            }
             news.get().setIsHot(newsAddRequest.getIsHot());
+            news.get().setIsVew(newsAddRequest.getIsView());
             newsRepository.save(news.get());
             //add detail
             newsLanguageRepository.deleteByNewId(news.get().getIdNews());
@@ -290,9 +285,6 @@ public class NewsServiceImpl implements NewsService {
             newsEN.setTitle(newsAddRequest.getTitleEN());
             newsEN.setContent(newsAddRequest.getContentEN());
             newsEN.setDescription(newsAddRequest.getDescriptionEN());
-            newsEN.setHerder(newsAddRequest.getHerderEN());
-            newsEN.setBody(newsAddRequest.getBodyEN());
-            newsEN.setFooter(newsAddRequest.getFooterEN());
             newsEN.setLanguage(String.valueOf(Language.EN));
             newsEN.setNewsEntity(news.get());
             newsLanguageRepository.save(newsEN);
@@ -300,13 +292,10 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setTitle(newsAddRequest.getTitleVN());
             newsVN.setContent(newsAddRequest.getContentVN());
             newsVN.setDescription(newsAddRequest.getDescriptionVN());
-            newsVN.setHerder(newsAddRequest.getHerderVN());
-            newsVN.setBody(newsAddRequest.getBodyVN());
-            newsVN.setFooter(newsAddRequest.getFooterVN());
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(news.get());
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", news);
+            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", getDetail(news.get().getIdNews()));
         } catch (Exception e) {
             return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
         }

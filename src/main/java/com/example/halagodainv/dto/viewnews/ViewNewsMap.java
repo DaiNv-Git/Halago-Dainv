@@ -1,11 +1,13 @@
 package com.example.halagodainv.dto.viewnews;
 
+import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,25 +15,19 @@ import java.util.Date;
 public class ViewNewsMap {
     private int id;
     private String title;
-    private String herder;
-    private String body;
-    private String footer;
-    private String image1;
-    private String image2;
+    private String content;
     private String createdDate;
     private Long topicId;
-    private Long tagId;
+    private List<Integer> tagId;
+    private String img;
 
-    public ViewNewsMap(int id, String title, String herder, String body, String footer, String image1, String image2, Date createdDate, Long topicId, Long tagId) {
+    public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img) {
         this.id = id;
         this.title = title;
-        this.herder = herder;
-        this.body = body;
-        this.footer = footer;
-        this.image1 = image1;
-        this.image2 = image2;
+        this.content = content;
         this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
         this.topicId = topicId;
-        this.tagId = tagId;
+        this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
+        this.img = img;
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SolutionLiveStreamImageEdit {
-    private String image;
+    private String img;
     private String imageNameVN;
     private String imageNameEN;
 }
