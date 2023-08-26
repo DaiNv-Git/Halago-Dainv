@@ -19,7 +19,6 @@ public class NewDtoDetails {
     private String contentVN;
     private String contentEN;
     private Integer type;
-    private Integer status;
     private String photoTitle;
     private String linkPost;
     private Long topicId;

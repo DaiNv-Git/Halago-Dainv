@@ -83,7 +83,6 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setIdNews(i.getIdNews());
                         newewDtoDetailsss.setImg(i.getThumbnail());
                         newewDtoDetailsss.setType(i.getType());
-                        newewDtoDetailsss.setStatus(i.getStatus());
                         newewDtoDetailsss.setLinkPost(i.getLinkPost());
                         newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
                         newewDtoDetailsss.setTopicId(i.getTopicId());
@@ -113,15 +112,15 @@ public class NewsServiceImpl implements NewsService {
         Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
         List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, (tagId != 0L) ? String.valueOf(tagId) : "", language, pageable);
         List<ViewNewsDto> newsDtos = new ArrayList<>();
-        viewNewsMaps.forEach(i->{
-            newsDtos.add(new ViewNewsDto(i.getImg(),i.getTitle(),i.getCreatedDate()));
+        viewNewsMaps.forEach(i -> {
+            newsDtos.add(new ViewNewsDto(i.getImg(), i.getTitle(), i.getCreatedDate()));
         });
         if (CollectionUtils.isEmpty(viewNewsMaps)) {
             pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
             return pageResponse;
         }
-        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId != null ? String.valueOf(tagId) : "", language);
-        pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, viewCountNewsMaps));
+        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId != 0L ? String.valueOf(tagId) : "", language);
+        pageResponse = new PageResponse<>(new PageImpl<>(newsDtos, pageable, viewCountNewsMaps));
         return pageResponse;
     }
 
