@@ -52,7 +52,7 @@ public class NewsController {
                                       @RequestParam(value = "tagId",required = false,defaultValue = "0") Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language, topicId, tagId)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language.toUpperCase(), topicId, tagId)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -64,7 +64,7 @@ public class NewsController {
                                       @RequestParam(value = "tagId",defaultValue = "0") Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsDetail(viewId, language, topicId, tagId)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsDetail(viewId, language.toUpperCase(), topicId, tagId)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
