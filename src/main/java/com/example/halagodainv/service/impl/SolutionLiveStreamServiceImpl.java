@@ -79,7 +79,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
             for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImg());
+                imageLiveStreamEntity.setImage(img.getImage());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntity.setImageNameEN(img.getImageNameEN());
                 imageLiveStreamEntity.setImageNameVN(img.getImageNameVN());
@@ -97,7 +97,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
         try {
             edits.forEach(img -> {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImg());
+                imageLiveStreamEntity.setImage(img.getImage());
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntities.add(imageLiveStreamEntity);
             });
