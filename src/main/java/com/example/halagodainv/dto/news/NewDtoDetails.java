@@ -21,9 +21,13 @@ public class NewDtoDetails {
     private Integer type;
     private String photoTitle;
     private String linkPost;
-    private Long topicId;
     private Boolean isHot;
     private Boolean isView;
+    private String authorName;
+    private String authorAvatar;
+    private Long topicId;
     private List<Integer> tagId;
+    private String topicName;
+    private String tagNames;
 
 }

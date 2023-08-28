@@ -57,9 +57,9 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "");
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "",newsSearch.getIsHot());
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", pageable);
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "",newsSearch.getIsHot(), pageable);
             PageResponse pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
@@ -88,7 +88,10 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setTopicId(i.getTopicId());
                         newewDtoDetailsss.setTagId(InfluencerServiceImpl.parseStringToListOfIntegers(i.getTagId()));
                         newewDtoDetailsss.setIsHot(i.getIsHot());
-                        newewDtoDetailsss.setIsView(i.getIsView());
+                        newewDtoDetailsss.setAuthorName(i.getAuthorName());
+                        newewDtoDetailsss.setAuthorAvatar(i.getAuthorAvatar());
+                        newewDtoDetailsss.setTagNames(i.getTagName());
+                        newewDtoDetailsss.setTopicName(topicRepository.findById(i.getTopicId()).get().getTopicName());
                         if (i.getLanguage().equals("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
@@ -222,6 +225,8 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
+            newsEntity.setAuthorName(request.getAuthorName());
+            newsEntity.setAuthorAvatar(request.getAuthorAvatar());
             newsEntity.setTopicId(request.getTopicId());
             if (request.getTagId().size() > 0) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
@@ -229,7 +234,6 @@ public class NewsServiceImpl implements NewsService {
                 newsEntity.setTagId("");
             }
             newsEntity.setIsHot(request.getIsHot());
-            newsEntity.setIsVew(request.getIsView());
             newsRepository.save(newsEntity);
             //add news language
             //add en
@@ -269,13 +273,14 @@ public class NewsServiceImpl implements NewsService {
             news.get().setType(newsAddRequest.getType());
             news.get().setType(newsAddRequest.getType());
             news.get().setTopicId(newsAddRequest.getTopicId());
+            news.get().setAuthorName(newsAddRequest.getAuthorName());
+            news.get().setAuthorAvatar(newsAddRequest.getAuthorAvatar());
             if (newsAddRequest.getTagId().size() > 0) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
             } else {
                 news.get().setTagId("");
             }
             news.get().setIsHot(newsAddRequest.getIsHot());
-            news.get().setIsVew(newsAddRequest.getIsView());
             newsRepository.save(news.get());
             //add detail
             newsLanguageRepository.deleteByNewId(news.get().getIdNews());

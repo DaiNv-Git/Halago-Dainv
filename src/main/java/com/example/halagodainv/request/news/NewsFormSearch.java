@@ -14,4 +14,5 @@ public class NewsFormSearch extends SearchPageForm {
     private String title = "";
     private Long topicId;
     private Integer tagId;
+    private Boolean isHot;
 }

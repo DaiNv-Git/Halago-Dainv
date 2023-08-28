@@ -21,6 +21,8 @@ public class NewDetails {
     private Long topicId;
     private String tagId;
     private Boolean isHot;
-    private Boolean isView;
+    private String authorName;
+    private String authorAvatar;
+    private String tagName;
 
 }

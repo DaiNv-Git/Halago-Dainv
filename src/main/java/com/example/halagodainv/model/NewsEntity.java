@@ -36,10 +36,14 @@ public class NewsEntity {
     private Long topicId;
     @Column(name = "tagId")
     private String tagId;
+    @Column(name = "tag_name")
+    private String tagName;
     @Column(name = "is_hot")
     private Boolean isHot;
-    @Column(name = "is_view")
-    private Boolean isVew;
+    @Column(name = "author_name")
+    private String authorName;
+    @Column(name = "author_avatar")
+    private String authorAvatar;
     @JsonIgnore
     @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();

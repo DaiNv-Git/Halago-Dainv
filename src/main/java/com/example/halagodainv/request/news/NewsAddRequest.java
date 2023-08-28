@@ -18,9 +18,10 @@ public class NewsAddRequest {
     private Integer type;
     private String photoTitle;
     private String linkPost;
+    private String authorName;
+    private String authorAvatar;
     private Long topicId;
     private List<Integer> tagId = new ArrayList<>();
     private Boolean isHot =false;
-    private Boolean isView =false;
 
 }
