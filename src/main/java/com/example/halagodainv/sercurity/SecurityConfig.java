@@ -61,9 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/forgot_password").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
     }
 
     @Override
