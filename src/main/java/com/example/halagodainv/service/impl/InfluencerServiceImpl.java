@@ -451,12 +451,4 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
         return joiner.toString();
     }
-
-    public static String parseStringToStringJoin(String input) {
-        StringJoiner stringJoiner = new StringJoiner(", ");
-        if (!Strings.isBlank(input)) {
-            stringJoiner.add(input);
-        }
-        return stringJoiner.toString();
-    }
 }

@@ -57,9 +57,9 @@ public class NewsServiceImpl implements NewsService {
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "",newsSearch.getIsHot());
+            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot());
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "",newsSearch.getIsHot(), pageable);
+            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot(), pageable);
             PageResponse pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
@@ -233,6 +233,12 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTopicId(request.getTopicId());
             if (request.getTagId().size() > 0) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
+                StringJoiner stringJoiner = new StringJoiner(", ");
+                List<TagEntity> tagEntities = tagRepository.findByIdIn(request.getTagId());
+                for (TagEntity tagEntity : tagEntities) {
+                    stringJoiner.add(tagEntity.getTagName());
+                }
+                newsEntity.setTagName(stringJoiner.toString());
             } else {
                 newsEntity.setTagId("");
             }
@@ -280,6 +286,12 @@ public class NewsServiceImpl implements NewsService {
             news.get().setAuthorAvatar(newsAddRequest.getAuthorAvatar());
             if (newsAddRequest.getTagId().size() > 0) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
+                StringJoiner stringJoiner = new StringJoiner(", ");
+                List<TagEntity> tagEntities = tagRepository.findByIdIn(newsAddRequest.getTagId());
+                for (TagEntity tagEntity : tagEntities) {
+                    stringJoiner.add(tagEntity.getTagName());
+                }
+                news.get().setTagName(stringJoiner.toString());
             } else {
                 news.get().setTagId("");
             }
