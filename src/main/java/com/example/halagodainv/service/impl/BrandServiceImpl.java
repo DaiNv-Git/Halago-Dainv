@@ -93,7 +93,6 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(brandAddRequest.getLogo());
-            brandEntity.setPartnerId(InfluencerServiceImpl.parseListIntegerToString(brandAddRequest.getPartnerId()));
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
@@ -132,7 +131,6 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());
-        brandEntity.get().setPartnerId(InfluencerServiceImpl.parseListIntegerToString(brandEditRequest.getPartnerId()));
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
         return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new BrandDto(brandEntity.get()));

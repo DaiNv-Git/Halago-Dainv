@@ -24,7 +24,6 @@ public class BrandDto {
     private String passwordHide;
     private String website;
     private String description;
-    private List<Integer> partnerId = new ArrayList<>();
 
     public BrandDto(BrandEntity brandEntity) {
         this.id = brandEntity.getId();
@@ -36,6 +35,5 @@ public class BrandDto {
         this.website = brandEntity.getWebsite();
         this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
         this.description = brandEntity.getDescription();
-        this.partnerId = InfluencerServiceImpl.parseStringToListOfIntegers(brandEntity.getPartnerId());
     }
 }
