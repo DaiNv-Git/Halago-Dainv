@@ -21,7 +21,7 @@ public class NewsAddRequest {
     private String authorName;
     private String authorAvatar;
     private Long topicId;
-    private List<Integer> tagId = new ArrayList<>();
+    private List<Integer> tagId;
     private Boolean isHot =false;
 
 }
