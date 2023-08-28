@@ -18,6 +18,7 @@ public class BrandEditRequest {
     private String phoneNumber;
     private String logo;
     private String description;
+    private Integer partnerId;
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
         if (Strings.isBlank(registerName)) {

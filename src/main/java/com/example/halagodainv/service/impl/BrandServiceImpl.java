@@ -131,6 +131,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(brandEditRequest.getLogo());
+        brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
         return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new BrandDto(brandEntity.get()));
