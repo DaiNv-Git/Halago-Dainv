@@ -73,7 +73,7 @@ public class NewsController {
     @PostMapping("/view/hot-new")
     public ResponseEntity<?> getNewsAndHot(@RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsAndHots(language)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsAndHots(language.toUpperCase())));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
