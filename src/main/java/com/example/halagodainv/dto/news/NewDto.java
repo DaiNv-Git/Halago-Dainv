@@ -16,8 +16,10 @@ public class NewDto {
     private String created;
     private Long topicId;
     private List<Integer> tagId;
+    private String tagNames;
+    private String topicName;
 
-    public NewDto(int id, String title, String img, String type, Date created, Long topicId, String tagId) {
+    public NewDto(int id, String title, String img, String type, Date created, Long topicId, String tagId, String tagName) {
         this.id = id;
         this.title = title;
         this.img = img;
@@ -25,5 +27,6 @@ public class NewDto {
         this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
         this.topicId = topicId;
         this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
+        this.tagNames = tagName;
     }
 }

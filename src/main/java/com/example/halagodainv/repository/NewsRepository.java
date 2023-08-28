@@ -18,7 +18,7 @@ import java.util.List;
 
 @Repository
 public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
-    @Query("select new com.example.halagodainv.dto.news.NewDto(n.idNews,nl.title,n.thumbnail,c.categoryName,n.created,n.topicId,n.tagId) " +
+    @Query("select new com.example.halagodainv.dto.news.NewDto(n.idNews,nl.title,n.thumbnail,c.categoryName,n.created,n.topicId,n.tagId,n.tagName) " +
             "from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
             "left join CategoryEntity c on c.id = n.type " +

@@ -65,6 +65,9 @@ public class NewsServiceImpl implements NewsService {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
                 return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
             }
+            newsEntityList.stream().forEach(i -> {
+                i.setTopicName(topicRepository.findById(i.getTopicId()).get().getTopicName());
+            });
             pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, totalCountNews));
             return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception e) {
