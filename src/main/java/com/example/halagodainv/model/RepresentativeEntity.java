@@ -15,6 +15,8 @@ public class RepresentativeEntity {
     private long id;
     @Column(name = "img")
     private String img;
+    @Column(name = "img2")
+    private String img2;
     @Column(name = "name")
     private String name;
     @Column(name = "content")

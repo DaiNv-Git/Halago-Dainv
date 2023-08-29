@@ -28,6 +28,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             for (RepresentativeMapEntity map : maps) {
                 RepresentativeDtos dto = new RepresentativeDtos();
                 dto.setImg(map.getImg());
+                dto.setImg2(map.getImg2());
                 dto.setInteractions(map.getInteractions());
                 dto.setInteractionRate(map.getInteractionRate());
                 dto.setReach(map.getReach());
@@ -83,6 +84,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             for (RepresentativeMapEntity representativeMap : request.getRepresentative()) {
                 RepresentativeEntity representativeEntity = new RepresentativeEntity();
                 representativeEntity.setImg(representativeMap.getImg());
+                representativeEntity.setImg2(representativeMap.getImg2());
                 representativeEntity.setName(representativeMap.getName());
                 representativeEntity.setNameEN(representativeMap.getNameEN());
                 representativeEntity.setContent(representativeMap.getContent());

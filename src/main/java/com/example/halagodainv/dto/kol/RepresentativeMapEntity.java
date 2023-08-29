@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RepresentativeMapEntity {
     private String img;
+    private String img2;
     private String name;
     private String content;
     private String reach;
