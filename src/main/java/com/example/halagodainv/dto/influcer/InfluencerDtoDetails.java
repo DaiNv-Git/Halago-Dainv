@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.catalina.LifecycleState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,10 +15,10 @@ public class InfluencerDtoDetails {
     private long id;
     private String name;
     private String phone;
-    private List<Integer> industry;
+    private List<Integer> industry = new ArrayList<>();
     private Integer sex;
     private String birtYear;
-    private List<Integer> classifyId;
+    private List<Integer> classifyId = new ArrayList<>();
     private Integer provinceId;
     private String address;
     private String email;

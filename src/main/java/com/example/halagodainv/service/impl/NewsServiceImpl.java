@@ -65,9 +65,6 @@ public class NewsServiceImpl implements NewsService {
                 pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
                 return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
             }
-            newsEntityList.stream().forEach(i -> {
-                i.setTopicName(topicRepository.findById(i.getTopicId()).get().getTopicName());
-            });
             pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, totalCountNews));
             return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception e) {
@@ -86,20 +83,19 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setIdNews(i.getIdNews());
                         newewDtoDetailsss.setImg(i.getThumbnail());
                         newewDtoDetailsss.setType(i.getType());
-                        newewDtoDetailsss.setLinkPost(i.getLinkPost());
-                        newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle());
+                        newewDtoDetailsss.setLinkPost(i.getLinkPost() == null ? "" : i.getLinkPost());
+                        newewDtoDetailsss.setPhotoTitle(i.getPhotoTitle()== null ? "" :i.getPhotoTitle());
                         newewDtoDetailsss.setTopicId(i.getTopicId());
                         newewDtoDetailsss.setTagId(InfluencerServiceImpl.parseStringToListOfIntegers(i.getTagId()));
                         newewDtoDetailsss.setIsHot(i.getIsHot());
                         newewDtoDetailsss.setAuthorName(i.getAuthorName());
                         newewDtoDetailsss.setAuthorAvatar(i.getAuthorAvatar());
                         newewDtoDetailsss.setTagNames(i.getTagName());
-                        newewDtoDetailsss.setTopicName(topicRepository.findById(i.getTopicId()).get().getTopicName());
-                        if (i.getLanguage().equals("VN")) {
+                        if (i.getLanguage().equalsIgnoreCase("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
                             newewDtoDetailsss.setTitleVN(i.getTitle());
-                        } else {
+                        } else if (i.getLanguage().equalsIgnoreCase("EN")){
                             newewDtoDetailsss.setTitleEN(i.getTitle());
                             newewDtoDetailsss.setDescriptionEN(i.getDescription());
                             newewDtoDetailsss.setContentEN(i.getContent());

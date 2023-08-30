@@ -37,7 +37,7 @@ public class CampaignDto {
         this.brandId = campaignEntity.getIdBrand();
         this.campaignName = campaignEntity.getCampaignName();
         this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getIndustryId());
-        this.startDate = DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
+        this.startDate =DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
         this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "yyyy-MM-dd");
         this.campaignImage = campaignEntity.getImg();
         this.titleCampaign = campaignEntity.getTitleCampaign();

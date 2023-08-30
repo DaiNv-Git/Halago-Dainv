@@ -12,7 +12,7 @@ public class InfluencerAddRequest {
     private String name;
     private String phone;
     private Integer sex;
-    private Integer birtYear;
+    private String birtYear;
     private Boolean isFacebook = false;
     private Boolean isTikTok = false;
     private Boolean isYoutube = false;

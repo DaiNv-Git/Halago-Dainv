@@ -13,6 +13,6 @@ import java.util.List;
 public class NewsFormSearch extends SearchPageForm {
     private String title = "";
     private Long topicId;
-    private Integer tagId;
+    private Integer tagId =null;
     private Boolean isHot;
 }

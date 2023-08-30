@@ -4,6 +4,7 @@ import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import lombok.Data;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class NewDto {
     private String img;
     private String created;
     private Long topicId;
-    private List<Integer> tagId;
+    private List<Integer> tagId = new ArrayList<>();
     private String tagNames;
     private String topicName;
 
@@ -24,7 +25,7 @@ public class NewDto {
         this.title = title;
         this.img = img;
         this.category = type;
-        this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
+        this.created = DateFormatUtils.format(created != null ? created : null, "dd-MM-yyyy");
         this.topicId = topicId;
         this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
         this.tagNames = tagName;

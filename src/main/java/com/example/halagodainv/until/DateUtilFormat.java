@@ -11,9 +11,12 @@ import java.util.Date;
 public class DateUtilFormat {
 
     public static String convertDateToString(Date dateTime, String dateType) {
-        SimpleDateFormat formatter = new SimpleDateFormat(dateType);
-        String dateFormatString = formatter.format(dateTime);
-        return dateFormatString;
+        if (dateTime != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(dateType);
+            String dateFormatString = formatter.format(dateTime);
+            return dateFormatString;
+        }
+        return "";
     }
 
     public static Date converStringToDate(String dateTime, String dateType) throws ParseException {

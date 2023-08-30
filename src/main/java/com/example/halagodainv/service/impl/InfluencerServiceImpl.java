@@ -65,10 +65,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                 List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), pageable);
                 if (CollectionUtils.isEmpty(influcerMenuDtos)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
-                    return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                    return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
                 }
                 pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
-                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             } else {
                 long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear());
                 List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), pageable);
@@ -76,12 +76,12 @@ public class InfluencerServiceImpl implements InfluencerService {
                 menuDtoSet.addAll(filterMenu);
                 if (CollectionUtils.isEmpty(filterMenu)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
-                    return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                    return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
                 }
                 Set<InflucerMenuDto> sortedMenuDtoSet = new TreeSet<>(Comparator.comparing(InflucerMenuDto::getId).reversed());
                 sortedMenuDtoSet.addAll(menuDtoSet);
                 pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(sortedMenuDtoSet.toArray()), pageable, total));
-                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             }
         } catch (Exception e) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
@@ -119,43 +119,42 @@ public class InfluencerServiceImpl implements InfluencerService {
             List<InflucerDtoListDetail> influencers = influencerEntityRepository.getDetails(id);
             Set<InfluencerDtoDetails> dtoDetailsSet = new HashSet<>();
             InfluencerDtoDetails dtoDetails = new InfluencerDtoDetails();
-            influencers.forEach(
-                    influencer -> {
-                        dtoDetails.setId(influencer.getId());
-                        dtoDetails.setName(influencer.getName());
-                        dtoDetails.setAddress(influencer.getAddress());
-                        dtoDetails.setBankId(influencer.getBankId().toUpperCase());
-                        dtoDetails.setClassifyId(parseStringToListOfIntegers(influencer.getClassify()));
-                        dtoDetails.setBankNumber(influencer.getBankNumber());
-                        dtoDetails.setBirtYear(influencer.getBirtYear());
-                        dtoDetails.setSex(influencer.getSex());
-                        dtoDetails.setEmail(influencer.getEmail());
-                        dtoDetails.setProvinceId(influencer.getProvinceId());
-                        dtoDetails.setBirtYear(influencer.getBirtYear());
-                        dtoDetails.setCreateHistory(DateFormatUtils.format(influencer.getCreateHistory(), "yyyy-MM-dd"));
-                        dtoDetails.setPhone(influencer.getPhone());
-                        dtoDetails.setIndustry(parseStringToListOfIntegers(influencer.getIndustry()));
-                        if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
-                            dtoDetails.setLinkFb(influencer.getLink());
-                            dtoDetails.setExpenseFb(influencer.getExpense());
-                            dtoDetails.setFollowerFb(influencer.getFollower());
-                        }
-                        if ("YOUTUBE".toUpperCase().equals(influencer.getChannel())) {
-                            dtoDetails.setLinkYT(influencer.getLink());
-                            dtoDetails.setExpenseYT(influencer.getExpense());
-                            dtoDetails.setFollowerYT(influencer.getFollower());
-                        }
-                        if ("TIKTOK".toUpperCase().equals(influencer.getChannel())) {
-                            dtoDetails.setLinkTT(influencer.getLink());
-                            dtoDetails.setExpenseTT(influencer.getExpense());
-                            dtoDetails.setFollowerTT(influencer.getFollower());
-                        }
-                        if ("INSTAGRAM".toUpperCase().equals(influencer.getChannel())) {
-                            dtoDetails.setLinkIns(influencer.getLink());
-                            dtoDetails.setExpenseIns(influencer.getExpense());
-                            dtoDetails.setFollowerIns(influencer.getFollower());
-                        }
-                    });
+            for (InflucerDtoListDetail influencer : influencers) {
+                dtoDetails.setId(influencer.getId());
+                dtoDetails.setName(influencer.getName());
+                dtoDetails.setAddress(influencer.getAddress());
+                dtoDetails.setBankId(influencer.getBankId());
+                dtoDetails.setClassifyId(parseStringToListOfIntegers(influencer.getClassify()));
+                dtoDetails.setBankNumber(influencer.getBankNumber());
+                dtoDetails.setBirtYear(influencer.getBirtYear());
+                dtoDetails.setSex(influencer.getSex());
+                dtoDetails.setEmail(influencer.getEmail());
+                dtoDetails.setProvinceId(influencer.getProvinceId());
+                dtoDetails.setBirtYear(influencer.getBirtYear());
+                dtoDetails.setCreateHistory(DateFormatUtils.format(influencer.getCreateHistory(), "yyyy-MM-dd"));
+                dtoDetails.setPhone(influencer.getPhone());
+                dtoDetails.setIndustry(parseStringToListOfIntegers(influencer.getIndustry()));
+                if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
+                    dtoDetails.setLinkFb(influencer.getLink());
+                    dtoDetails.setExpenseFb(influencer.getExpense());
+                    dtoDetails.setFollowerFb(influencer.getFollower());
+                }
+                if ("YOUTUBE".toUpperCase().equals(influencer.getChannel())) {
+                    dtoDetails.setLinkYT(influencer.getLink());
+                    dtoDetails.setExpenseYT(influencer.getExpense());
+                    dtoDetails.setFollowerYT(influencer.getFollower());
+                }
+                if ("TIKTOK".toUpperCase().equals(influencer.getChannel())) {
+                    dtoDetails.setLinkTT(influencer.getLink());
+                    dtoDetails.setExpenseTT(influencer.getExpense());
+                    dtoDetails.setFollowerTT(influencer.getFollower());
+                }
+                if ("INSTAGRAM".toUpperCase().equals(influencer.getChannel())) {
+                    dtoDetails.setLinkIns(influencer.getLink());
+                    dtoDetails.setExpenseIns(influencer.getExpense());
+                    dtoDetails.setFollowerIns(influencer.getFollower());
+                }
+            }
             dtoDetailsSet.add(dtoDetails);
             return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetailsSet);
         } catch (Exception e) {
@@ -420,8 +419,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 int number = Integer.parseInt(numberString.trim());
                 integerList.add(number);
             }
+            return integerList;
         }
-        return integerList;
+        return new ArrayList<>();
     }
 
 
