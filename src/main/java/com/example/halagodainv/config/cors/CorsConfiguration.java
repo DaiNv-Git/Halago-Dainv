@@ -28,7 +28,10 @@ public class CorsConfiguration extends OncePerRequestFilter {
             System.out.println("=============="+origin);
         } else {
             response.setHeader("Access-Control-Allow-Origin", origins.get(0));
-            System.out.println("==============+++++++++++"+origins.get(0));
+            response.setHeader("Access-Control-Allow-Origin", origins.get(1));
+            response.setHeader("Access-Control-Allow-Origin", origins.get(2));
+            response.setHeader("Access-Control-Allow-Origin", origins.get(3));
+            response.setHeader("Access-Control-Allow-Origin", origins.get(4));
         }
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
