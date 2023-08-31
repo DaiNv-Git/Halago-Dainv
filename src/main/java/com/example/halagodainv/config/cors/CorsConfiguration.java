@@ -21,12 +21,11 @@ public class CorsConfiguration extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String origin = request.getHeader(HttpHeaders.ORIGIN);
-//        if (origins.contains(origin)) {
-//            response.setHeader("Access-Control-Allow-Origin", origin);
-//        } else {
-//            response.setHeader("Access-Control-Allow-Origin", origins.get(0));
-//        }
-        response.setHeader("Access-Control-Allow-Origin", "http://103.57.223.112:8989");
+        if (origins.contains(origin)) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        } else {
+            response.setHeader("Access-Control-Allow-Origin", origins.get(0));
+        }
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
