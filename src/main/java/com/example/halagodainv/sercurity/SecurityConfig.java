@@ -55,10 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests()
-//                .antMatchers("/**").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh-token").permitAll()
                 .antMatchers("/api/forgot_password").permitAll()
+                .antMatchers("/contact-customer/add").permitAll()
+                .antMatchers("/contact-customer/add-free-consul").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
