@@ -27,6 +27,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         String message = "msg_Hasexpired_0";
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), messageSource.getMessage(message, request.getCookies(), null));
+        response.sendError(HttpStatus.UNAUTHORIZED.value(),message);
     }
 }
