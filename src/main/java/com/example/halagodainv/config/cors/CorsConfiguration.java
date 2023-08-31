@@ -9,15 +9,16 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.Filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CorsConfiguration extends OncePerRequestFilter {
+public class CorsConfiguration extends OncePerRequestFilter implements Filter{
 
     @Value("#{'${request.origin.allow}'.split(',')}")
-    private List<String> origins = new ArrayList<>();
+    private List<String> origins;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
