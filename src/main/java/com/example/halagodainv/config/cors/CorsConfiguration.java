@@ -22,6 +22,7 @@ public class CorsConfiguration extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String origin = request.getHeader(HttpHeaders.ORIGIN);
+        System.out.println(origins);
         if (origins.contains(origin)) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         } else {
