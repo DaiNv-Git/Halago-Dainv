@@ -26,7 +26,7 @@ public class CorsConfiguration extends OncePerRequestFilter {
 //        } else {
 //            response.setHeader("Access-Control-Allow-Origin", origins.get(0));
 //        }
-        response.setHeader("Access-Control-Allow-Origin", origin);
+        response.setHeader("Access-Control-Allow-Origin", "http://103.57.223.112:8989");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
