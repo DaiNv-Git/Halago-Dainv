@@ -98,8 +98,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            int proviceId = Strings.isBlank(search.getProvinceId()) ? 0 : Integer.valueOf(search.getProvinceId()).intValue();
-            int sexId = Strings.isBlank(search.getSex()) ? 0 : Integer.valueOf(search.getSex()).intValue();
+            int proviceId = Strings.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
+            int sexId = Strings.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
             long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear());
             List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
