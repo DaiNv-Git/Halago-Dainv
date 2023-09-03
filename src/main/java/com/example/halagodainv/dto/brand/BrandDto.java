@@ -24,6 +24,7 @@ public class BrandDto {
     private String passwordHide;
     private String website;
     private String description;
+    private Integer partnerId;
 
     public BrandDto(BrandEntity brandEntity) {
         this.id = brandEntity.getId();
@@ -35,5 +36,6 @@ public class BrandDto {
         this.website = brandEntity.getWebsite();
         this.createDate = DateUtilFormat.convertDateToString(brandEntity.getCreated(), "dd-MM-yyyy");
         this.description = brandEntity.getDescription();
+        this.partnerId = brandEntity.getPartnerId();
     }
 }
