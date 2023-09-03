@@ -6,7 +6,6 @@ import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.BrandEntity;
 import com.example.halagodainv.repository.BrandRepository;
-import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.brand.BrandAddRequest;
 import com.example.halagodainv.request.brand.BrandEditRequest;
 import com.example.halagodainv.response.BaseResponse;
@@ -31,7 +30,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
-    private final UserRepository userRepository;
 
     @Override
     public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
@@ -93,6 +91,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(brandAddRequest.getLogo());
+            brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
