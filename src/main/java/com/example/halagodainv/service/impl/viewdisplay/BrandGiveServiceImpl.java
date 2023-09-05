@@ -4,7 +4,9 @@ import com.example.halagodainv.dto.brand.BrandGiveDto;
 import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
 import com.example.halagodainv.repository.viewdisplay.BrandGiveRepository;
 import com.example.halagodainv.service.BrandGiveService;
+import com.example.halagodainv.until.FileImageUntil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.swing.plaf.PanelUI;
@@ -15,6 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrandGiveServiceImpl implements BrandGiveService {
     private final BrandGiveRepository brandGiveRepository;
+
+    private final FileImageUntil fileImageUntil;
+
 
     public Object getAll(String language) {
         List<BrandGiveEntity> brandGiveEntities = brandGiveRepository.findAll();
@@ -41,6 +46,10 @@ public class BrandGiveServiceImpl implements BrandGiveService {
 
     public Object update(List<BrandGiveEntity> brandGiveEntities) {
         brandGiveRepository.deleteAll();
+//        brandGiveEntities.forEach(i->{
+//            BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
+//            fileImageUntil.uploadImage(i.getAuthorAvatar())
+//        });
         return brandGiveRepository.saveAll(brandGiveEntities);
     }
 }

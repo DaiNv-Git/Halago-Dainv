@@ -4,6 +4,7 @@ import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
 import com.example.halagodainv.repository.viewdisplay.BrandGiveRepository;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.BrandGiveService;
+import com.example.halagodainv.until.FileImageUntil;
 import io.swagger.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,6 @@ public class BrandGiveController {
 
     @Autowired
     private BrandGiveService brandGiveService;
-
     @PostMapping("")
     public ResponseEntity<Object> getAll(@RequestParam("language") String language) {
         try {

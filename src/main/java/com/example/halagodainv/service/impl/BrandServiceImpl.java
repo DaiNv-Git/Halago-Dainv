@@ -11,6 +11,7 @@ import com.example.halagodainv.request.brand.BrandEditRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.BrandService;
+import com.example.halagodainv.until.FileImageUntil;
 import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +32,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
+
+    private final FileImageUntil fileImageUntil;
 
     @Override
     public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
@@ -90,7 +94,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
-            brandEntity.setLogo(brandAddRequest.getLogo());
+            brandEntity.setLogo(fileImageUntil.uploadImage(brandAddRequest.getLogo()));
             brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
@@ -102,7 +106,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException {
+    public Object edit(BrandEditRequest brandEditRequest, String email) throws GeneralException, IOException {
         Optional<BrandEntity> brandEntity = brandRepository.findById(brandEditRequest.getId());
         if (brandEntity.isEmpty()) {
             return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Dữ liệu không tồn tại", null);
@@ -129,7 +133,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
-        brandEntity.get().setLogo(brandEditRequest.getLogo());
+        brandEntity.get().setLogo(fileImageUntil.uploadImage(brandEditRequest.getLogo()));
         brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());

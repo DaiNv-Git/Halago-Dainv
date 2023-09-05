@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 
 @RestController
@@ -38,7 +39,7 @@ public class BrandController {
     }
 
     @PostMapping("/edit-brand")
-    public ResponseEntity<Object> add(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException {
+    public ResponseEntity<Object> add(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException, IOException {
         return ResponseEntity.ok(brandService.edit(brandEditRequest, brandEditRequest.getEmail()));
     }
 

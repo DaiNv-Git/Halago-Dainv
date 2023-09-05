@@ -4,6 +4,7 @@ import com.example.halagodainv.exception.ErrorResponse;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -16,7 +17,7 @@ public class BrandEditRequest {
     private String email;
     private String website;
     private String phoneNumber;
-    private String logo;
+    private MultipartFile logo;
     private String description;
     private Integer partnerId;
     public boolean validate(List<ErrorResponse> response) {
