@@ -9,12 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("view-brand")
+@RequestMapping("/view-brand")
 public class ViewBrandController {
     @Autowired
     private ViewBrandService brandService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> getViewBrands(@RequestParam("language") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Success", brandService.getBranViews(language)));

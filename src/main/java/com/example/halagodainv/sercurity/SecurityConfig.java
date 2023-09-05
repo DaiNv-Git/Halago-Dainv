@@ -60,6 +60,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/forgot_password").permitAll()
                 .antMatchers("/contact-customer/add").permitAll()
                 .antMatchers("/contact-customer/add-free-consul").permitAll()
+                .antMatchers("/solution/review").permitAll()
+                .antMatchers("/solution/live-stream").permitAll()
+                .antMatchers("/homepage/partner").permitAll()
+                .antMatchers("/homepage").permitAll()
+                .antMatchers("/kob-celeb").permitAll()
+                .antMatchers("/story").permitAll()
+                .antMatchers("/view-brand").permitAll()
+                .antMatchers("/news/view").permitAll()
+                .antMatchers("/news/view/hot-new").permitAll()
+                .antMatchers("/news/view/topic").permitAll()
+                .antMatchers("/news/view/tags").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
