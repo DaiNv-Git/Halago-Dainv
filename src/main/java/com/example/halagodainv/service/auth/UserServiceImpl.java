@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago999");
+        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("This is the password code");
         String content = "<div><h3>New password: </h3>" +
