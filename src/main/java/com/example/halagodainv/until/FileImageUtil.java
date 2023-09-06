@@ -45,6 +45,8 @@ public class FileImageUtil {
                 String extension = getFileExtension(contentType);
                 byte[] decodedBytes = Base64.getDecoder().decode(base64);
                 String uniqueFileName = UUID.randomUUID() + "." + extension;
+                Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
+                System.out.println(resource.getFilename());
                 Path path = Paths.get(uploadPath + uniqueFileName);
                 try {
                     Files.write(path, decodedBytes);
