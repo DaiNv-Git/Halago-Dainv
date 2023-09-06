@@ -1,7 +1,6 @@
 package com.example.halagodainv.config.cors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.Filter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
