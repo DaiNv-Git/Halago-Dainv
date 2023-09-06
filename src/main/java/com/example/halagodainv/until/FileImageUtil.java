@@ -65,11 +65,7 @@ public class FileImageUtil {
 
     private String getFileExtension(String fileName) {
         String[] parts = fileName.split("/");
-
-// Lấy phần tử cuối cùng sau khi tách chuỗi
         String fileTypeWithBase64 = parts[1];
-
-// Tách phần đuôi file (vd: "png;base64") bằng dấu ";"
         String[] fileTypeParts = fileTypeWithBase64.split(";");
         return fileTypeParts[0];
     }
