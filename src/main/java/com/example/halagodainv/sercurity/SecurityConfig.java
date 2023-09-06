@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/news/view/hot-new").permitAll()
                 .antMatchers("/news/view/topic").permitAll()
                 .antMatchers("/news/view/tags").permitAll()
-                .antMatchers("/get/{fileName:.+}").permitAll()
+                .antMatchers("/api/images/get/{fileName:.+}").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);

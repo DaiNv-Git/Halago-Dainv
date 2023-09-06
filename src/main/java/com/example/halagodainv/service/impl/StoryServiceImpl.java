@@ -9,6 +9,7 @@ import com.example.halagodainv.repository.SolutionLiveStreamRepository;
 import com.example.halagodainv.repository.StoryHalagoRepository;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.StoryService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class StoryServiceImpl implements StoryService {
     Logger logger = LoggerFactory.getLogger(StoryServiceImpl.class);
     private final StoryHalagoRepository storyHalagoRepository;
     private final SolutionLiveStreamRepository solutionLiveStreamRepository;
+    private final FileImageUtil fileImageUtil;
 
 
     public Object getStoryHalago(String language) {
@@ -59,7 +61,7 @@ public class StoryServiceImpl implements StoryService {
             Optional<StoryHalagoEntity> entities = storyHalagoRepository.findById(2L);
             entities.get().setContent(request.getContent());
             entities.get().setContentEN(request.getContentEN());
-            entities.get().setImg(request.getImg());
+            entities.get().setImg(fileImageUtil.uploadImage(request.getImg()));
             storyHalagoRepository.save(entities.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "thêm thành công", entities);
         } catch (Exception ex) {

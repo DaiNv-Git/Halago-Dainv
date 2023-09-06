@@ -17,7 +17,7 @@ public class BrandEditRequest {
     private String email;
     private String website;
     private String phoneNumber;
-    private MultipartFile logo;
+    private String logo;
     private String description;
     private Integer partnerId;
     public boolean validate(List<ErrorResponse> response) {

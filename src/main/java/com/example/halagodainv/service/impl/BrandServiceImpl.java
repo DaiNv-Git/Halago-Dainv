@@ -11,7 +11,7 @@ import com.example.halagodainv.request.brand.BrandEditRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.BrandService;
-import com.example.halagodainv.until.FileImageUntil;
+import com.example.halagodainv.until.FileImageUtil;
 import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
-    private final FileImageUntil fileImageUntil;
+    private final FileImageUtil fileImageUtil;
 
     @Override
     public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
@@ -94,7 +94,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
-            brandEntity.setLogo(fileImageUntil.uploadImage(brandAddRequest.getLogo()));
+            brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
             brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
@@ -133,7 +133,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
-        brandEntity.get().setLogo(fileImageUntil.uploadImage(brandEditRequest.getLogo()));
+        brandEntity.get().setLogo(fileImageUtil.uploadImage(brandEditRequest.getLogo()));
         brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());

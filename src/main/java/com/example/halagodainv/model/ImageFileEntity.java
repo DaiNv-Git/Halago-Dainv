@@ -15,4 +15,5 @@ public class ImageFileEntity {
 
     private String fileName;
     private String filePath;
+    private String base64;
 }

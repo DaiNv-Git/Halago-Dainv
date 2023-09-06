@@ -11,6 +11,7 @@ import com.example.halagodainv.request.homepage.HomeUpdateRequest;
 import com.example.halagodainv.request.homepage.PartnerRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.HomePageService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class HomePageServiceImpl implements HomePageService {
     private final NewsRepository newsRepository;
     private final HomePageRepository homePageRepository;
     private final PartnerRepository partnerRepository;
+    private final FileImageUtil fileImageUtil;
 
     @Override
     public Object getHomePage(String language) throws GeneralException {
@@ -71,7 +73,7 @@ public class HomePageServiceImpl implements HomePageService {
         partnerRepository.deleteByPartnerId(partnerRequests.get(0).getPartnerId());
         for (PartnerRequest partnerRequest : partnerRequests) {
             PartnerEntity partnerNew = new PartnerEntity();
-            partnerNew.setLogo(partnerRequest.getLogo());
+            partnerNew.setLogo(fileImageUtil.uploadImage(partnerRequest.getLogo()));
             partnerNew.setPartnerId(partnerRequests.get(0).getPartnerId());
             partnerEntities.add(partnerNew);
         }

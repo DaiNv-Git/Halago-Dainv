@@ -4,12 +4,10 @@ import com.example.halagodainv.dto.brand.BrandGiveDto;
 import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
 import com.example.halagodainv.repository.viewdisplay.BrandGiveRepository;
 import com.example.halagodainv.service.BrandGiveService;
-import com.example.halagodainv.until.FileImageUntil;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.plaf.PanelUI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,7 @@ import java.util.List;
 public class BrandGiveServiceImpl implements BrandGiveService {
     private final BrandGiveRepository brandGiveRepository;
 
-    private final FileImageUntil fileImageUntil;
+    private final FileImageUtil fileImageUtil;
 
 
     public Object getAll(String language) {
@@ -46,10 +44,11 @@ public class BrandGiveServiceImpl implements BrandGiveService {
 
     public Object update(List<BrandGiveEntity> brandGiveEntities) {
         brandGiveRepository.deleteAll();
-//        brandGiveEntities.forEach(i->{
-//            BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
-//            fileImageUntil.uploadImage(i.getAuthorAvatar())
-//        });
+        brandGiveEntities.forEach(i -> {
+            BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
+            brandGiveEntity.setAuthorAvatar(fileImageUtil.uploadImage(i.getAuthorAvatar()));
+            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(i.getLogoBrand()));
+        });
         return brandGiveRepository.saveAll(brandGiveEntities);
     }
 }

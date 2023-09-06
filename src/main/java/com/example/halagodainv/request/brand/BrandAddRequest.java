@@ -20,7 +20,7 @@ public class BrandAddRequest {
     private String password;
     private String website;
     private String phoneNumber;
-    private MultipartFile logo;
+    private String logo;
     private String description;
     private Integer partnerId;
 

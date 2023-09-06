@@ -10,6 +10,7 @@ import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamIma
 import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamEdit;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.SolutionLiveStreamService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
     private final SolutionLiveStreamRepository solutionLiveStreamRepository;
     private final SolutionLiveStreamLanguageRepository solutionLiveStreamLanguageRepository;
     private final ImageSolutionRepository imageSolutionRepository;
+    private final FileImageUtil fileImageUtil;
 
     public Object getSolution(String language) {
         try {
@@ -57,7 +59,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 imageSolutionDto.setImageNameEN(i.getImageNameVN());
                 imageSolutionDtos.add(imageSolutionDto);
             });
-            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map,imageSolutionDtos);
+            SolutionLiveStreamDetailDto solutionLiveStreamDetailDto = new SolutionLiveStreamDetailDto(map, imageSolutionDtos);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), solutionLiveStreamDetailDto);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
@@ -71,7 +73,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 solutionLiveStream.get().setLive(solutionLiveStreamEdit.getLive());
                 solutionLiveStream.get().setBrand(solutionLiveStreamEdit.getBrand());
                 solutionLiveStream.get().setMoney(solutionLiveStreamEdit.getMoney());
-                solutionLiveStream.get().setImageSale1(solutionLiveStreamEdit.getImageSale1());
+                solutionLiveStream.get().setImageSale1(fileImageUtil.uploadImage(solutionLiveStreamEdit.getImageSale1()));
                 solutionLiveStream.get().setImageSale2(solutionLiveStreamEdit.getImageSale2());
                 solutionLiveStreamRepository.save(solutionLiveStream.get());
             }
@@ -79,7 +81,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
             for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImage());
+                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(img.getImage()));
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntity.setImageNameEN(img.getImageNameEN());
                 imageLiveStreamEntity.setImageNameVN(img.getImageNameVN());
@@ -97,7 +99,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
         try {
             edits.forEach(img -> {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(img.getImage());
+                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(img.getImage()));
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntities.add(imageLiveStreamEntity);
             });

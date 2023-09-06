@@ -23,6 +23,7 @@ import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
+import com.example.halagodainv.until.FileImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +50,8 @@ public class NewsServiceImpl implements NewsService {
     NewsRepository newsRepository;
     @Autowired
     TagRepository tagRepository;
+    @Autowired
+    FileImageUtil fileImageUtil;
 
     @Override
     public Object getNews(NewsFormSearch newsSearch) {
@@ -219,13 +222,13 @@ public class NewsServiceImpl implements NewsService {
             NewsEntity newsEntity = new NewsEntity();
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
-            newsEntity.setThumbnail(request.getImg());
+            newsEntity.setThumbnail(fileImageUtil.uploadImage(request.getImg()));
             newsEntity.setCreated(new Date());
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
             newsEntity.setAuthorName(request.getAuthorName());
-            newsEntity.setAuthorAvatar(request.getAuthorAvatar());
+            newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
             if (request.getTagId().size() > 0) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
@@ -272,14 +275,14 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
-            news.get().setThumbnail(newsAddRequest.getImg());
+            news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
             news.get().setType(newsAddRequest.getType());
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
-            news.get().setAuthorAvatar(newsAddRequest.getAuthorAvatar());
+            news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
             if (newsAddRequest.getTagId().size() > 0) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");

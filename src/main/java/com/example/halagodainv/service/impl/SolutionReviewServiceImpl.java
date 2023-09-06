@@ -12,6 +12,7 @@ import com.example.halagodainv.request.solution.review.SolutionReviewEditImage;
 import com.example.halagodainv.request.solution.review.SolutionReviewRequestEdit;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.SolutionReviewService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
     private final SolutionReviewRepository solutionReviewRepository;
     private final ImageSolutionReviewRepository imageSolutionReviewRepository;
     private final SolutionReviewLanguageRepository solutionReviewLanguageRepository;
+    private final FileImageUtil fileImageUtil;
 
     public Object getAll(String language) {
         try {
@@ -83,7 +85,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             List<ImageReviewEntity> entities = new ArrayList<>();
             for (SolutionReviewEditImage image : images) {
                 ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
-                optionalImageReviewEntity.setImageReview(image.getImg());
+                optionalImageReviewEntity.setImageReview(fileImageUtil.uploadImage(image.getImg()));
                 optionalImageReviewEntity.setNameVN(image.getName());
                 optionalImageReviewEntity.setNameEN(image.getNameEN());
                 optionalImageReviewEntity.setLink(image.getLink());
@@ -104,7 +106,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             for (SolutionReviewEdit reviewEdit : solutionReviewEdits) {
                 SolutionReviewEntity solutionReview = new SolutionReviewEntity();
                 solutionReview.setTitle(reviewEdit.getTitle());
-                solutionReview.setImg(reviewEdit.getImg());
+                solutionReview.setImg(fileImageUtil.uploadImage(reviewEdit.getImg()));
                 solutionReview.setContent(reviewEdit.getContent());
                 solutionReview.setContentDetail(reviewEdit.getContentDetail());
                 solutionReview = solutionReviewRepository.save(solutionReview);

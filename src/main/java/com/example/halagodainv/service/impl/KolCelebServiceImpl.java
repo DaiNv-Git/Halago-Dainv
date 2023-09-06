@@ -8,6 +8,7 @@ import com.example.halagodainv.repository.RepresentativesRepository;
 import com.example.halagodainv.request.kolCeleb.KolCelebRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.KolCelebService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 public class KolCelebServiceImpl implements KolCelebService {
     private final RepresentativesRepository representativesRepository;
     private final BestKolRepository bestKolRepository;
+    private final FileImageUtil fileImageUtil;
 
     public Object getKolAll(String language) {
         try {
@@ -83,8 +85,8 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<RepresentativeEntity> representativeEntities = new ArrayList<>();
             for (RepresentativeMapEntity representativeMap : request.getRepresentative()) {
                 RepresentativeEntity representativeEntity = new RepresentativeEntity();
-                representativeEntity.setImg(representativeMap.getImg());
-                representativeEntity.setImg2(representativeMap.getImg2());
+                representativeEntity.setImg(fileImageUtil.uploadImage(representativeMap.getImg()));
+                representativeEntity.setImg2(fileImageUtil.uploadImage(representativeMap.getImg2()));
                 representativeEntity.setName(representativeMap.getName());
                 representativeEntity.setNameEN(representativeMap.getNameEN());
                 representativeEntity.setContent(representativeMap.getContent());
@@ -98,7 +100,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<BestKolEntity> bestKolEntities = new ArrayList<>();
             for (KolMapEntity kolMapEntity : request.getKol()) {
                 BestKolEntity bestKolEntity = new BestKolEntity();
-                bestKolEntity.setImage(kolMapEntity.getImg());
+                bestKolEntity.setImage(fileImageUtil.uploadImage(kolMapEntity.getImg()));
                 bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntity.setNameEN(kolMapEntity.getNameEN());
                 bestKolEntity.setJob(kolMapEntity.getJob());
