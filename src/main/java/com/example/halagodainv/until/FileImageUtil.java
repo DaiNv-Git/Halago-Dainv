@@ -47,7 +47,7 @@ public class FileImageUtil {
                 String uniqueFileName = UUID.randomUUID() + "." + extension;
                 Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
                 System.out.println(resource.getFilename());
-                Path path = Paths.get(uploadPath + uniqueFileName);
+                Path path = Paths.get(resource.getFilename() + uniqueFileName);
                 try {
                     Files.write(path, decodedBytes);
                     String publicImageUrl = callFile + uniqueFileName;
