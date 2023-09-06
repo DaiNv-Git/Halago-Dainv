@@ -54,14 +54,6 @@ public class ImageFileController {
 //        }
 //    }
 
-    private String getFileExtension(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf(".");
-        if (lastDotIndex != -1) {
-            return fileName.substring(lastDotIndex);
-        }
-        return "";
-    }
-
     @GetMapping("/get/{fileName:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String fileName) {
         try {
