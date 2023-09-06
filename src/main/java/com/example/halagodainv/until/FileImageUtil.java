@@ -5,6 +5,8 @@ import com.example.halagodainv.repository.ImageRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
@@ -26,6 +28,8 @@ public class FileImageUtil {
     private String callFile;
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     public String uploadImage(String base64Data) {
         if (Strings.isBlank(base64Data)) {
