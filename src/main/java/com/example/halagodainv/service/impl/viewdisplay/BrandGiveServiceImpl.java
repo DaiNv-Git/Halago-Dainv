@@ -46,8 +46,8 @@ public class BrandGiveServiceImpl implements BrandGiveService {
         brandGiveRepository.deleteAll();
         brandGiveEntities.forEach(i -> {
             BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
-            brandGiveEntity.setAuthorAvatar(fileImageUtil.uploadImage(i.getAuthorAvatar()));
-            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(i.getLogoBrand()));
+            brandGiveEntity.setAuthorAvatar(i.getAuthorAvatar());
+            brandGiveEntity.setLogoBrand(i.getLogoBrand());
         });
         return brandGiveRepository.saveAll(brandGiveEntities);
     }

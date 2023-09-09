@@ -182,7 +182,7 @@ public class NewsServiceImpl implements NewsService {
         viewTopicDto2.setTitle(topicRepository.findAll().get(2).getTopicName());
         viewTopicDto3.setTitle(topicRepository.findAll().get(3).getTopicName());
         viewTopicDto4.setTitle(topicRepository.findAll().get(4).getTopicName());
-        viewTopicDto5.setTitle(topicRepository.findAll().get(4).getTopicName());
+        viewTopicDto5.setTitle(topicRepository.findAll().get(5).getTopicName());
 
         viewTopicDto.setCount(count1);
         viewTopicDto1.setCount(count2);
@@ -228,7 +228,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
             newsEntity.setAuthorName(request.getAuthorName());
-            newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
+            newsEntity.setAuthorAvatar(request.getAuthorAvatar());
             newsEntity.setTopicId(request.getTopicId());
             if (request.getTagId().size() > 0) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
@@ -282,7 +282,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setType(newsAddRequest.getType());
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
-            news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
+            news.get().setAuthorAvatar(newsAddRequest.getAuthorAvatar());
             if (newsAddRequest.getTagId().size() > 0) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
