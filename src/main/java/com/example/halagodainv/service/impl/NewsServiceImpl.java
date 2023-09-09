@@ -223,7 +223,7 @@ public class NewsServiceImpl implements NewsService {
             NewsEntity newsEntity = new NewsEntity();
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
-            newsEntity.setThumbnail(fileImageUtil.uploadImage(request.getImg()));
+            newsEntity.setThumbnail(request.getImg());
             newsEntity.setCreated(new Date());
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
@@ -276,7 +276,7 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
-            news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
+            news.get().setThumbnail(newsAddRequest.getImg());
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
