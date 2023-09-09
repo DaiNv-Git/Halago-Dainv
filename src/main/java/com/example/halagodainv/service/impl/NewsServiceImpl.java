@@ -196,6 +196,7 @@ public class NewsServiceImpl implements NewsService {
         viewNewsTopicDto.add(viewTopicDto2);
         viewNewsTopicDto.add(viewTopicDto3);
         viewNewsTopicDto.add(viewTopicDto4);
+        viewNewsTopicDto.add(viewTopicDto5);
 
         List<ViewNewsHotDto> viewNewDtos = new ArrayList<>();
         List<ViewNewsHotDto> viewNewHots = new ArrayList<>();
