@@ -54,13 +54,7 @@ public class FileImageUtil {
             if (existingImageBase64.isEmpty()) {
                 String contentType = HtmlUtils.htmlEscape(parts[0].split(":")[1]);
                 String extension = getFileExtension(contentType);
-                byte[] decodedBytes = Base64.getDecoder().decode(base64);
-//                String uniqueFileName = UUID.randomUUID() + "." + extension;
-//                Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
-//                System.out.println(resource.getFilename());
-//                Path path = Paths.get(resource.getFilename() + uniqueFileName);
                 try {
-//                    Files.write(path, decodedBytes);
                     ImageFileEntity image = new ImageFileEntity();
                     image.setFileName(readImageFile(base64, extension));
                     String publicImageUrl = callFile + image.getFileName();
@@ -108,7 +102,7 @@ public class FileImageUtil {
         deflater.finish();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4 * 1024];
+        byte[] tmp = new byte[8 * 1024];
         while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
             outputStream.write(tmp, 0, size);
@@ -125,7 +119,7 @@ public class FileImageUtil {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4 * 1024];
+        byte[] tmp = new byte[8 * 1024];
         try {
             while (!inflater.finished()) {
                 int count = inflater.inflate(tmp);
