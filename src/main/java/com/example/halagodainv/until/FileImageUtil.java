@@ -33,6 +33,7 @@ public class FileImageUtil {
 
     @Value("${call.path}")
     private String callFile;
+
     @Value("${call.path.local}")
     private String callFileLocal;
     @Autowired
