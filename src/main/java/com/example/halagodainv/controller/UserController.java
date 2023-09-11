@@ -76,6 +76,11 @@ public class UserController {
         return ResponseEntity.ok(userService.addUser(userAddRequest));
     }
 
+    @PostMapping("/insert-influencer")
+    public ResponseEntity<Object> addInfluencer(@Valid @RequestBody UserAddRequest userAddRequest) {
+        return ResponseEntity.ok(userService.addUser(userAddRequest));
+    }
+
     @PostMapping("/update")
     public ResponseEntity<Object> editUser(@Valid @RequestBody UserEditRequest userEditRequest) {
         return ResponseEntity.ok(userService.updateUser(userEditRequest));
@@ -140,7 +145,7 @@ public class UserController {
         try {
             UserDetails userDetails = authConfig.loadUserByUsername(authenConfig.getUser());
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
-            if (userEntity.isPresent()){
+            if (userEntity.isPresent()) {
                 if (newPassword.equalsIgnoreCase(passwordAgain)) {
                     userService.updatePassword(userEntity.get(), newPassword);
                     return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password success", null));
