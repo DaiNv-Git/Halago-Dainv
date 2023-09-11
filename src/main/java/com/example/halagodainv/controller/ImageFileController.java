@@ -31,14 +31,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/images")
 public class ImageFileController {
-    @Value("${upload.path}")
-    private String uploadPath;
-
-    @Value("${call.path}")
-    private String callPath;
-    @Value("${call.path.local}")
-    private String callPathLocal;
-
     @Autowired
     private ImageRepository imageRepository;
 
