@@ -2,12 +2,15 @@ package com.example.halagodainv.controller;
 
 import com.example.halagodainv.model.ImageFileEntity;
 import com.example.halagodainv.repository.ImageRepository;
+import com.example.halagodainv.until.FileImageUtil;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -22,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +33,18 @@ import java.util.UUID;
 public class ImageFileController {
     @Value("${upload.path}")
     private String uploadPath;
+
+    @Value("${call.path}")
+    private String callPath;
+    @Value("${call.path.local}")
+    private String callPathLocal;
+
+    @Autowired
+    private FileImageUtil fileImageUtil;
+
+    @Autowired
+    private ImageRepository imageRepository;
+
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -58,30 +74,14 @@ public class ImageFileController {
 //        }
 //    }
 
-    @GetMapping("/get/{fileName:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String fileName) {
-        try {
-            // Đọc tệp từ thư mục tĩnh
-            Path filePath = Paths.get(uploadPath + fileName);
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists()) {
-                // Xác định loại nội dung dựa trên phần mở rộng của tệp
-                String fileExtension = StringUtils.getFilenameExtension(fileName);
-                String contentType = getContentType(fileExtension);
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/get/{fileName}")
+    public ResponseEntity<?> getImage(@PathVariable String fileName) {
+        // Đọc tệp từ thư mục tĩnh
+        Optional<ImageFileEntity> dbImageData = imageRepository.findByFileName(fileName);
+        byte[] images = FileImageUtil.decompressImage(dbImageData.get().getBase64());
+        String fileExtension = StringUtils.getFilenameExtension(fileName);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(getContentType(fileExtension))).body(images);
     }
-
 
 
     private String getContentType(String fileExtension) {

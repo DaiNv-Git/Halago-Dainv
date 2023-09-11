@@ -39,12 +39,12 @@ public class BrandController {
     }
 
     @PostMapping("/edit-brand")
-    public ResponseEntity<Object> add(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException, IOException {
+    public ResponseEntity<Object> edit(@Valid @RequestBody BrandEditRequest brandEditRequest) throws GeneralException, IOException {
         return ResponseEntity.ok(brandService.edit(brandEditRequest, brandEditRequest.getEmail()));
     }
 
     @PostMapping("/delete-brand")
-    public ResponseEntity<Object> add(@RequestParam("brandId") int brandId) throws GeneralException {
+    public ResponseEntity<Object> delete(@RequestParam("brandId") int brandId) throws GeneralException {
         return ResponseEntity.ok(brandService.deleteByBranId(brandId));
     }
 

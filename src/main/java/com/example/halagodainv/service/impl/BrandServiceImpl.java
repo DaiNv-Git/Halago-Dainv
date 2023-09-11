@@ -133,7 +133,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
-        brandEntity.get().setLogo(brandEditRequest.getLogo());
+        brandEntity.get().setLogo(fileImageUtil.uploadImage(brandEditRequest.getLogo()));
         brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
