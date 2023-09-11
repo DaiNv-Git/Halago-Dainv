@@ -52,22 +52,18 @@ public class FileImageUtil {
                 String base64 = parts[1];
                 String contentType = HtmlUtils.htmlEscape(parts[0].split(":")[1]);
                 String extension = getFileExtension(contentType);
-                byte[] decodedBytes = Base64.getDecoder().decode(base64);
-                String uniqueFileName = UUID.randomUUID() + "." + extension;
                 Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
                 System.out.println(resource.getFilename());
-                Path path = Paths.get(resource.getFilename() + uniqueFileName);
                 try {
-                    Files.write(path, decodedBytes);
                     ImageFileEntity image = new ImageFileEntity();
                     image.setFileName(readImageFile(base64, extension));
-                    String publicImageUrl = callFileLocal + image.getFileName();
+                    String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
                     byte[] decodedData = Base64.getDecoder().decode(base64);
                     image.setBase64(compressImage(decodedData));
                     imageRepository.save(image);
                     return publicImageUrl;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return "Error occurred while saving the image.";
                 }
