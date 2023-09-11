@@ -15,6 +15,6 @@ public class ImageFileEntity {
 
     private String fileName;
     private String filePath;
-    @Column(name = "imagedata",length = 1000)
+    @Column(name = "imagedata")
     private byte[] base64;
 }
