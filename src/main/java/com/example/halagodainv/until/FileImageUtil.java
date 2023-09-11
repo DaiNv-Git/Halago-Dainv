@@ -46,20 +46,24 @@ public class FileImageUtil {
         }
         Optional<ImageFileEntity> existingImage = imageRepository.findByFilePath(base64Data);
         if (existingImage.isEmpty()) {
-            Optional<ImageFileEntity> existingImageBase64 = imageRepository.findByBase64(base64Data);
+            String[] parts = base64Data.split(",");
+            String base64 = parts[1];
+            byte[] decodedData = Base64.getDecoder().decode(base64);
+            Optional<ImageFileEntity> existingImageBase64 = imageRepository.findByBase64(compressImage(decodedData));
             if (existingImageBase64.isEmpty()) {
-                String[] parts = base64Data.split(",");
-                String base64 = parts[1];
                 String contentType = HtmlUtils.htmlEscape(parts[0].split(":")[1]);
                 String extension = getFileExtension(contentType);
-                Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
-                System.out.println(resource.getFilename());
+                byte[] decodedBytes = Base64.getDecoder().decode(base64);
+//                String uniqueFileName = UUID.randomUUID() + "." + extension;
+//                Resource resource = resourceLoader.getResource("classpath:" + uploadPath);
+//                System.out.println(resource.getFilename());
+//                Path path = Paths.get(resource.getFilename() + uniqueFileName);
                 try {
+//                    Files.write(path, decodedBytes);
                     ImageFileEntity image = new ImageFileEntity();
                     image.setFileName(readImageFile(base64, extension));
                     String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
-                    byte[] decodedData = Base64.getDecoder().decode(base64);
                     image.setBase64(compressImage(decodedData));
                     imageRepository.save(image);
                     return publicImageUrl;

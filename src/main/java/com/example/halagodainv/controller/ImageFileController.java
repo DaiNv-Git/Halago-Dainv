@@ -40,43 +40,10 @@ public class ImageFileController {
     private String callPathLocal;
 
     @Autowired
-    private FileImageUtil fileImageUtil;
-
-    @Autowired
     private ImageRepository imageRepository;
-
-
-    @Autowired
-    private ResourceLoader resourceLoader;
-
-//    @PostMapping("/upload")
-//    public String uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-//        try {
-//            // Lưu tệp vào thư mục tĩnh
-//            String fileExtension = getFileExtension(file.getOriginalFilename());
-//            System.out.println("============" + file.getOriginalFilename());
-//            String uniqueFileName = UUID.randomUUID() + fileExtension;
-//            Path path = Paths.get(uploadPath + uniqueFileName);
-//            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//
-//            // Tạo URL HTTP công cộng cho tệp tải lên
-//            String publicImageUrl = "https://www.halago.vn/halago/" + uniqueFileName;
-//
-//            // Lưu thông tin tệp vào cơ sở dữ liệu (nếu cần)
-//            ImageFileEntity image = new ImageFileEntity();
-//            image.setFileName(uniqueFileName);
-//            image.setFilePath(publicImageUrl);
-//            imageRepository.save(image);
-//
-//            return publicImageUrl;
-//        } catch (IOException e) {
-//            throw new IOException(e.getMessage());
-//        }
-//    }
 
     @GetMapping("/get/{fileName}")
     public ResponseEntity<?> getImage(@PathVariable String fileName) {
-        // Đọc tệp từ thư mục tĩnh
         Optional<ImageFileEntity> dbImageData = imageRepository.findByFileName(fileName);
         byte[] images = FileImageUtil.decompressImage(dbImageData.get().getBase64());
         String fileExtension = StringUtils.getFilenameExtension(fileName);
