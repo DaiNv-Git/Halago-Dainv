@@ -86,8 +86,8 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<RepresentativeEntity> representativeEntities = new ArrayList<>();
             for (RepresentativeMapEntity representativeMap : request.getRepresentative()) {
                 RepresentativeEntity representativeEntity = new RepresentativeEntity();
-                representativeEntity.setImg(fileImageUtil.uploadImage(KOL_UPLOAD,representativeMap.getImg()));
-                representativeEntity.setImg2(fileImageUtil.uploadImage(KOL_UPLOAD,representativeMap.getImg2()));
+                representativeEntity.setImg(fileImageUtil.uploadImage(representativeMap.getImg()));
+                representativeEntity.setImg2(fileImageUtil.uploadImage(representativeMap.getImg2()));
                 representativeEntity.setName(representativeMap.getName());
                 representativeEntity.setNameEN(representativeMap.getNameEN());
                 representativeEntity.setContent(representativeMap.getContent());
@@ -101,7 +101,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<BestKolEntity> bestKolEntities = new ArrayList<>();
             for (KolMapEntity kolMapEntity : request.getKol()) {
                 BestKolEntity bestKolEntity = new BestKolEntity();
-                bestKolEntity.setImage(fileImageUtil.uploadImage(KOL_UPLOAD,kolMapEntity.getImg()));
+                bestKolEntity.setImage(fileImageUtil.uploadImage(kolMapEntity.getImg()));
                 bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntity.setNameEN(kolMapEntity.getNameEN());
                 bestKolEntity.setJob(kolMapEntity.getJob());

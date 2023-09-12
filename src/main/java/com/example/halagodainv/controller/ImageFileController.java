@@ -37,9 +37,9 @@ public class ImageFileController {
     @GetMapping("/get/{fileName}")
     public ResponseEntity<?> getImage(@PathVariable String fileName) {
         Optional<ImageFileEntity> dbImageData = imageRepository.findByFileName(fileName);
-        byte[] images = FileImageUtil.decompressImage(dbImageData.get().getBase64());
-        String fileExtension = StringUtils.getFilenameExtension(fileName);
         if (dbImageData.isPresent()) {
+            byte[] images = FileImageUtil.decompressImage(dbImageData.get().getBase64());
+            String fileExtension = StringUtils.getFilenameExtension(fileName);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(getContentType(fileExtension))).body(images);
         }
         return ResponseEntity.status(HttpStatus.OK).body("");

@@ -28,7 +28,7 @@ public class FileImageUtil {
     @Autowired
     private ImageRepository imageRepository;
 
-    public String uploadImage(String link, String base64Data) {
+    public String uploadImage(String base64Data) {
         if (Strings.isBlank(base64Data)) {
             return "";
         }
@@ -43,7 +43,7 @@ public class FileImageUtil {
                 String extension = getFileExtension(contentType);
                 try {
                     ImageFileEntity image = new ImageFileEntity();
-                    image.setFileName(readImageFile(link, extension));
+                    image.setFileName(readImageFile(extension));
                     String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
                     image.setBase64(compressImage(decodedData));
@@ -61,9 +61,9 @@ public class FileImageUtil {
         }
     }
 
-    private static String readImageFile(String fileName, String contentType) {
+    private static String readImageFile(String contentType) {
         try {
-            File tempFile = File.createTempFile(fileName + "-", "." + contentType);
+            File tempFile = File.createTempFile("image" + "-", "." + contentType);
             return tempFile.getName();
         } catch (IOException e) {
             e.printStackTrace();

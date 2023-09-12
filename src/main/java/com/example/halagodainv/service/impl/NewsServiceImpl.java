@@ -225,13 +225,13 @@ public class NewsServiceImpl implements NewsService {
             NewsEntity newsEntity = new NewsEntity();
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             NewsLanguageEntity newsVN = new NewsLanguageEntity();
-            newsEntity.setThumbnail(fileImageUtil.uploadImage(NEW_UPLOAD,request.getImg()));
+            newsEntity.setThumbnail(fileImageUtil.uploadImage(request.getImg()));
             newsEntity.setCreated(new Date());
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
             newsEntity.setAuthorName(request.getAuthorName());
-            newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(NEW_UPLOAD,request.getAuthorAvatar()));
+            newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
             if (request.getTagId().size() > 0) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
@@ -278,14 +278,14 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
-            news.get().setThumbnail(fileImageUtil.uploadImage(NEW_UPLOAD,newsAddRequest.getImg()));
+            news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
             news.get().setType(newsAddRequest.getType());
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
-            news.get().setAuthorAvatar(fileImageUtil.uploadImage(NEW_UPLOAD,newsAddRequest.getAuthorAvatar()));
+            news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
             if (newsAddRequest.getTagId().size() > 0) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");

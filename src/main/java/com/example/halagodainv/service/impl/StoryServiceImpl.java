@@ -62,7 +62,7 @@ public class StoryServiceImpl implements StoryService {
             Optional<StoryHalagoEntity> entities = storyHalagoRepository.findById(2L);
             entities.get().setContent(request.getContent());
             entities.get().setContentEN(request.getContentEN());
-            entities.get().setImg(fileImageUtil.uploadImage(STORY,request.getImg()));
+            entities.get().setImg(fileImageUtil.uploadImage(request.getImg()));
             storyHalagoRepository.save(entities.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "thêm thành công", entities);
         } catch (Exception ex) {
