@@ -82,9 +82,9 @@ public class UserServiceImpl implements UserService {
             user.setRole(userAddRequest.getRole());
             user.setCreated(new Date());
             user = userRepository.save(user);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa dữ liệu thành công", userRepository.getUser(user.getId()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm liệu thành công", userRepository.getUser(user.getId()));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa dữ liệu không thành công", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm liệu không thành công", null);
         }
     }
 
