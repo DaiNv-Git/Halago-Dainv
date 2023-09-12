@@ -17,6 +17,7 @@ public class BrandGiveServiceImpl implements BrandGiveService {
     private final BrandGiveRepository brandGiveRepository;
 
     private final FileImageUtil fileImageUtil;
+    public static String BRAND_GIVE = "brand_give";
 
 
     public Object getAll(String language) {
@@ -47,7 +48,7 @@ public class BrandGiveServiceImpl implements BrandGiveService {
         brandGiveEntities.forEach(i -> {
             BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
             brandGiveEntity.setAuthorAvatar(i.getAuthorAvatar());
-            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(i.getLogoBrand()));
+            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(BRAND_GIVE, i.getLogoBrand()));
         });
         return brandGiveRepository.saveAll(brandGiveEntities);
     }

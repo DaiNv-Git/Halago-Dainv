@@ -26,6 +26,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
     private final SolutionLiveStreamLanguageRepository solutionLiveStreamLanguageRepository;
     private final ImageSolutionRepository imageSolutionRepository;
     private final FileImageUtil fileImageUtil;
+    public static String LIVE_STREAM = "live_stream";
 
     public Object getSolution(String language) {
         try {
@@ -73,15 +74,15 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 solutionLiveStream.get().setLive(solutionLiveStreamEdit.getLive());
                 solutionLiveStream.get().setBrand(solutionLiveStreamEdit.getBrand());
                 solutionLiveStream.get().setMoney(solutionLiveStreamEdit.getMoney());
-                solutionLiveStream.get().setImageSale1(fileImageUtil.uploadImage(solutionLiveStreamEdit.getImageSale1()));
-                solutionLiveStream.get().setImageSale2(fileImageUtil.uploadImage(solutionLiveStreamEdit.getImageSale2()));
+                solutionLiveStream.get().setImageSale1(fileImageUtil.uploadImage(LIVE_STREAM,solutionLiveStreamEdit.getImageSale1()));
+                solutionLiveStream.get().setImageSale2(fileImageUtil.uploadImage(LIVE_STREAM,solutionLiveStreamEdit.getImageSale2()));
                 solutionLiveStreamRepository.save(solutionLiveStream.get());
             }
             imageSolutionRepository.deleteAll();
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
             for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(img.getImage()));
+                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(LIVE_STREAM,img.getImage()));
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntity.setImageNameEN(img.getImageNameEN());
                 imageLiveStreamEntity.setImageNameVN(img.getImageNameVN());
@@ -99,7 +100,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
         try {
             edits.forEach(img -> {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();
-                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(img.getImage()));
+                imageLiveStreamEntity.setImage(fileImageUtil.uploadImage(LIVE_STREAM,img.getImage()));
                 imageLiveStreamEntity.setSolutionLiveStreamId(1L);
                 imageLiveStreamEntities.add(imageLiveStreamEntity);
             });

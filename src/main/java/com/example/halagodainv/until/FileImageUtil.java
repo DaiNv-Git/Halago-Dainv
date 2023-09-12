@@ -6,7 +6,6 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
@@ -20,8 +19,6 @@ import java.util.zip.Inflater;
 
 @Component
 public class FileImageUtil {
-    @Value("${upload.path}")
-    private String uploadPath;
 
     @Value("${call.path}")
     private String callFile;
@@ -31,7 +28,7 @@ public class FileImageUtil {
     @Autowired
     private ImageRepository imageRepository;
 
-    public String uploadImage(String base64Data) {
+    public String uploadImage(String link, String base64Data) {
         if (Strings.isBlank(base64Data)) {
             return "";
         }
@@ -46,7 +43,7 @@ public class FileImageUtil {
                 String extension = getFileExtension(contentType);
                 try {
                     ImageFileEntity image = new ImageFileEntity();
-                    image.setFileName(readImageFile(base64, extension));
+                    image.setFileName(readImageFile(link, extension));
                     String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
                     image.setBase64(compressImage(decodedData));
@@ -54,7 +51,7 @@ public class FileImageUtil {
                     return publicImageUrl;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "Error occurred while saving the image.";
+                    throw new RuntimeException("Error occurred while saving the image.");
                 }
             } else {
                 return existingImageBase64.get().getFilePath();
@@ -66,7 +63,7 @@ public class FileImageUtil {
 
     private static String readImageFile(String fileName, String contentType) {
         try {
-            File tempFile = File.createTempFile("image-", "." + contentType);
+            File tempFile = File.createTempFile(fileName + "/", "." + contentType);
             return tempFile.getName();
         } catch (IOException e) {
             e.printStackTrace();

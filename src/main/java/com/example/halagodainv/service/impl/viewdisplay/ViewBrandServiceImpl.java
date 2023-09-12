@@ -20,6 +20,7 @@ public class ViewBrandServiceImpl implements ViewBrandService {
 
     private final ViewBrandRepository viewBrandRepository;
     private final FileImageUtil fileImageUtil;
+    public static String VIEW_BRAND = "view_brand";
 
 
     public List<ViewBrandDto> getBranViews(String language) {
@@ -70,7 +71,7 @@ public class ViewBrandServiceImpl implements ViewBrandService {
         }
 
         ViewBrandEntity viewBrand = new ViewBrandEntity();
-        viewBrand.setLogoBrand(fileImageUtil.uploadImage(viewBrandRequest.getLogoBrand()));
+        viewBrand.setLogoBrand(fileImageUtil.uploadImage(VIEW_BRAND,viewBrandRequest.getLogoBrand()));
         viewBrand.setName(viewBrandRequest.getName());
         viewBrand.setPositionId(viewBrandRequest.getPositionId());
         viewBrand.setDescriptionVN(viewBrandRequest.getDescriptionVN());
@@ -84,7 +85,7 @@ public class ViewBrandServiceImpl implements ViewBrandService {
         if (checkView.isPresent()) {
             throw new RuntimeException("data is not exits!");
         }
-        checkView.get().setLogoBrand(fileImageUtil.uploadImage(viewBrandRequest.getLogoBrand()));
+        checkView.get().setLogoBrand(fileImageUtil.uploadImage(VIEW_BRAND,viewBrandRequest.getLogoBrand()));
         checkView.get().setName(viewBrandRequest.getName());
         checkView.get().setPositionId(viewBrandRequest.getPositionId());
         checkView.get().setDescriptionVN(viewBrandRequest.getDescriptionVN());

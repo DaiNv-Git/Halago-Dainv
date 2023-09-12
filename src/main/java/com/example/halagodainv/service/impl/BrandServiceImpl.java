@@ -34,6 +34,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
     private final FileImageUtil fileImageUtil;
+    public static String BRAND = "brand";
 
     @Override
     public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
@@ -94,7 +95,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
-            brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
+            brandEntity.setLogo(fileImageUtil.uploadImage(BRAND, brandAddRequest.getLogo()));
             brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
@@ -133,7 +134,7 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandPhone(brandEditRequest.getPhoneNumber());
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
-        brandEntity.get().setLogo(fileImageUtil.uploadImage(brandEditRequest.getLogo()));
+        brandEntity.get().setLogo(fileImageUtil.uploadImage(BRAND, brandEditRequest.getLogo()));
         brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandRepository.save(brandEntity.get());
