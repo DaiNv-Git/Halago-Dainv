@@ -44,7 +44,7 @@ public class FileImageUtil {
                 try {
                     ImageFileEntity image = new ImageFileEntity();
                     image.setFileName(readImageFile(link, extension));
-                    String publicImageUrl = callFile + image.getFileName();
+                    String publicImageUrl = callFileLocal + image.getFileName();
                     image.setFilePath(publicImageUrl);
                     image.setBase64(compressImage(decodedData));
                     imageRepository.save(image);
@@ -63,7 +63,7 @@ public class FileImageUtil {
 
     private static String readImageFile(String fileName, String contentType) {
         try {
-            File tempFile = File.createTempFile(fileName + "/", "." + contentType);
+            File tempFile = File.createTempFile(fileName + "-", "." + contentType);
             return tempFile.getName();
         } catch (IOException e) {
             e.printStackTrace();
