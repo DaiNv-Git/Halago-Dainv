@@ -44,7 +44,7 @@ public class FileImageUtil {
                 try {
                     ImageFileEntity image = new ImageFileEntity();
                     image.setFileName(readImageFile(link, extension));
-                    String publicImageUrl = callFileLocal + image.getFileName();
+                    String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
                     image.setBase64(compressImage(decodedData));
                     imageRepository.save(image);
