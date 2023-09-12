@@ -30,8 +30,6 @@ public class FileImageUtil {
     private String callFileLocal;
     @Autowired
     private ImageRepository imageRepository;
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     public String uploadImage(String base64Data) {
         if (Strings.isBlank(base64Data)) {
@@ -68,10 +66,7 @@ public class FileImageUtil {
 
     private static String readImageFile(String fileName, String contentType) {
         try {
-            // Decode the base64 string into bytes
-            byte[] imageBytes = Base64.getDecoder().decode(fileName);
-            File tempFile = File.createTempFile("image", "." + contentType);
-
+            File tempFile = File.createTempFile("image-", "." + contentType);
             return tempFile.getName();
         } catch (IOException e) {
             e.printStackTrace();
