@@ -85,7 +85,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             List<ImageReviewEntity> entities = new ArrayList<>();
             for (SolutionReviewEditImage image : images) {
                 ImageReviewEntity optionalImageReviewEntity = new ImageReviewEntity();
-                optionalImageReviewEntity.setImageReview(image.getImg());
+                optionalImageReviewEntity.setImageReview(fileImageUtil.uploadImage(image.getImg()));
                 optionalImageReviewEntity.setNameVN(image.getName());
                 optionalImageReviewEntity.setNameEN(image.getNameEN());
                 optionalImageReviewEntity.setLink(image.getLink());
@@ -106,7 +106,7 @@ public class SolutionReviewServiceImpl implements SolutionReviewService {
             for (SolutionReviewEdit reviewEdit : solutionReviewEdits) {
                 SolutionReviewEntity solutionReview = new SolutionReviewEntity();
                 solutionReview.setTitle(reviewEdit.getTitle());
-                solutionReview.setImg(reviewEdit.getImg());
+                solutionReview.setImg(fileImageUtil.uploadImage(reviewEdit.getImg()));
                 solutionReview.setContent(reviewEdit.getContent());
                 solutionReview.setContentDetail(reviewEdit.getContentDetail());
                 solutionReview = solutionReviewRepository.save(solutionReview);

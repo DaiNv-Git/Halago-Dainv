@@ -6,6 +6,7 @@ import com.example.halagodainv.repository.viewdisplay.ViewBrandRepository;
 import com.example.halagodainv.request.brand.ViewBrandRequest;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ViewBrandService;
+import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.*;
 public class ViewBrandServiceImpl implements ViewBrandService {
 
     private final ViewBrandRepository viewBrandRepository;
+    private final FileImageUtil fileImageUtil;
 
 
     public List<ViewBrandDto> getBranViews(String language) {
@@ -68,7 +70,7 @@ public class ViewBrandServiceImpl implements ViewBrandService {
         }
 
         ViewBrandEntity viewBrand = new ViewBrandEntity();
-        viewBrand.setLogoBrand(viewBrandRequest.getLogoBrand());
+        viewBrand.setLogoBrand(fileImageUtil.uploadImage(viewBrandRequest.getLogoBrand()));
         viewBrand.setName(viewBrandRequest.getName());
         viewBrand.setPositionId(viewBrandRequest.getPositionId());
         viewBrand.setDescriptionVN(viewBrandRequest.getDescriptionVN());
@@ -82,7 +84,7 @@ public class ViewBrandServiceImpl implements ViewBrandService {
         if (checkView.isPresent()) {
             throw new RuntimeException("data is not exits!");
         }
-        checkView.get().setLogoBrand(viewBrandRequest.getLogoBrand());
+        checkView.get().setLogoBrand(fileImageUtil.uploadImage(viewBrandRequest.getLogoBrand()));
         checkView.get().setName(viewBrandRequest.getName());
         checkView.get().setPositionId(viewBrandRequest.getPositionId());
         checkView.get().setDescriptionVN(viewBrandRequest.getDescriptionVN());

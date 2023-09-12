@@ -97,7 +97,7 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setIdBrand(campaignAddRequest.getBrandId());
             campaignEntity.setDateStart(DateUtilFormat.converStringToDate(campaignAddRequest.getStartDate(), "yyyy-MM-dd"));
             campaignEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignAddRequest.getEndDate(), "yyyy-MM-dd"));
-            campaignEntity.setImg(campaignAddRequest.getCampaignImage());
+            campaignEntity.setImg(fileImageUtil.uploadImage(campaignAddRequest.getCampaignImage()));
             campaignEntity.setTitleCampaign(campaignAddRequest.getTitleCampaign());
             campaignEntity.setTitleProduct(campaignAddRequest.getTitleProduct());
             campaignEntity.setDescription(campaignAddRequest.getDescriptionCampaign());
@@ -109,7 +109,7 @@ public class CampaignServiceImpl implements CampaignService {
             CampaignEntity finalCampaignEntity = campaignEntity;
             campaignAddRequest.getImageProductAddRequests().forEach(i -> {
                 ImageProductEntity imageProductEntity = new ImageProductEntity();
-                imageProductEntity.setImageProduct(i.getImageProduct());
+                imageProductEntity.setImageProduct(fileImageUtil.uploadImage(i.getImageProduct()));
                 imageProductEntity.setCampaignEntity(finalCampaignEntity);
                 imageProductEntities.add(imageProductEntity);
             });
@@ -137,7 +137,7 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setCampaignName(campaignEditRequest.getCampaignName());
             editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "yyyy-MM-dd"));
             editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "yyyy-MM-dd"));
-            editEntity.setImg(campaignEditRequest.getCampaignImage());
+            editEntity.setImg(fileImageUtil.uploadImage(campaignEditRequest.getCampaignImage()));
             editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
             editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
             if (campaignEditRequest.getIndustryId().size() > 0) {
@@ -162,7 +162,7 @@ public class CampaignServiceImpl implements CampaignService {
             imageProductRepository.deleteByCampaignEntity_Id(editEntity.getId());
             campaignEditRequest.getImageProductAddRequests().forEach(i -> {
                 ImageProductEntity imageProductEntity = new ImageProductEntity();
-                imageProductEntity.setImageProduct(i.getImageProduct());
+                imageProductEntity.setImageProduct(fileImageUtil.uploadImage(i.getImageProduct()));
                 imageProductEntity.setCampaignEntity(finalEditEntity);
                 imageProductEntities.add(imageProductEntity);
             });

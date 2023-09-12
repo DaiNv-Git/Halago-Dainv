@@ -94,7 +94,7 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setBrandEmail(brandAddRequest.getEmail());
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
-            brandEntity.setLogo(brandAddRequest.getLogo());
+            brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
             brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);

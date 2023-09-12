@@ -73,7 +73,7 @@ public class HomePageServiceImpl implements HomePageService {
         partnerRepository.deleteByPartnerId(partnerRequests.get(0).getPartnerId());
         for (PartnerRequest partnerRequest : partnerRequests) {
             PartnerEntity partnerNew = new PartnerEntity();
-            partnerNew.setLogo(partnerRequest.getLogo());
+            partnerNew.setLogo(fileImageUtil.uploadImage(partnerRequest.getLogo()));
             partnerNew.setPartnerId(partnerRequests.get(0).getPartnerId());
             partnerEntities.add(partnerNew);
         }
