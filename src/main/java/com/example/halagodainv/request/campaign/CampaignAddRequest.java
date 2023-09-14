@@ -3,7 +3,7 @@ package com.example.halagodainv.request.campaign;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.request.campaign.imageproduct.ImageProductAddRequest;
 import lombok.Data;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -25,27 +25,27 @@ public class CampaignAddRequest {
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;
-        if (Strings.isBlank(campaignName)) {
+        if (StringUtils.isBlank(campaignName)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name không được rỗng", null));
             isCheck = false;
         }
-        if (Strings.isBlank(titleCampaign)) {
+        if (StringUtils.isBlank(titleCampaign)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleCampaign không được rỗng", null));
             isCheck = false;
         }
-        if (Strings.isBlank(titleProduct)) {
+        if (StringUtils.isBlank(titleProduct)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleProduct không được rỗng", null));
             isCheck = false;
         }
-        if (Strings.isBlank(descriptionCampaign)) {
+        if (StringUtils.isBlank(descriptionCampaign)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCampaign không được rỗng", null));
             isCheck = false;
         }
-        if (Strings.isBlank(descriptionCandidatePerform)) {
+        if (StringUtils.isBlank(descriptionCandidatePerform)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCandidatePerform không được rỗng", null));
             isCheck = false;
         }
-        if (Strings.isBlank(reward)) {
+        if (StringUtils.isBlank(reward)) {
             response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "reward không được rỗng", null));
             isCheck = false;
         }

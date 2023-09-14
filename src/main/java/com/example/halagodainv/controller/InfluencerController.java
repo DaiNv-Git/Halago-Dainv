@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/influencer")
 public class InfluencerController {
-    BaseResponse responseData = new BaseResponse(1, "Chưa có dữ liệu", null);
     Logger logger = LoggerFactory.getLogger(InfluencerController.class);
     @Autowired
     InfluencerService influencerService;

@@ -20,8 +20,8 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,9 +58,9 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
             PageResponse pageResponse;
-            int proviceId = Strings.isBlank(search.getProvinceId()) ? 0 : Integer.valueOf(search.getProvinceId()).intValue();
-            int sexId = Strings.isBlank(search.getSex()) ? 0 : Integer.valueOf(search.getSex()).intValue();
-            if (Strings.isBlank(search.getExpanse()) && Strings.isBlank(search.getFollower())) {
+            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.valueOf(search.getProvinceId()).intValue();
+            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.valueOf(search.getSex()).intValue();
+            if (StringUtils.isBlank(search.getExpanse()) && StringUtils.isBlank(search.getFollower())) {
                 long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear());
                 List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), pageable);
                 if (CollectionUtils.isEmpty(influcerMenuDtos)) {
@@ -98,8 +98,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            int proviceId = Strings.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
-            int sexId = Strings.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
+            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
+            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
             long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear());
             List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
@@ -201,16 +201,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                 });
                 influencer.setClassifyName(stringJoiner.toString());
             }
-            if (!Strings.isBlank(request.getLinkFb()) || !Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
+            if (!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb())) {
                 influencer.setFacebook(true);
             }
-            if (!Strings.isBlank(request.getLinkTT()) ||!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
+            if (!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT())) {
                 influencer.setTiktok(true);
             }
-            if (!Strings.isBlank(request.getLinkYT()) || !Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
+            if (!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT())) {
                 influencer.setYoutube(true);
             }
-            if (!Strings.isBlank(request.getLinkIns()) || !Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
+            if (!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns())) {
                 influencer.setInstagram(true);
             }
             influencer = influencerEntityRepository.save(influencer);
@@ -302,22 +302,22 @@ public class InfluencerServiceImpl implements InfluencerService {
                     entity.get().setClassifyId("");
                     entity.get().setClassifyName("");
                 }
-                if (!Strings.isBlank(request.getLinkFb()) || !Strings.isBlank(request.getFollowerFb()) || !Strings.isBlank(request.getExpenseFb())) {
+                if (!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb())) {
                     entity.get().setFacebook(true);
                 } else {
                     entity.get().setFacebook(false);
                 }
-                if (!Strings.isBlank(request.getLinkTT()) ||!Strings.isBlank(request.getFollowerTT()) || !Strings.isBlank(request.getExpenseTT())) {
+                if (!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT())) {
                     entity.get().setTiktok(true);
                 } else {
                     entity.get().setTiktok(false);
                 }
-                if (!Strings.isBlank(request.getLinkYT()) ||!Strings.isBlank(request.getFollowerYT()) || !Strings.isBlank(request.getExpenseYT())) {
+                if (!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT())) {
                     entity.get().setYoutube(true);
                 } else {
                     entity.get().setYoutube(false);
                 }
-                if (!Strings.isBlank(request.getLinkIns()) || !Strings.isBlank(request.getFollowerIns()) || !Strings.isBlank(request.getExpenseIns())) {
+                if (!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns())) {
                     entity.get().setInstagram(true);
                 } else {
                     entity.get().setInstagram(false);
@@ -413,7 +413,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public static List<Integer> parseStringToListOfIntegers(String input) {
         List<Integer> integerList = new ArrayList<>();
-        if (!Strings.isBlank(input)) {
+        if (!StringUtils.isBlank(input)) {
             String[] numberStrings = input.split(",");
             for (String numberString : numberStrings) {
                 int number = Integer.parseInt(numberString.trim());
@@ -438,7 +438,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public static String parseStringToString(String inputs) {
         List<Integer> integerList = new ArrayList<>();
-        if (!Strings.isBlank(inputs)) {
+        if (!StringUtils.isBlank(inputs)) {
             String[] numberStrings = inputs.split(",");
             for (String numberString : numberStrings) {
                 int number = Integer.parseInt(numberString.trim());

@@ -3,13 +3,12 @@ package com.example.halagodainv.excel.imports;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.*;
 import com.example.halagodainv.repository.*;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class InfluencerImportExcel {
                     influencer.setEmail(isString(row.getCell(1)));
                     influencer.setPhone(isString(row.getCell(2)));
                     String sex = isString(row.getCell(3));
-                    if (!Strings.isBlank(sex)) {
+                    if (!StringUtils.isBlank(sex)) {
                         SexEntity entity = sexRepostory.findByName(sex);
                         if (entity != null) {
                             influencer.setSex(entity.getId());
