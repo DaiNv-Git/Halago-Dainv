@@ -3,7 +3,7 @@ package com.example.halagodainv.until;
 import com.example.halagodainv.model.ImageFileEntity;
 import com.example.halagodainv.repository.ImageRepository;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class FileImageUtil {
     private ImageRepository imageRepository;
 
     public String uploadImage(String base64Data) {
-        if (Strings.isBlank(base64Data)) {
+        if (StringUtils.isBlank(base64Data)) {
             return "";
         }
         Optional<ImageFileEntity> existingImage = imageRepository.findByFilePath(base64Data);
