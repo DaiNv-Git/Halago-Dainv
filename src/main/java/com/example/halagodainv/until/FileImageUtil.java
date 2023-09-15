@@ -37,7 +37,7 @@ public class FileImageUtil {
             String[] parts = base64Data.split(",");
             String base64 = parts[1];
             byte[] decodedData = Base64.getDecoder().decode(base64);
-            Optional<ImageFileEntity> existingImageBase64 = imageRepository.findByBase64(compressImage(decodedData));
+            Optional<ImageFileEntity> existingImageBase64 = imageRepository.findByImageData(compressImage(decodedData));
             if (existingImageBase64.isEmpty()) {
                 String contentType = HtmlUtils.htmlEscape(parts[0].split(":")[1]);
                 String extension = getFileExtension(contentType);
