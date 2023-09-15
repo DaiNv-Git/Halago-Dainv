@@ -46,7 +46,7 @@ public class FileImageUtil {
                     image.setFileName(readImageFile(extension));
                     String publicImageUrl = callFile + image.getFileName();
                     image.setFilePath(publicImageUrl);
-                    image.setBase64(compressImage(decodedData));
+                    image.setImageData(compressImage(decodedData));
                     imageRepository.save(image);
                     return publicImageUrl;
                 } catch (Exception e) {
@@ -86,7 +86,7 @@ public class FileImageUtil {
         deflater.finish();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[8 * 1024];
+        byte[] tmp = new byte[4 * 1024];
         while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
             outputStream.write(tmp, 0, size);
@@ -103,7 +103,7 @@ public class FileImageUtil {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[8 * 1024];
+        byte[] tmp = new byte[4 * 1024];
         try {
             while (!inflater.finished()) {
                 int count = inflater.inflate(tmp);

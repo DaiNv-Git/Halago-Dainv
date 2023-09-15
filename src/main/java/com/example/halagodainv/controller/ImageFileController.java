@@ -3,30 +3,17 @@ package com.example.halagodainv.controller;
 import com.example.halagodainv.model.ImageFileEntity;
 import com.example.halagodainv.repository.ImageRepository;
 import com.example.halagodainv.until.FileImageUtil;
-import org.apache.http.protocol.HTTP;
-import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/images")
@@ -38,7 +25,7 @@ public class ImageFileController {
     public ResponseEntity<?> getImage(@PathVariable String fileName) {
         Optional<ImageFileEntity> dbImageData = imageRepository.findByFileName(fileName);
         if (dbImageData.isPresent()) {
-            byte[] images = FileImageUtil.decompressImage(dbImageData.get().getBase64());
+            byte[] images = FileImageUtil.decompressImage(dbImageData.get().getImageData());
             String fileExtension = StringUtils.getFilenameExtension(fileName);
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(getContentType(fileExtension))).body(images);
         }
