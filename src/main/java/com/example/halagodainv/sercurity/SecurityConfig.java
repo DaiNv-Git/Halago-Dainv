@@ -73,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/news/view/tags").permitAll()
                 .antMatchers("/api/images/get/{fileName}").permitAll()
                 .antMatchers("/api/insert-influencer").permitAll()
+                .antMatchers("/brand-give").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
