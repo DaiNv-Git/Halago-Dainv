@@ -3,6 +3,7 @@ package com.example.halagodainv.service.impl.viewdisplay;
 import com.example.halagodainv.dto.brand.BrandGiveDto;
 import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
 import com.example.halagodainv.repository.viewdisplay.BrandGiveRepository;
+import com.example.halagodainv.request.brand.BrandGiveRequest;
 import com.example.halagodainv.service.BrandGiveService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -43,13 +44,21 @@ public class BrandGiveServiceImpl implements BrandGiveService {
         return brandGiveRepository.findAll();
     }
 
-    public Object update(List<BrandGiveEntity> brandGiveEntities) {
+    public Object update(List<BrandGiveRequest> brandGiveEntities) {
         brandGiveRepository.deleteAll();
+        List<BrandGiveEntity> giveEntities = new ArrayList<>();
         brandGiveEntities.forEach(i -> {
+            String avart =fileImageUtil.uploadImage(i.getAuthorAvatar());
+            String logo = fileImageUtil.uploadImage(i.getLogoBrand());
             BrandGiveEntity brandGiveEntity = new BrandGiveEntity();
-            brandGiveEntity.setAuthorAvatar(i.getAuthorAvatar());
-            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(i.getLogoBrand()));
+            brandGiveEntity.setAuthorAvatar(fileImageUtil.uploadImage(avart));
+            brandGiveEntity.setLogoBrand(fileImageUtil.uploadImage(logo));
+            brandGiveEntity.setPosition(i.getPosition());
+            brandGiveEntity.setAuthorName(i.getAuthorName());
+            brandGiveEntity.setContent(i.getContent());
+            brandGiveEntity.setContentEN(i.getContentEN());
+            giveEntities.add(brandGiveEntity);
         });
-        return brandGiveRepository.saveAll(brandGiveEntities);
+        return brandGiveRepository.saveAll(giveEntities);
     }
 }

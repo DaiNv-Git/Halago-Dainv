@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller.viewdisplay;
 
 import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
+import com.example.halagodainv.request.brand.BrandGiveRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.BrandGiveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class BrandGiveController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody List<BrandGiveEntity> request) {
+    public ResponseEntity<Object> update(@RequestBody List<BrandGiveRequest> request) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", brandGiveService.update(request)));
         } catch (Exception e) {
