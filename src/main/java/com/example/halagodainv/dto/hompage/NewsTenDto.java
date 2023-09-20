@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class NewsTenDto {
     private String titleImage;
+    private String linkPagers;
     private String title;
     private String image;
     private String description;
@@ -19,8 +20,9 @@ public class NewsTenDto {
     private String avatar;
     private String nameAuthor;
 
-    public NewsTenDto(String titleImage,String title, String image, String description, Date created, String avatar, String name) {
+    public NewsTenDto(String linkPagers, String titleImage, String title, String image, String description, Date created, String avatar, String name) {
         this.titleImage = titleImage;
+        this.linkPagers = linkPagers;
         this.title = title;
         this.image = image;
         this.description = description;
