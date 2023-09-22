@@ -14,6 +14,8 @@ public class PartnerEntity {
     private Long id;
     @Column(name = "logo")
     private String logo;
+    @Column(name = "index_logo")
+    private Integer indexLogo;
     @Column(name = "partner_id")
     private Integer partnerId;
 }

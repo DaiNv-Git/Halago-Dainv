@@ -63,7 +63,7 @@ public class HomePageServiceImpl implements HomePageService {
 
     public Object getPartner(int partnerID) throws GeneralException {
         try {
-            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.findByPartnerId(partnerID));
+            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.findByPartnerIdOrderByIndexLogoAsc(partnerID));
         } catch (Exception e) {
             throw new GeneralException(e.getLocalizedMessage());
         }
@@ -75,6 +75,7 @@ public class HomePageServiceImpl implements HomePageService {
         for (PartnerRequest partnerRequest : partnerRequests) {
             PartnerEntity partnerNew = new PartnerEntity();
             partnerNew.setLogo(fileImageUtil.uploadImage(partnerRequest.getLogo()));
+            partnerNew.setIndexLogo(partnerRequest.getIndexLogo());
             partnerNew.setPartnerId(partnerRequests.get(0).getPartnerId());
             partnerEntities.add(partnerNew);
         }
