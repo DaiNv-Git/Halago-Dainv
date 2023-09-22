@@ -15,8 +15,15 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.UserResponse;
 import com.example.halagodainv.service.UserService;
 import com.example.halagodainv.service.auth.UserServiceConfig;
+import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FormatTimeSearch;
 import net.bytebuddy.utility.RandomString;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.aspectj.weaver.bcel.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +37,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -38,6 +47,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -57,6 +69,8 @@ public class UserController {
 
     @Autowired
     private UserAuthenConfig authenConfig;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/user")
@@ -156,4 +170,26 @@ public class UserController {
             throw new GeneralException("error: " + ex.getMessage());
         }
     }
+
+//    @PostMapping("/upload-file")
+//    public Object uploadFile(@RequestParam MultipartFile file) throws IOException, ParseException {
+//        Workbook workbook = new XSSFWorkbook(file.getInputStream());
+//        Sheet sheet = workbook.getSheetAt(0);
+//        List<UserEntity> userEntityList = new ArrayList<>();
+//        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
+//            UserEntity userEntity = new UserEntity();
+//            Row row = sheet.getRow(i);
+//            if (row != null) {
+//                userEntity.setUserName(row.getCell(0).getStringCellValue());
+//                userEntity.setPassword(passwordEncoder.encode(row.getCell(1).getStringCellValue()));
+//                double a= Double.valueOf(row.getCell(2).getNumericCellValue());
+//                userEntity.setRole((int) a);
+//                userEntity.setCreated(DateUtilFormat.converStringToDate(row.getCell(3).getStringCellValue(),"yyyy-MM-dd"));
+//                userEntity.setEmail(row.getCell(4).getStringCellValue());
+//                userEntityList.add(userEntity);
+//            }
+//        }
+//        userRepository.saveAll(userEntityList);
+//        return null;
+//    }
 }
