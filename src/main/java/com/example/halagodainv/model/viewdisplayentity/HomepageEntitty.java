@@ -23,4 +23,8 @@ public class HomepageEntitty {
     private String successfulCampaign;
     @Column(name = "kOLs_informational")
     private String kOLsInformational;
+    @Column(name = "title_vn")
+    private String titleVN;
+    @Column(name = "title_en")
+    private String titleEN;
 }

@@ -12,4 +12,6 @@ public class HomeUpdateRequest {
     private String ForeignBrands;
     private String SuccessfulCampaign;
     private String KOLsInformational;
+    private String titleVN;
+    private String titleEN;
 }

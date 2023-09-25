@@ -29,6 +29,11 @@ public class HomePageController {
         return ResponseEntity.ok(homePageService.getHomePage(language));
     }
 
+    @PostMapping("/detail")
+    public ResponseEntity<Object> getDetail() throws GeneralException {
+        return ResponseEntity.ok(homePageService.getDetail());
+    }
+
     @PostMapping("/partner")
     public ResponseEntity<Object> getAll(@RequestParam(value = "partnerId", defaultValue = "1", required = false) int partnerId) throws GeneralException {
         return ResponseEntity.ok(homePageService.getPartner(partnerId));

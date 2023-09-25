@@ -1,10 +1,12 @@
 package com.example.halagodainv.dto.hompage;
 
 import com.example.halagodainv.model.EfficiencyOptimizationEntity;
+import com.example.halagodainv.model.viewdisplayentity.HomepageEntitty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,37 +14,24 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomePageDetail {
-    private String titleCreativeVN;
-    private String contentCreativeVN;
-    private String titleCreativeEN;
-    private String contentCreativeEN;
+    private String domesticBrands;
+    private String foreignBrands;
+    private String successfulCampaign;
+    private String kOLsInformational;
+    private String title;
 
-    private String titleEfficiencyOptimizationsVN;
-    private String contentEfficiencyOptimizationsVN;
-    private String titleEfficiencyOptimizationsEN;
-    private String contentEfficiencyOptimizationsEN;
-    List<AdvantageMapEntityDto> advantages = new ArrayList<>();
-
-    public HomePageDetail(List<EfficiencyOptimizationEntity> efficiencyOptimizationDtos, List<EfficiencyOptimizationEntity> Creatives, List<AdvantageMapEntityDto> advantages) {
-        efficiencyOptimizationDtos.forEach(eff -> {
-            if (eff.getLanguage().equals("VN")) {
-                this.titleEfficiencyOptimizationsVN = eff.getTitle();
-                this.contentEfficiencyOptimizationsVN = eff.getContent();
-            } else if (eff.getLanguage().equals("EN")) {
-                this.titleEfficiencyOptimizationsEN = eff.getTitle();
-                this.contentEfficiencyOptimizationsEN = eff.getContent();
+    public HomePageDetail(List<HomepageEntitty> entitty, String language) {
+        entitty.stream().forEach(i -> {
+            this.domesticBrands = i.getDomesticBrands();
+            this.foreignBrands = i.getForeignBrands();
+            this.successfulCampaign = i.getSuccessfulCampaign();
+            this.kOLsInformational = i.getKOLsInformational();
+            if (language.toUpperCase().equals("VN")) {
+                this.title = i.getTitleVN();
+            } else if (language.toUpperCase().equals("EN")) {
+                this.title = i.getTitleEN();
             }
         });
 
-        Creatives.forEach(Creative -> {
-            if (Creative.getLanguage().equals("VN")) {
-                this.titleCreativeVN = Creative.getTitle();
-                this.contentCreativeVN = Creative.getContent();
-            } else if (Creative.getLanguage().equals("EN")) {
-                this.titleCreativeEN = Creative.getTitle();
-                this.contentCreativeEN = Creative.getContent();
-            }
-        });
-        this.advantages = advantages;
     }
 }

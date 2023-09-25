@@ -28,14 +28,15 @@ public class HomePageServiceImpl implements HomePageService {
     private final HomePageRepository homePageRepository;
     private final PartnerRepository partnerRepository;
     private final FileImageUtil fileImageUtil;
-    public static String PARTNER = "partner";
 
     @Override
     public Object getHomePage(String language) throws GeneralException {
         try {
             Pageable page = PageRequest.of(0, 10);
             List<NewsTenDto> newsTenDtos = newsRepository.getHomeLanguage(language, page);
-            HomePageDto homePageDto = new HomePageDto(homePageRepository.findAll(), newsTenDtos);
+            List<HomePageDetail> homePageDetails = new ArrayList<>();
+            homePageDetails.add(new HomePageDetail(homePageRepository.findAll(), language));
+            HomePageDto homePageDto = new HomePageDto(homePageDetails, newsTenDtos);
             return new BaseResponse<>(HttpStatus.OK.value(), "success", homePageDto);
         } catch (Exception e) {
             throw new GeneralException(e.getLocalizedMessage());
@@ -43,7 +44,7 @@ public class HomePageServiceImpl implements HomePageService {
     }
 
     public Object getDetail() throws GeneralException {
-        return null;
+        return homePageRepository.findAll();
     }
 
     public Object updateHomePage(HomeUpdateRequest request) throws GeneralException {
@@ -54,6 +55,8 @@ public class HomePageServiceImpl implements HomePageService {
             homepageEntitty.setDomesticBrands(request.getDomesticBrands());
             homepageEntitty.setSuccessfulCampaign(request.getSuccessfulCampaign());
             homepageEntitty.setKOLsInformational(request.getKOLsInformational());
+            homepageEntitty.setTitleVN(request.getTitleVN());
+            homepageEntitty.setTitleEN(request.getTitleEN());
             homepageEntitty = homePageRepository.save(homepageEntitty);
             return new BaseResponse<>(HttpStatus.OK.value(), "edit success", homepageEntitty);
         } catch (Exception e) {
