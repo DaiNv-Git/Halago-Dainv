@@ -24,7 +24,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') ")
     List<InflucerMenuDto> getAll(@Param("isFacebook") Boolean isFacebook,
                                  @Param("isYoutube") Boolean isYoutube,
                                  @Param("isInstagram") Boolean isInstagram,
@@ -43,7 +43,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') ")
     int totalCount(@Param("isFacebook") Boolean isFacebook,
                    @Param("isYoutube") Boolean isYoutube,
                    @Param("isInstagram") Boolean isInstagram,
@@ -64,7 +64,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') ")
     List<InflucerMenuDto> getFilterMenu(@Param("isFacebook") Boolean isFacebook,
                                         @Param("isYoutube") Boolean isYoutube,
                                         @Param("isInstagram") Boolean isInstagram,
@@ -88,7 +88,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') ")
     long countFilterMenu(@Param("isFacebook") Boolean isFacebook,
                          @Param("isYoutube") Boolean isYoutube,
                          @Param("isInstagram") Boolean isInstagram,
@@ -113,7 +113,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:follower,'%') and " +
             "(:provinceId = 0 or ie.provinceId =:provinceId) and " +
             "(:sex = 0 or ie.sex =:sex) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:birtYear,'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:birtYear,'%') and (ie.phone is not null or ie.phone <>'') ")
     List<InflucerDtoSubMenu> getSubMenu(@Param("isFacebook") Boolean isFacebook,
                                         @Param("isYoutube") Boolean isYoutube,
                                         @Param("isInstagram") Boolean isInstagram,
@@ -138,7 +138,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') ")
     long countSubMenu(@Param("isFacebook") Boolean isFacebook,
                       @Param("isYoutube") Boolean isYoutube,
                       @Param("isInstagram") Boolean isInstagram,
@@ -162,7 +162,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') order by ie.id desc ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and(:#{#listIds} is null or ie.id in (:#{#listIds})) and (ie.phone is not null or ie.phone <>'') order by ie.id desc ")
     List<InfluencerExportExcelDto> getExportExcel(@Param("isFacebook") Boolean isFacebook,
                                                   @Param("isYoutube") Boolean isYoutube,
                                                   @Param("isInstagram") Boolean isInstagram,
@@ -172,7 +172,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                                   @Param("follower") String follower,
                                                   @Param("provinceId") int provinceId,
                                                   @Param("sex") int sex,
-                                                  @Param("birtYear") String birtYear);
+                                                  @Param("birtYear") String birtYear,
+                                                  @Param("listIds") List<Long> listIds);
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +
             "ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone,ie.sex,ie.yearOld,ie.classifyId,ie.provinceId,ie.address,ie.bankId,ie.accountNumber, " +

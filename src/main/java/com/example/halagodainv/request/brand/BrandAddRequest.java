@@ -17,6 +17,12 @@ public class BrandAddRequest {
     private String logo;
     private String description;
     private Integer partnerId;
+    private boolean FilmingTVCCommercials;
+    private boolean liveStream;
+    private boolean review;
+    private boolean orther;
+    private boolean event;
+    private boolean BrandAmbassador;
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;

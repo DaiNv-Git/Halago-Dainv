@@ -385,10 +385,10 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
-            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear());
+            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
+            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
+            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
+            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
             influencerExcel.initializeData(facebooks, tiktoks, instagrams, youtubes, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {

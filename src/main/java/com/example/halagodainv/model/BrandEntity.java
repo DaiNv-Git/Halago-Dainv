@@ -1,6 +1,5 @@
 package com.example.halagodainv.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 
@@ -38,4 +37,16 @@ public class BrandEntity implements Serializable {
     private String logo;
     @Column(name = "partner_id")
     private Integer partnerId;
+    @Column(name = "filming_tv_commercials")
+    private boolean filmingTVCCommercials;
+    @Column(name = "live_stream")
+    private boolean liveStream;
+    @Column(name = "review")
+    private boolean review;
+    @Column(name = "orther")
+    private boolean orther;
+    @Column(name = "event")
+    private boolean event;
+    @Column(name = "brand_ambassador")
+    private boolean brandAmbassador;
 }

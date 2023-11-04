@@ -95,6 +95,12 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
             brandEntity.setPartnerId(brandAddRequest.getPartnerId());
+            brandEntity.setBrandAmbassador(brandAddRequest.isBrandAmbassador());
+            brandEntity.setFilmingTVCCommercials(brandAddRequest.isFilmingTVCCommercials());
+            brandEntity.setLiveStream(brandAddRequest.isLiveStream());
+            brandEntity.setEvent(brandAddRequest.isEvent());
+            brandEntity.setOrther(brandAddRequest.isOrther());
+            brandEntity.setReview(brandAddRequest.isReview());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
@@ -135,6 +141,12 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setLogo(fileImageUtil.uploadImage(brandEditRequest.getLogo()));
         brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
+        brandEntity.get().setBrandAmbassador(brandEditRequest.isBrandAmbassador());
+        brandEntity.get().setFilmingTVCCommercials(brandEditRequest.isFilmingTVCCommercials());
+        brandEntity.get().setLiveStream(brandEditRequest.isLiveStream());
+        brandEntity.get().setEvent(brandEditRequest.isEvent());
+        brandEntity.get().setOrther(brandEditRequest.isOrther());
+        brandEntity.get().setReview(brandEditRequest.isReview());
         brandRepository.save(brandEntity.get());
         return new BaseResponse<>(HttpStatus.OK.value(), "edit success", new BrandDto(brandEntity.get()));
     }

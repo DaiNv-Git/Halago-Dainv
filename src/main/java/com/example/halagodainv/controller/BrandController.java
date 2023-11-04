@@ -1,6 +1,5 @@
 package com.example.halagodainv.controller;
 
-import com.example.halagodainv.config.userconfig.UserAuthenConfig;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.request.brand.BrandAddRequest;
 import com.example.halagodainv.request.brand.BrandEditRequest;
