@@ -18,5 +18,5 @@ public class InfluceRequestExportExcel {
     private String expanse = "";
     private int sex = 0;
     private String birhYear = "";
-    private List<Long> listIds = null;
+    private List<Long> listIds = new ArrayList<>();
 }

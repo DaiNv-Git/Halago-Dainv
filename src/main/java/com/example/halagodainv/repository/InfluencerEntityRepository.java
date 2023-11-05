@@ -151,7 +151,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("birtYear") String birtYear);
 
 
-    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName) from InfluencerEntity ie " +
+    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex " +
             "WHERE (:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
             "(:#{#isYoutube} is null or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
@@ -162,7 +162,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and(:#{#listIds} is null or ie.id in (:#{#listIds})) and (ie.phone is not null or ie.phone <>'') order by ie.id desc ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and( :#{#listIds.size()} = 0 or ie.id in(:#{#listIds})) and (ie.phone is not null or ie.phone <>'') order by ie.id desc ")
     List<InfluencerExportExcelDto> getExportExcel(@Param("isFacebook") Boolean isFacebook,
                                                   @Param("isYoutube") Boolean isYoutube,
                                                   @Param("isInstagram") Boolean isInstagram,

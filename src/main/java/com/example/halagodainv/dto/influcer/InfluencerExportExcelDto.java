@@ -17,4 +17,5 @@ public class InfluencerExportExcelDto {
     private String address;
     private String industry;
     private String classify;
+    private String phone;
 }

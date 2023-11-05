@@ -108,6 +108,7 @@ public class InfluencerExcel {
             createCell(row, columnCount++, item.getAddress(), style);
             createCell(row, columnCount++, item.getIndustry(), style);
             createCell(row, columnCount, item.getClassify(), style);
+            createCell(row, columnCount, item.getPhone(), style);
         }
     }
 }
