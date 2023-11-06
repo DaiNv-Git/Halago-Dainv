@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -45,7 +47,7 @@ public class HomePageController {
     }
 
     @PostMapping("/add-contact")
-    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) {
+    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(contactCustomerService.add(customerRequest));
     }
 

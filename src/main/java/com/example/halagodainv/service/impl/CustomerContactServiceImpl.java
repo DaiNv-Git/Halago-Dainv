@@ -16,9 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +33,8 @@ import java.util.List;
 public class CustomerContactServiceImpl implements ContactCustomerService {
     private final ContactCustomerRepository contactCustomerRepository;
     private final FreeConsultationRepository freeConsultationRepository;
+
+    private final JavaMailSender javaMailSender;
 
     public Object getListCustomers(int pageNo, int pageSize) {
         int offset = 0;
@@ -44,7 +52,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         return response;
     }
 
-    public Object add(ConcatCustomerRequest customerRequest) {
+    public Object add(ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
         contactCustomerEntity.setCreated(new Date());
         contactCustomerEntity.setEmail(customerRequest.getEmail());
@@ -53,10 +61,19 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         contactCustomerEntity.setProduct(customerRequest.getProduct());
         contactCustomerEntity.setNote(customerRequest.getNote());
         contactCustomerRepository.save(contactCustomerEntity);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+        mailMessage.setSubject("Khách hàng đăng ký");
+        mailMessage.setTo(contactCustomerEntity.getEmail());
+        String content = "<div><h3>" + new Date() + " </h3>" +
+                "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+        message.setContent(content, "text/html; charset=UTF-8");
+        javaMailSender.send(message);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", null);
     }
 
-    public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) {
+    public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
         FreeConsultationEntity freeConsultationEntity = new FreeConsultationEntity();
         freeConsultationEntity.setName(request.getName());
         freeConsultationEntity.setEmail(request.getEmail());
@@ -69,6 +86,14 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setIsReview(request.getIsReview());
         freeConsultationEntity.setIsOther(request.getIsOther());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+        mailMessage.setTo(freeConsultationEntity.getEmail());
+        String content = "<div><h3>" + new Date() + " </h3>" +
+                "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+        message.setContent(content, "text/html; charset=UTF-8");
+        javaMailSender.send(message);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
     }
 

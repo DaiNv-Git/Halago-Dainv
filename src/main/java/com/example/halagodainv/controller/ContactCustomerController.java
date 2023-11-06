@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+
 @RestController
 @RequestMapping("/contact-customer")
 public class ContactCustomerController {
@@ -25,12 +28,12 @@ public class ContactCustomerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) {
+    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(contactCustomerService.add(customerRequest));
     }
 
     @PostMapping("/add-free-consul")
-    public ResponseEntity<Object> save(@RequestBody FreeConsultationRequest customerRequest) {
+    public ResponseEntity<Object> save(@RequestBody FreeConsultationRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(contactCustomerService.addFreeConsul(customerRequest));
     }
 

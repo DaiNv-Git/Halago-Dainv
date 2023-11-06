@@ -170,26 +170,4 @@ public class UserController {
             throw new GeneralException("error: " + ex.getMessage());
         }
     }
-
-//    @PostMapping("/upload-file")
-//    public Object uploadFile(@RequestParam MultipartFile file) throws IOException, ParseException {
-//        Workbook workbook = new XSSFWorkbook(file.getInputStream());
-//        Sheet sheet = workbook.getSheetAt(0);
-//        List<UserEntity> userEntityList = new ArrayList<>();
-//        for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
-//            UserEntity userEntity = new UserEntity();
-//            Row row = sheet.getRow(i);
-//            if (row != null) {
-//                userEntity.setUserName(row.getCell(0).getStringCellValue());
-//                userEntity.setPassword(passwordEncoder.encode(row.getCell(1).getStringCellValue()));
-//                double a= Double.valueOf(row.getCell(2).getNumericCellValue());
-//                userEntity.setRole((int) a);
-//                userEntity.setCreated(DateUtilFormat.converStringToDate(row.getCell(3).getStringCellValue(),"yyyy-MM-dd"));
-//                userEntity.setEmail(row.getCell(4).getStringCellValue());
-//                userEntityList.add(userEntity);
-//            }
-//        }
-//        userRepository.saveAll(userEntityList);
-//        return null;
-//    }
 }
