@@ -89,6 +89,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
         mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+        mailMessage.setSubject("Khách hàng đăng ký");
         mailMessage.setTo(freeConsultationEntity.getEmail());
         String content = "<div><h3>" + new Date() + " </h3>" +
                 "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
