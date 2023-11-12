@@ -54,6 +54,9 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
 
     public Object add(ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
+        if (contactCustomerRepository.findByPhoneOrEmail(customerRequest.getPhone(),customerRequest.getEmail()).isPresent()) {
+            return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED.value(), "Số điện thoại hoặc email đã được đăng ký", null);
+        }
         contactCustomerEntity.setCreated(new Date());
         contactCustomerEntity.setEmail(customerRequest.getEmail());
         contactCustomerEntity.setPhone(customerRequest.getPhone());
@@ -75,6 +78,9 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
 
     public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
         FreeConsultationEntity freeConsultationEntity = new FreeConsultationEntity();
+        if (freeConsultationRepository.findByPhoneOrEmail(request.getPhone(), request.getEmail()).isPresent()) {
+            return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED.value(), "Số điện thoại hoặc email đã được đăng ký", null);
+        }
         freeConsultationEntity.setName(request.getName());
         freeConsultationEntity.setEmail(request.getEmail());
         freeConsultationEntity.setPhone(request.getPhone());
@@ -96,6 +102,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         message.setContent(content, "text/html; charset=UTF-8");
         javaMailSender.send(message);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
+
     }
 
 }

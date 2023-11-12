@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface FreeConsultationRepository extends JpaRepository<FreeConsultationEntity, Long> {
+    Optional<FreeConsultationEntity> findByPhoneOrEmail(String phone,String email);
 
 
 }
