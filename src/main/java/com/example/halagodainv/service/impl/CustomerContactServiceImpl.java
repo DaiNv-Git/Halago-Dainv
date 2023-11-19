@@ -33,7 +33,6 @@ import java.util.List;
 public class CustomerContactServiceImpl implements ContactCustomerService {
     private final ContactCustomerRepository contactCustomerRepository;
     private final FreeConsultationRepository freeConsultationRepository;
-
     private final JavaMailSender javaMailSender;
 
     public Object getListCustomers(int pageNo, int pageSize) {

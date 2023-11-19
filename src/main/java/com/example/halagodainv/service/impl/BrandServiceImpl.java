@@ -1,5 +1,6 @@
 package com.example.halagodainv.service.impl;
 
+import com.example.halagodainv.common.PageHome;
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.brand.BrandDto;
 import com.example.halagodainv.exception.ErrorResponse;
@@ -18,10 +19,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,8 +39,10 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
     private final FileImageUtil fileImageUtil;
+    private final JavaMailSender javaMailSender;
+
     @Override
-    public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) throws ParseException {
+    public Object getByListBrand(int pageNo, int pageSize, String brandName, String startDate, String endDate) {
         try {
             int offset = 0;
             if (pageNo > 0) {
@@ -70,13 +77,15 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Object add(BrandAddRequest brandAddRequest, String email) throws GeneralException {
+    public Object add(BrandAddRequest brandAddRequest) throws GeneralException {
         try {
+            if (brandRepository.findByBrandPhone(brandAddRequest.getPhoneNumber()).isPresent()) {
+                return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Số điện thoại đã tồn tại", null);
+            }
             List<ErrorResponse> errorResponses = new ArrayList<>();
             if (!brandAddRequest.validate(errorResponses)) {
                 return errorResponses;
             }
-
             Optional<BrandEntity> emailBrand = brandRepository.findByBrandEmail(brandAddRequest.getEmail());
             Optional<BrandEntity> braneName = brandRepository.findByBrandName(brandAddRequest.getBrandName());
             if (braneName.isPresent() && emailBrand.isPresent()) {
@@ -94,7 +103,6 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
             brandEntity.setDescription(brandAddRequest.getDescription());
             brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
-            brandEntity.setPartnerId(brandAddRequest.getPartnerId());
             brandEntity.setBrandAmbassador(brandAddRequest.isBrandAmbassador());
             brandEntity.setFilmingTVCCommercials(brandAddRequest.isFilmingTVCCommercials());
             brandEntity.setLiveStream(brandAddRequest.isLiveStream());
@@ -103,6 +111,43 @@ public class BrandServiceImpl implements BrandService {
             brandEntity.setReview(brandAddRequest.isReview());
             brandEntity.setCreated(new Date());
             brandEntity = brandRepository.save(brandEntity);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
+        } catch (Exception e) {
+            return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Dữ liệu không tồn tại", null);
+        }
+
+    }
+
+    public Object addContact(BrandAddRequest brandAddRequest) {
+        try {
+            if (brandRepository.findByBrandPhone(brandAddRequest.getPhoneNumber()).isPresent()) {
+                return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Số điện thoại đã tồn tại", null);
+            }
+            BrandEntity brandEntity = new BrandEntity();
+            brandEntity.setBrandName(brandAddRequest.getBrandName());
+            brandEntity.setWebsite(brandAddRequest.getWebsite());
+            brandEntity.setBrandPhone(brandAddRequest.getPhoneNumber());
+            brandEntity.setBrandEmail(brandAddRequest.getEmail());
+            brandEntity.setRepresentativeName(brandAddRequest.getRegisterName());
+            brandEntity.setDescription(brandAddRequest.getDescription());
+            brandEntity.setLogo(fileImageUtil.uploadImage(brandAddRequest.getLogo()));
+            brandEntity.setBrandAmbassador(brandAddRequest.isBrandAmbassador());
+            brandEntity.setFilmingTVCCommercials(brandAddRequest.isFilmingTVCCommercials());
+            brandEntity.setLiveStream(brandAddRequest.isLiveStream());
+            brandEntity.setEvent(brandAddRequest.isEvent());
+            brandEntity.setOrther(brandAddRequest.isOrther());
+            brandEntity.setReview(brandAddRequest.isReview());
+            brandEntity.setCreated(new Date());
+            brandEntity = brandRepository.save(brandEntity);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+            mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+            mailMessage.setSubject("Khách hàng đăng ký");
+            mailMessage.setTo(brandEntity.getBrandEmail());
+            String content = "<div><h3>" + new Date() + " </h3>" +
+                    "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+            message.setContent(content, "text/html; charset=UTF-8");
+            javaMailSender.send(message);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm dữ liệu thành công", new BrandDto(brandEntity));
         } catch (Exception e) {
             return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Dữ liệu không tồn tại", null);
@@ -139,7 +184,6 @@ public class BrandServiceImpl implements BrandService {
         brandEntity.get().setBrandEmail(brandEditRequest.getEmail());
         brandEntity.get().setRepresentativeName(brandEditRequest.getRegisterName());
         brandEntity.get().setLogo(fileImageUtil.uploadImage(brandEditRequest.getLogo()));
-        brandEntity.get().setPartnerId(brandEditRequest.getPartnerId());
         brandEntity.get().setDescription(brandEditRequest.getDescription());
         brandEntity.get().setBrandAmbassador(brandEditRequest.isBrandAmbassador());
         brandEntity.get().setFilmingTVCCommercials(brandEditRequest.isFilmingTVCCommercials());

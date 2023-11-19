@@ -34,7 +34,12 @@ public class BrandController {
 
     @PostMapping("/add-brand")
     public ResponseEntity<Object> add(@Valid @RequestBody BrandAddRequest brandAddRequest) throws GeneralException {
-        return ResponseEntity.ok(brandService.add(brandAddRequest, brandAddRequest.getEmail()));
+        return ResponseEntity.ok(brandService.add(brandAddRequest));
+    }
+
+    @PostMapping("/add-contact")
+    public ResponseEntity<Object> addContact(@Valid @RequestBody BrandAddRequest brandAddRequest) throws GeneralException {
+        return ResponseEntity.ok(brandService.addContact(brandAddRequest));
     }
 
     @PostMapping("/edit-brand")

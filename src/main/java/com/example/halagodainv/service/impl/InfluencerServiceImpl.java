@@ -58,8 +58,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
             PageResponse pageResponse;
-            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.valueOf(search.getProvinceId()).intValue();
-            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.valueOf(search.getSex()).intValue();
+            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
+            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
             if (StringUtils.isBlank(search.getExpanse()) && StringUtils.isBlank(search.getFollower())) {
                 long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear());
                 List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), pageable);
@@ -72,8 +72,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             } else {
                 long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear());
                 List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), pageable);
-                Set<InflucerMenuDto> menuDtoSet = new HashSet<>();
-                menuDtoSet.addAll(filterMenu);
+                Set<InflucerMenuDto> menuDtoSet = new HashSet<>(filterMenu);
                 if (CollectionUtils.isEmpty(filterMenu)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
                     return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);

@@ -30,4 +30,6 @@ public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
     Optional<BrandEntity> findByBrandEmail(String email);
 
     Optional<BrandEntity> findByBrandName(String name);
+
+    Optional<BrandEntity> findByBrandPhone(String phone);
 }
