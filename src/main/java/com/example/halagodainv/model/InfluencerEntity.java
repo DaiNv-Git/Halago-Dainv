@@ -50,5 +50,7 @@ public class InfluencerEntity {
     private String bankId;
     @Column(name = "account_number")
     private String accountNumber;
+    @Column(name = "age")
+    private Integer age;
 
 }

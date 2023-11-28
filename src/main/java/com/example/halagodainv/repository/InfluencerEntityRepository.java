@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
     Optional<InfluencerEntity> findByEmail(String email);
 
-    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone)  " +
+    @Query(value = "SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone)  " +
             "FROM InfluencerEntity ie " +
             "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and " +
@@ -24,7 +24,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and  " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     List<InflucerMenuDto> getAll(@Param("isFacebook") Boolean isFacebook,
                                  @Param("isYoutube") Boolean isYoutube,
                                  @Param("isInstagram") Boolean isInstagram,
@@ -32,8 +35,9 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                  @Param("industry") String industry,
                                  @Param("provinceId") int provinceId,
                                  @Param("sex") int sex,
-                                 @Param("birtYear") String birtYear
-            , Pageable pageable);
+                                 @Param("birtYear") String birtYear,
+                                 @Param("ageStart") int ageStart,
+                                 @Param("ageEnd") int ageEnd, Pageable pageable);
 
     @Query("SELECT count(ie) FROM InfluencerEntity ie " +
             "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
@@ -43,7 +47,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     int totalCount(@Param("isFacebook") Boolean isFacebook,
                    @Param("isYoutube") Boolean isYoutube,
                    @Param("isInstagram") Boolean isInstagram,
@@ -51,7 +58,9 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                    @Param("industry") String industry,
                    @Param("provinceId") int provinceId,
                    @Param("sex") int sex,
-                   @Param("birtYear") String birtYear);
+                   @Param("birtYear") String birtYear,
+                   @Param("ageStart") int ageStart,
+                   @Param("ageEnd") int ageEnd);
 
     @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone) " +
             "FROM InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId WHERE " +
@@ -64,7 +73,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     List<InflucerMenuDto> getFilterMenu(@Param("isFacebook") Boolean isFacebook,
                                         @Param("isYoutube") Boolean isYoutube,
                                         @Param("isInstagram") Boolean isInstagram,
@@ -75,6 +87,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("follower") String follower,
                                         @Param("sex") int sex,
                                         @Param("birtYear") String birtYear,
+                                        @Param("ageStart") int ageStart,
+                                        @Param("ageEnd") int ageEnd,
                                         Pageable pageable);
 
     @Query("SELECT count(ie) " +
@@ -88,7 +102,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     long countFilterMenu(@Param("isFacebook") Boolean isFacebook,
                          @Param("isYoutube") Boolean isYoutube,
                          @Param("isInstagram") Boolean isInstagram,
@@ -98,7 +115,9 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                          @Param("expense") String expense,
                          @Param("follower") String follower,
                          @Param("sex") int sex,
-                         @Param("birtYear") String birtYear);
+                         @Param("birtYear") String birtYear,
+                         @Param("ageStart") int ageStart,
+                         @Param("ageEnd") int ageEnd);
 
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry) from InfluencerEntity ie " +
@@ -113,7 +132,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:follower,'%') and " +
             "(:provinceId = 0 or ie.provinceId =:provinceId) and " +
             "(:sex = 0 or ie.sex =:sex) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:birtYear,'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:birtYear,'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     List<InflucerDtoSubMenu> getSubMenu(@Param("isFacebook") Boolean isFacebook,
                                         @Param("isYoutube") Boolean isYoutube,
                                         @Param("isInstagram") Boolean isInstagram,
@@ -124,6 +146,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("provinceId") int provinceId,
                                         @Param("sex") int sex,
                                         @Param("birtYear") String birtYear,
+                                        @Param("ageStart") int ageStart,
+                                        @Param("ageEnd") int ageEnd,
                                         Pageable pageable);
 
     @Query("select count(ie)from InfluencerEntity ie " +
@@ -138,7 +162,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
     long countSubMenu(@Param("isFacebook") Boolean isFacebook,
                       @Param("isYoutube") Boolean isYoutube,
                       @Param("isInstagram") Boolean isInstagram,
@@ -148,7 +175,9 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("follower") String follower,
                       @Param("provinceId") int provinceId,
                       @Param("sex") int sex,
-                      @Param("birtYear") String birtYear);
+                      @Param("birtYear") String birtYear,
+                      @Param("ageStart") int ageStart,
+                      @Param("ageEnd") int ageEnd);
 
 
     @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
@@ -162,7 +191,11 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') and( :#{#listIds.size()} = 0 or ie.id in(:#{#listIds})) and (ie.phone is not null or ie.phone <>'') and (ie.influcerName is not null or ie.influcerName <>'') order by ie.id desc ")
+            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "and ( :#{#listIds.size()} = 0 or ie.id in(:#{#listIds})) " +
+            "and (ie.phone is not null or ie.phone <>'') " +
+            "and (ie.influcerName is not null or ie.influcerName <>'') and " +
+            "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) order by ie.id desc ")
     List<InfluencerExportExcelDto> getExportExcel(@Param("isFacebook") Boolean isFacebook,
                                                   @Param("isYoutube") Boolean isYoutube,
                                                   @Param("isInstagram") Boolean isInstagram,
@@ -173,7 +206,9 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                                   @Param("provinceId") int provinceId,
                                                   @Param("sex") int sex,
                                                   @Param("birtYear") String birtYear,
-                                                  @Param("listIds") List<Long> listIds);
+                                                  @Param("listIds") List<Long> listIds,
+                                                  @Param("ageStart") int ageStart,
+                                                  @Param("ageEnd") int ageEnd);
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +
             "ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone,ie.sex,ie.yearOld,ie.classifyId,ie.provinceId,ie.address,ie.bankId,ie.accountNumber, " +

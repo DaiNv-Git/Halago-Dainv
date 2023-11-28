@@ -61,8 +61,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
             int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
             if (StringUtils.isBlank(search.getExpanse()) && StringUtils.isBlank(search.getFollower())) {
-                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear());
-                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), pageable);
+                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
+                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
                 if (CollectionUtils.isEmpty(influcerMenuDtos)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
                     return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
@@ -70,8 +70,8 @@ public class InfluencerServiceImpl implements InfluencerService {
                 pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             } else {
-                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear());
-                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), pageable);
+                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
+                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
                 Set<InflucerMenuDto> menuDtoSet = new HashSet<>(filterMenu);
                 if (CollectionUtils.isEmpty(filterMenu)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
@@ -99,8 +99,8 @@ public class InfluencerServiceImpl implements InfluencerService {
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
             int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
             int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
-            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear());
-            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), pageable);
+            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
+            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
                 PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
                 return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
@@ -384,10 +384,10 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
-            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
-            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
-            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds());
+            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
             influencerExcel.initializeData(facebooks, tiktoks, instagrams, youtubes, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {

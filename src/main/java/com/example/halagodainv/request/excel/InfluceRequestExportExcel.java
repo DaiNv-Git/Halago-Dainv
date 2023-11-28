@@ -3,7 +3,6 @@ package com.example.halagodainv.request.excel;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -18,5 +17,7 @@ public class InfluceRequestExportExcel {
     private String expanse = "";
     private int sex = 0;
     private String birhYear = "";
+    private int ageStart = 0;
+    private int ageEnd = 100;
     private List<Long> listIds = new ArrayList<>();
 }

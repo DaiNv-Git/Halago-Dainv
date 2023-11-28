@@ -19,4 +19,6 @@ public class InfluencerSearch extends SearchPageForm {
     private String expanse = "";
     private String sex = "";
     private String birhYear = "";
+    private int ageStart = 0;
+    private int ageEnd = 100;
 }
