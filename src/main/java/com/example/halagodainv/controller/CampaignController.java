@@ -55,4 +55,19 @@ public class CampaignController {
     public ResponseEntity<Object> getIndustry() {
         return ResponseEntity.ok(campaignService.getByIndustry());
     }
+
+    @GetMapping("/work-status")
+    public ResponseEntity<Object> getCampaignStatus() {
+        return ResponseEntity.ok(campaignService.getCampaignStatuses());
+    }
+
+    @GetMapping("/work-communication")
+    public ResponseEntity<Object> getCampaignCommunication() {
+        return ResponseEntity.ok(campaignService.getCampaignCommunications());
+    }
+
+    @GetMapping("/work-category")
+    public ResponseEntity<Object> getCampaign() {
+        return ResponseEntity.ok(campaignService.getCampaignCategories());
+    }
 }

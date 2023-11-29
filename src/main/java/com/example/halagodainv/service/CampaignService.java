@@ -19,5 +19,9 @@ public interface CampaignService {
     Object getByBrands();
     Object getByIndustry();
 
+    public Object getCampaignCommunications();
+    public Object getCampaignStatuses();
+    public Object getCampaignCategories();
+
 
 }

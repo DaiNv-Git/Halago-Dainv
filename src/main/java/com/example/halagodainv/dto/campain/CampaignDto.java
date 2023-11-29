@@ -1,8 +1,7 @@
 package com.example.halagodainv.dto.campain;
 
-import com.example.halagodainv.model.CampaignEntity;
+import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
-import com.example.halagodainv.model.Influencer;
 import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import com.example.halagodainv.until.DateUtilFormat;
 import lombok.AllArgsConstructor;
@@ -31,6 +30,9 @@ public class CampaignDto {
     private String descriptionCandidatePerform;
     private String reward;
     private String created;
+    private String campaignCategory;
+    private String campaignCommunacation;
+    private int campaignStatus;
 
     public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
         this.id = campaignEntity.getId();
@@ -46,6 +48,9 @@ public class CampaignDto {
         this.descriptionCandidatePerform = campaignEntity.getDescription();
         this.reward = campaignEntity.getRewards();
         this.industry = campaignEntity.getIndustry();
+        this.campaignCategory = campaignEntity.getCampaignCategory();
+        this.campaignCommunacation = campaignEntity.getCampaignCommunication();
+        this.campaignStatus = campaignEntity.getCampaignStatus();
         this.created = DateUtilFormat.convertDateToString(campaignEntity.getCreated(), "yyyy-MM-dd");
         response.forEach(campaign -> {
             this.imageProductAddRequests.add(new ImageProductDto(campaign));

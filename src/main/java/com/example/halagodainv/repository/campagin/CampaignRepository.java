@@ -1,6 +1,6 @@
-package com.example.halagodainv.repository;
+package com.example.halagodainv.repository.campagin;
 
-import com.example.halagodainv.model.CampaignEntity;
+import com.example.halagodainv.model.campaign.CampaignEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

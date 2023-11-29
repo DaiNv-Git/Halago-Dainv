@@ -6,22 +6,26 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class CampaignAddRequest {
     private int brandId;
     private String campaignName;
-    private List<Integer> industryId;
+    private List<Integer> industryId = new ArrayList<>();
     private String campaignImage;
     private String titleCampaign;
     private String startDate;
     private String endDate;
-    private List<ImageProductAddRequest> imageProductAddRequests;
+    private List<ImageProductAddRequest> imageProductAddRequests = new ArrayList<>();
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
     private String reward;
+    private List<Integer> campaignCommunication = new ArrayList<>();
+    private int campaignStatus;
+    private List<Integer> campaignCategory = new ArrayList<>();
 
     public boolean validate(List<ErrorResponse> response) {
         boolean isCheck = true;

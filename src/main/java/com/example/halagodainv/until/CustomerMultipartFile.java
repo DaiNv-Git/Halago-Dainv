@@ -16,13 +16,10 @@ import java.util.Base64;
 @AllArgsConstructor
 public class CustomerMultipartFile {
     public static MultipartFile convertBase64ToMultipartFile(String base64String, String filename, String contentType) throws IOException {
-        // Giải mã dữ liệu Base64 thành mảng byte
         byte[] decodedBytes = Base64.getDecoder().decode(base64String);
 
-        // Tạo đối tượng ByteArrayResource từ mảng byte
         ByteArrayResource resource = new ByteArrayResource(decodedBytes);
 
-        // Tạo đối tượng MultipartFile từ ByteArrayResource
         return new CustomMultipartFile(resource, filename, contentType);
     }
 

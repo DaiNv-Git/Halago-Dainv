@@ -1,6 +1,7 @@
-package com.example.halagodainv.model;
+package com.example.halagodainv.model.campaign;
 
 
+import com.example.halagodainv.model.ImageProductEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -43,13 +44,19 @@ public class CampaignEntity implements Serializable {
     @Column(name = "id_brand")
     private int idBrand;
     @Column(name = "industry")
-    private String industry;
+    private String industry = "";
     @Column(name = "industry_id")
     private String industryId;
     @Column(name = "title_product")
     private String titleProduct;
     @Column(name = "title_campaign")
     private String titleCampaign;
-    @OneToMany(mappedBy = "campaignEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "communication")
+    private String campaignCommunication;
+    @Column(name = "work_status")
+    private int campaignStatus;
+    @Column(name = "category")
+    private String campaignCategory;
+    @OneToMany(mappedBy = "campaignEntity")
     List<ImageProductEntity> productEntityList = new ArrayList<>();
 }

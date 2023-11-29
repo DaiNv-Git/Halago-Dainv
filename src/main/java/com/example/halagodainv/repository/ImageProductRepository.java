@@ -1,8 +1,6 @@
 package com.example.halagodainv.repository;
 
-import com.example.halagodainv.model.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
-import lombok.Data;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
