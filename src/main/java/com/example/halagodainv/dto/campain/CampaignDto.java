@@ -16,44 +16,23 @@ import java.util.List;
 @NoArgsConstructor
 public class CampaignDto {
     private int id;
-    private int brandId;
+    private String img;
     private String campaignName;
-    private List<Integer> industryId;
-    private String industry;
-    private String startDate;
-    private String endDate;
-    private String campaignImage;
-    private String titleCampaign;
-    private List<ImageProductDto> imageProductAddRequests = new ArrayList<>();
-    private String titleProduct;
-    private String descriptionCampaign;
-    private String descriptionCandidatePerform;
-    private String reward;
-    private String created;
-    private String campaignCategory;
-    private String campaignCommunacation;
-    private int campaignStatus;
+    private String workStatus;
+    private String timeDeadline;
 
-    public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
-        this.id = campaignEntity.getId();
-        this.brandId = campaignEntity.getIdBrand();
-        this.campaignName = campaignEntity.getCampaignName();
-        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getIndustryId());
-        this.startDate =DateUtilFormat.convertDateToString(campaignEntity.getDateStart(), "yyyy-MM-dd");
-        this.endDate = DateUtilFormat.convertDateToString(campaignEntity.getDateEnd(), "yyyy-MM-dd");
-        this.campaignImage = campaignEntity.getImg();
-        this.titleCampaign = campaignEntity.getTitleCampaign();
-        this.titleProduct = campaignEntity.getTitleProduct();
-        this.descriptionCampaign = campaignEntity.getContent();
-        this.descriptionCandidatePerform = campaignEntity.getDescription();
-        this.reward = campaignEntity.getRewards();
-        this.industry = campaignEntity.getIndustry();
-        this.campaignCategory = campaignEntity.getCampaignCategory();
-        this.campaignCommunacation = campaignEntity.getCampaignCommunication();
-        this.campaignStatus = campaignEntity.getCampaignStatus();
-        this.created = DateUtilFormat.convertDateToString(campaignEntity.getCreated(), "yyyy-MM-dd");
-        response.forEach(campaign -> {
-            this.imageProductAddRequests.add(new ImageProductDto(campaign));
-        });
+
+    public CampaignDto(CampaignEntity campaignEntity) {
+        this.id= campaignEntity.getId();
+        this.img= campaignEntity.getImg();
+        this.campaignName= campaignEntity.getCampaignName();
+        this.workStatus= campaignEntity.getCampaignCategory();
+        this.timeDeadline= campaignEntity.getTimeDeadline();
+    }public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
+        this.id= campaignEntity.getId();
+        this.img= campaignEntity.getImg();
+        this.campaignName= campaignEntity.getCampaignName();
+        this.workStatus= campaignEntity.getCampaignCategory();
+        this.timeDeadline= campaignEntity.getTimeDeadline();
     }
 }

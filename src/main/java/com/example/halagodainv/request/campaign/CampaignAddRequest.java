@@ -16,43 +16,11 @@ public class CampaignAddRequest {
     private List<Integer> industryId = new ArrayList<>();
     private String campaignImage;
     private String titleCampaign;
-    private String startDate;
-    private String endDate;
     private List<ImageProductAddRequest> imageProductAddRequests = new ArrayList<>();
     private String titleProduct;
     private String descriptionCampaign;
     private String descriptionCandidatePerform;
-    private String reward;
     private List<Integer> campaignCommunication = new ArrayList<>();
     private int campaignStatus;
     private List<Integer> campaignCategory = new ArrayList<>();
-
-    public boolean validate(List<ErrorResponse> response) {
-        boolean isCheck = true;
-        if (StringUtils.isBlank(campaignName)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "campaign name không được rỗng", null));
-            isCheck = false;
-        }
-        if (StringUtils.isBlank(titleCampaign)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleCampaign không được rỗng", null));
-            isCheck = false;
-        }
-        if (StringUtils.isBlank(titleProduct)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "titleProduct không được rỗng", null));
-            isCheck = false;
-        }
-        if (StringUtils.isBlank(descriptionCampaign)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCampaign không được rỗng", null));
-            isCheck = false;
-        }
-        if (StringUtils.isBlank(descriptionCandidatePerform)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "descriptionCandidatePerform không được rỗng", null));
-            isCheck = false;
-        }
-        if (StringUtils.isBlank(reward)) {
-            response.add(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "reward không được rỗng", null));
-            isCheck = false;
-        }
-        return isCheck;
-    }
 }

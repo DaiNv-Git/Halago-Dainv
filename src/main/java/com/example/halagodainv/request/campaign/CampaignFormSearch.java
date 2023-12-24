@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CampaignFormSearch extends SearchPageForm {
-    private String campaignName = "";
+    private String industryId = "";
+    private String communicationId = "";
 }

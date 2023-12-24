@@ -31,6 +31,11 @@ public class CampaignController {
         return ResponseEntity.ok(campaignService.getDetail(campaignId));
     }
 
+    @PostMapping("/relate_to_campaign")
+    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") String industryId,@RequestParam("campaignId") int campaignId,@RequestParam("workStatus") int workStatus) {
+        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryId,campaignId,workStatus));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<Object> add(@RequestBody CampaignAddRequest addRequest) throws ParseException {
         return ResponseEntity.ok(campaignService.add(addRequest));
