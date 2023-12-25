@@ -165,7 +165,7 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password success", null));
                 }
             }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password note success", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password not success", null));
         } catch (Exception ex) {
             throw new GeneralException("error: " + ex.getMessage());
         }

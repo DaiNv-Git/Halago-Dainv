@@ -19,20 +19,24 @@ public class CampaignDto {
     private String img;
     private String campaignName;
     private String workStatus;
+    private String categoryCampaign;
     private String timeDeadline;
 
 
     public CampaignDto(CampaignEntity campaignEntity) {
-        this.id= campaignEntity.getId();
-        this.img= campaignEntity.getImg();
-        this.campaignName= campaignEntity.getCampaignName();
-        this.workStatus= campaignEntity.getCampaignCategory();
-        this.timeDeadline= campaignEntity.getTimeDeadline();
-    }public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
-        this.id= campaignEntity.getId();
-        this.img= campaignEntity.getImg();
-        this.campaignName= campaignEntity.getCampaignName();
-        this.workStatus= campaignEntity.getCampaignCategory();
-        this.timeDeadline= campaignEntity.getTimeDeadline();
+        this.id = campaignEntity.getId();
+        this.img = campaignEntity.getImg();
+        this.campaignName = campaignEntity.getCampaignName();
+        this.workStatus = campaignEntity.getCampaignCategory();
+        this.timeDeadline = campaignEntity.getTimeDeadline();
+        this.categoryCampaign = campaignEntity.getCampaignCategory();
+    }
+
+    public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
+        this.id = campaignEntity.getId();
+        this.img = campaignEntity.getImg();
+        this.campaignName = campaignEntity.getCampaignName();
+        this.workStatus = campaignEntity.getCampaignCategory();
+        this.timeDeadline = campaignEntity.getTimeDeadline();
     }
 }

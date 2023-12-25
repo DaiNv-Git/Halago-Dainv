@@ -34,6 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.*;
@@ -49,6 +52,8 @@ public class CampaignServiceImpl implements CampaignService {
     private final WorkCommuniRepository workCommuniRepository;
     private final WorkStatusRepository workStatusRepository;
     private final FileImageUtil fileImageUtil;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Object getCampaigns(CampaignFormSearch campaignSearch) {
@@ -60,18 +65,30 @@ public class CampaignServiceImpl implements CampaignService {
         int totalCountByCampaign = campaignRepository.countAllBy(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId());
         List<CampaignEntity> campaignEntities = campaignRepository.getByCampaigns(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId(), pageable);
         List<CampaignDto> campaignDtos = new ArrayList<>();
-        campaignEntities.forEach(campaignEntity -> {
-            campaignDtos.add(new CampaignDto(campaignEntity));
-        });
+        campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity)));
         return new PageResponse<>(new PageImpl<>(campaignDtos, pageable, totalCountByCampaign));
     }
+
     @Override
     public Object getRelateToCampaigns(String industryId, int camId, int workStatus) {
-        List<CampaignEntity> campaignEntities = campaignRepository.getByRelateToCampaigns(industryId, camId, workStatus);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("select * from campaign cam where ");
+        if (campaignRepository.findByIdAndIndustryId(camId, industryId).isPresent()) {
+            stringBuilder.append("( ");
+            String[] industryArs = industryId.split(",");
+            for (int i = 0; i < industryArs.length; i++) {
+                stringBuilder.append("cam.industry_id like '%").append(industryArs[i].trim()).append("%'");
+                if (i < industryArs.length - 1) {
+                    stringBuilder.append(" or ");
+                }
+            }
+            stringBuilder.append(") and ");
+        }
+        stringBuilder.append("cam.id <> ").append(camId).append(" and cam.work_status = ").append(workStatus).append(" limit 10");
+        Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString(), CampaignEntity.class);
+        List<CampaignEntity> campaignEntities = nativeQuery.getResultList();
         List<CampaignDto> campaignDtos = new ArrayList<>();
-        campaignEntities.forEach(campaignEntity -> {
-            campaignDtos.add(new CampaignDto(campaignEntity));
-        });
+        campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity)));
         return campaignDtos;
     }
 
@@ -94,7 +111,7 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignAddRequest.getIndustryId()));
             if (campaignAddRequest.getIndustryId().size() > 0) {
                 List<IndustryEntity> industryEntities = industryRepository.findByIdIn(campaignAddRequest.getIndustryId());
-                StringJoiner stringJoiner = new StringJoiner(",");
+                StringJoiner stringJoiner = new StringJoiner(", ");
                 industryEntities.forEach(industryEntity -> {
                     stringJoiner.add(industryEntity.getIndustryName());
                 });
