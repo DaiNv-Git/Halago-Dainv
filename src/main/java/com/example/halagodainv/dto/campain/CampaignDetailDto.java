@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +16,7 @@ public class CampaignDetailDto {
     private int id;
     private String img;
     private String campaignName;
+    private String campaignCategory;
     private int workStatus;
     private String conditionApply;
     private String method;
@@ -38,5 +40,6 @@ public class CampaignDetailDto {
         this.other = campaignEntity.getOther();
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.imageProductAddRequests = imageProductAddRequests;
+        this.campaignCategory = campaignEntity.getCampaignCategory();
     }
 }
