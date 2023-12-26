@@ -8,7 +8,6 @@ import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.model.ImageProductEntity;
 import com.example.halagodainv.model.IndustryEntity;
-import com.example.halagodainv.model.campaign.WorkCommunicationCampaign;
 import com.example.halagodainv.repository.BrandRepository;
 import com.example.halagodainv.repository.campagin.CampaignRepository;
 import com.example.halagodainv.repository.ImageProductRepository;
@@ -22,16 +21,13 @@ import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
-import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
-import com.example.halagodainv.until.FormatTimeSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
@@ -161,7 +157,7 @@ public class CampaignServiceImpl implements CampaignService {
                     stringJoiner.add(industryEntity.getIndustryName());
                 });
             }
-            editEntity.setBrandName(campaignEditRequest.getBraneName());
+            editEntity.setBrandName(campaignEditRequest.getBrandName());
             editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
             editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
             editEntity.setCampaignCategory(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCategory()));

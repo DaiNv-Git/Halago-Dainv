@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class CampaignEditRequest {
     private int id;
-    private String braneName;
+    private String brandName;
     private String campaignName;
     private List<Integer> industryId = new ArrayList<>();
     private String campaignImage;

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class CampaignAddRequest {
-    private String braneName;
+    private String brandName;
     private String campaignName;
     private List<Integer> industryId = new ArrayList<>();
     private String campaignImage;
