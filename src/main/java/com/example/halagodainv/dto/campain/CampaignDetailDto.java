@@ -15,6 +15,7 @@ import java.util.List;
 public class CampaignDetailDto {
     private int id;
     private String img;
+    private String brandName;
     private String campaignName;
     private String campaignCategory;
     private int workStatus;
@@ -41,5 +42,6 @@ public class CampaignDetailDto {
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.imageProductAddRequests = imageProductAddRequests;
         this.campaignCategory = campaignEntity.getCampaignCategory();
+        this.brandName = campaignEntity.getBrandName();
     }
 }

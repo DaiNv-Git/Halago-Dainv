@@ -31,12 +31,4 @@ public class CampaignDto {
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.categoryCampaign = campaignEntity.getCampaignCategory();
     }
-
-    public CampaignDto(CampaignEntity campaignEntity, List<ImageProductEntity> response) {
-        this.id = campaignEntity.getId();
-        this.img = campaignEntity.getImg();
-        this.campaignName = campaignEntity.getCampaignName();
-        this.workStatus = campaignEntity.getCampaignCategory();
-        this.timeDeadline = campaignEntity.getTimeDeadline();
-    }
 }

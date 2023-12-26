@@ -21,6 +21,8 @@ public class CampaignEntity implements Serializable {
     private int id;
     @Column(name = "campaign_name")
     private String campaignName;
+    @Column(name = "brandName")
+    private String brandName;
     @Column(name = "description")
     private String description;
     @Column(name = "created")

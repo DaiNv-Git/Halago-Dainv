@@ -135,7 +135,7 @@ public class CampaignServiceImpl implements CampaignService {
                 });
             }
             List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
-            return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDto(campaignEntity, response));
+            return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDetailDto(campaignEntity, response));
         } catch (
                 Exception e) {
             return new ErrorResponse(Constant.FAILED, "Thêm mới không thành công", null);
@@ -145,55 +145,45 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     @Transactional
     public Object edit(CampaignEditRequest campaignEditRequest) throws ParseException {
-//        try {
-//            List<ErrorResponse> errorResponses = new ArrayList<>();
-//            CampaignEntity editEntity = campaignRepository.findByCamId(campaignEditRequest.getId());
-//            if (ObjectUtils.isEmpty(editEntity)) {
-//                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu Không tồn tại", null);
-//            }
-//            if (!campaignEditRequest.validate(errorResponses)) {
-//                return errorResponses;
-//            }
-//            editEntity.setCampaignName(campaignEditRequest.getCampaignName());
-//            editEntity.setDateStart(DateUtilFormat.converStringToDate(campaignEditRequest.getStartDate(), "yyyy-MM-dd"));
-//            editEntity.setDateEnd(DateUtilFormat.converStringToDate(campaignEditRequest.getEndDate(), "yyyy-MM-dd"));
-//            editEntity.setImg(fileImageUtil.uploadImage(campaignEditRequest.getCampaignImage()));
-//            editEntity.setTitleCampaign(campaignEditRequest.getTitleCampaign());
-//            editEntity.setTitleProduct(campaignEditRequest.getTitleProduct());
-//            editEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getIndustryId()));
-//            if (campaignEditRequest.getIndustryId().size() > 0) {
-//                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(campaignEditRequest.getIndustryId());
-//                StringJoiner stringJoiner = new StringJoiner(", ");
-//                industryEntities.forEach(industryEntity -> {
-//                    stringJoiner.add(industryEntity.getIndustryName());
-//                });
-//                editEntity.setIndustry(stringJoiner.toString());
-//            }
-//            editEntity.setIdBrand(campaignEditRequest.getBrandId());
-//            editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
-//            editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
-//            editEntity.setRewards(campaignEditRequest.getReward());
-//            editEntity.setCampaignCategory(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCategory()));
-//            editEntity.setCampaignCommunication(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCommunication()));
-//            editEntity.setCampaignStatus(campaignEditRequest.getCampaignStatus());
-//            editEntity = campaignRepository.save(editEntity);
-//            List<ImageProductEntity> imageProductEntities = new ArrayList<>();
-//            CampaignEntity finalEditEntity = editEntity;
-//            imageProductRepository.deleteByCampaignEntity_Id(editEntity.getId());
-//            if (campaignEditRequest.getImageProductAddRequests().size() > 0) {
-//                campaignEditRequest.getImageProductAddRequests().forEach(i -> {
-//                    ImageProductEntity imageProductEntity = new ImageProductEntity();
-//                    imageProductEntity.setImageProduct(fileImageUtil.uploadImage(i.getImageProduct()));
-//                    imageProductEntity.setCampaignEntity(finalEditEntity);
-//                    imageProductEntities.add(imageProductEntity);
-//                });
-//            }
-//            List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
-//            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDto(editEntity, response));
-//        } catch (Exception e) {
-//            return new ErrorResponse(Constant.FAILED, "Sửa không thành công", null);
-//        }
-        return null;
+        try {
+            CampaignEntity editEntity = campaignRepository.findByCamId(campaignEditRequest.getId());
+            if (ObjectUtils.isEmpty(editEntity)) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu Không tồn tại", null);
+            }
+
+            editEntity.setCampaignName(campaignEditRequest.getCampaignName());
+            editEntity.setImg(fileImageUtil.uploadImage(campaignEditRequest.getCampaignImage()));
+            editEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getIndustryId()));
+            if (campaignEditRequest.getIndustryId().size() > 0) {
+                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(campaignEditRequest.getIndustryId());
+                StringJoiner stringJoiner = new StringJoiner(", ");
+                industryEntities.forEach(industryEntity -> {
+                    stringJoiner.add(industryEntity.getIndustryName());
+                });
+            }
+            editEntity.setBrandName(campaignEditRequest.getBraneName());
+            editEntity.setDescription(campaignEditRequest.getDescriptionCampaign());
+            editEntity.setContent(campaignEditRequest.getDescriptionCandidatePerform());
+            editEntity.setCampaignCategory(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCategory()));
+            editEntity.setCampaignCommunication(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCommunication()));
+            editEntity.setCampaignStatus(campaignEditRequest.getCampaignStatus());
+            editEntity = campaignRepository.save(editEntity);
+            List<ImageProductEntity> imageProductEntities = new ArrayList<>();
+            CampaignEntity finalEditEntity = editEntity;
+            imageProductRepository.deleteByCampaignEntity_Id(editEntity.getId());
+            if (campaignEditRequest.getImageProductAddRequests().size() > 0) {
+                campaignEditRequest.getImageProductAddRequests().forEach(i -> {
+                    ImageProductEntity imageProductEntity = new ImageProductEntity();
+                    imageProductEntity.setImageProduct(fileImageUtil.uploadImage(i.getImageProduct()));
+                    imageProductEntity.setCampaignEntity(finalEditEntity);
+                    imageProductEntities.add(imageProductEntity);
+                });
+            }
+            List<ImageProductEntity> response = imageProductRepository.saveAll(imageProductEntities);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDetailDto(editEntity, response));
+        } catch (Exception e) {
+            return new ErrorResponse(Constant.FAILED, "Sửa không thành công", null);
+        }
     }
 
     public Object deleteByCampaign(int campaignId) {
