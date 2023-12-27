@@ -19,11 +19,7 @@ public class ServiceTimeLoggerAspect {
     public void logMethodEnd() {
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime.get();
-
-        // Ghi log thời gian xử lý cho mỗi service
         System.out.println("Thời gian xử lý: " + duration + " ms");
-
-        // Đặt startTime về null để tránh lưu trữ giá trị không cần thiết trong ThreadLocal
         startTime.remove();
     }
 }
