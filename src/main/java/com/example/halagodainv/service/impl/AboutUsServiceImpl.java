@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AboutUsServiceimpl implements AboutUsService {
+public class AboutUsServiceImpl implements AboutUsService {
     private final AboutUsRepository aboutUsRepository;
 
     private final AboutUsLanguageRepository aboutUsLanguageRepository;
