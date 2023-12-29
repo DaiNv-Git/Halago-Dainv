@@ -15,10 +15,10 @@ public class FreeConsultationRequest {
     private String email;
     private String note;
     private String website;
-    private Boolean isAdvertisementVTC;
-    private Boolean isBrandAmbassador;
-    private Boolean isEvent;
-    private Boolean isLiveStream;
-    private Boolean isReview;
-    private Boolean isOther;
+    private Boolean isAdvertisementVTC = false;
+    private Boolean isBrandAmbassador = false;
+    private Boolean isEvent = false;
+    private Boolean isLiveStream = false;
+    private Boolean isReview = false;
+    private Boolean isOther = false;
 }

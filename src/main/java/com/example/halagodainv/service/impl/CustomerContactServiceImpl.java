@@ -34,20 +34,20 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
     private final ContactCustomerRepository contactCustomerRepository;
     private final FreeConsultationRepository freeConsultationRepository;
     private final JavaMailSender javaMailSender;
-
-    public Object getListCustomers(int pageNo, int pageSize) {
+    @Override
+    public PageResponse<FreeConsultationEntity> getListCustomers(int pageNo, int pageSize) {
         int offset = 0;
         if (pageNo > 0) {
             offset = pageNo - 1;
         }
         Pageable pageable = PageRequest.of(offset, pageSize);
         List<FreeConsultationEntity> entities = freeConsultationRepository.findAll(PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id")).toList();
-        int totalCount = (int) contactCustomerRepository.count();
+        int totalCount = (int) freeConsultationRepository.count();
         if (CollectionUtils.isEmpty(entities)) {
-            PageResponse response = new PageResponse<>(new PageImpl<>(entities, pageable, 0));
+            PageResponse<FreeConsultationEntity> response = new PageResponse<>(new PageImpl<>(entities, pageable, 0));
             return response;
         }
-        PageResponse response = new PageResponse<>(new PageImpl<>(entities, pageable, totalCount));
+        PageResponse<FreeConsultationEntity> response = new PageResponse<>(new PageImpl<>(entities, pageable, totalCount));
         return response;
     }
 
@@ -84,12 +84,12 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setEmail(request.getEmail());
         freeConsultationEntity.setPhone(request.getPhone());
         freeConsultationEntity.setWebsite(request.getWebsite());
-        freeConsultationEntity.setIsAdvertisementVTC(request.getIsAdvertisementVTC());
-        freeConsultationEntity.setIsBrandAmbassador(request.getIsBrandAmbassador());
-        freeConsultationEntity.setIsEvent(request.getIsEvent());
-        freeConsultationEntity.setIsLiveStream(request.getIsLiveStream());
-        freeConsultationEntity.setIsReview(request.getIsReview());
-        freeConsultationEntity.setIsOther(request.getIsOther());
+        freeConsultationEntity.setAdvertisementVTC(request.getIsAdvertisementVTC());
+        freeConsultationEntity.setBrandAmbassador(request.getIsBrandAmbassador());
+        freeConsultationEntity.setEvent(request.getIsEvent());
+        freeConsultationEntity.setLiveStream(request.getIsLiveStream());
+        freeConsultationEntity.setReview(request.getIsReview());
+        freeConsultationEntity.setOther(request.getIsOther());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);

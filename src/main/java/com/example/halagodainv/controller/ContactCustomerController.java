@@ -1,7 +1,9 @@
 package com.example.halagodainv.controller;
 
+import com.example.halagodainv.model.viewdisplayentity.FreeConsultationEntity;
 import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
 import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
+import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ContactCustomerService;
 import io.swagger.models.Response;
 import org.slf4j.Logger;
@@ -22,8 +24,8 @@ public class ContactCustomerController {
     Logger logger = LoggerFactory.getLogger(ContactCustomerController.class);
 
     @GetMapping("")
-    public ResponseEntity<Object> getALL(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
-                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public ResponseEntity<PageResponse<FreeConsultationEntity>> getALL(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
+                                                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return ResponseEntity.ok(contactCustomerService.getListCustomers(pageNo, pageSize));
     }
 

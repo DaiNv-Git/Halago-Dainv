@@ -29,17 +29,17 @@ public class FreeConsultationEntity {
     @Column(name = "website")
     private String website;
     @Column(name = "advertisement_vtc")
-    private Boolean isAdvertisementVTC;
+    private boolean isAdvertisementVTC;
     @Column(name = "brand_ambassador")
-    private Boolean isBrandAmbassador;
+    private boolean isBrandAmbassador;
     @Column(name = "event")
-    private Boolean isEvent;
+    private boolean isEvent;
     @Column(name = "live_stream")
-    private Boolean isLiveStream;
+    private boolean isLiveStream;
     @Column(name = "review")
-    private Boolean isReview;
+    private boolean isReview;
     @Column(name = "other")
-    private Boolean isOther;
+    private boolean isOther;
     @Column(name = "created")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Ho_Chi_Minh")
     private Date created;
