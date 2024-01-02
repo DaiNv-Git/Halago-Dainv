@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewNewsDto {
+    private int id;
     private String img;
     private String title;
     private String createdDate;

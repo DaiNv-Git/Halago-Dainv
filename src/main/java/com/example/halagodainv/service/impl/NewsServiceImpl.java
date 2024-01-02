@@ -115,16 +115,15 @@ public class NewsServiceImpl implements NewsService {
         PageResponse<?> pageResponse;
         int offset = pageNo > 0 ? pageNo - 1 : 0;
         Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, (tagId != 0L) ? String.valueOf(tagId) : "", language, pageable);
+        String tagId1 = (tagId != 0L) ? String.valueOf(tagId) : "";
+        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, tagId1, language, pageable);
         List<ViewNewsDto> newsDtos = new ArrayList<>();
-        viewNewsMaps.forEach(i -> {
-            newsDtos.add(new ViewNewsDto(i.getImg(), i.getTitle(), i.getCreatedDate()));
-        });
+        viewNewsMaps.forEach(i -> newsDtos.add(new ViewNewsDto(i.getId(),i.getImg(),i.getTitle(), i.getCreatedDate())));
         if (CollectionUtils.isEmpty(viewNewsMaps)) {
             pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
             return pageResponse;
         }
-        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId != 0L ? String.valueOf(tagId) : "", language);
+        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId1, language);
         pageResponse = new PageResponse<>(new PageImpl<>(newsDtos, pageable, viewCountNewsMaps));
         return pageResponse;
     }
@@ -144,8 +143,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
-        Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
-        Pageable pageableIsHot = PageRequest.of(0, 3);
+        Pageable pageableViewNews = PageRequest.of(0, 1, Sort.Direction.DESC, "created");
+        Pageable pageableIsHot = PageRequest.of(0, 1);
         List<ViewNewAndHot> viewNewsMaps = newsRepository.getViewhots(0L, "", language, pageableIsHot);
         List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, "", language);
         List<ViewNewAndHot> viewNews = newsRepository.getViewNew(0L, "", language, pageableViewNews);
@@ -177,12 +176,12 @@ public class NewsServiceImpl implements NewsService {
                 count6++;
             }
         }
-        viewTopicDto.setTitle(topicRepository.findAll().get(0).getTopicName());
-        viewTopicDto1.setTitle(topicRepository.findAll().get(1).getTopicName());
-        viewTopicDto2.setTitle(topicRepository.findAll().get(2).getTopicName());
-        viewTopicDto3.setTitle(topicRepository.findAll().get(3).getTopicName());
-        viewTopicDto4.setTitle(topicRepository.findAll().get(4).getTopicName());
-        viewTopicDto5.setTitle(topicRepository.findAll().get(5).getTopicName());
+        viewTopicDto.setTitle(language.equals("VN") ? topicRepository.findAll().get(0).getTopicName() : topicRepository.findAll().get(0).getTopicNameEN());
+        viewTopicDto1.setTitle(language.equals("VN") ? topicRepository.findAll().get(1).getTopicName() : topicRepository.findAll().get(1).getTopicNameEN());
+        viewTopicDto2.setTitle(language.equals("VN") ? topicRepository.findAll().get(2).getTopicName() : topicRepository.findAll().get(2).getTopicNameEN());
+        viewTopicDto3.setTitle(language.equals("VN") ? topicRepository.findAll().get(3).getTopicName() : topicRepository.findAll().get(3).getTopicNameEN());
+        viewTopicDto4.setTitle(language.equals("VN") ? topicRepository.findAll().get(4).getTopicName() : topicRepository.findAll().get(4).getTopicNameEN());
+        viewTopicDto5.setTitle(language.equals("VN") ? topicRepository.findAll().get(5).getTopicName() : topicRepository.findAll().get(5).getTopicNameEN());
 
         viewTopicDto.setCount(count1);
         viewTopicDto1.setCount(count2);
@@ -211,7 +210,7 @@ public class NewsServiceImpl implements NewsService {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
             viewNewsHotDto.setImg(viewMap.getImage());
-            viewNewHots.add(new ViewNewsHotDto());
+            viewNewHots.add(viewNewsHotDto);
         });
         return new ViewNewsAndHotDetailDto(viewNewsTopicDto, viewNewDtos, viewNewHots);
     }

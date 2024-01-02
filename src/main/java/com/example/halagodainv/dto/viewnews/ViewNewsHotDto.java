@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ViewNewsHotDto {
     private String img;
     private String title;
+    private String created;
 }

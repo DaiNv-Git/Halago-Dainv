@@ -58,7 +58,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.content,n.created,n.topicId,n.tagId,n.thumbnail) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
-            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language =:#{#language} ")
+            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language = :#{#language} ")
     List<ViewNewsMap> getPageViewNews(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
 
     @Query("select count (n) from  NewsEntity n " +

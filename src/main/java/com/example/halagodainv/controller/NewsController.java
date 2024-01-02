@@ -48,11 +48,11 @@ public class NewsController {
     @PostMapping("/view")
     public ResponseEntity<?> viewNews(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                      @RequestParam(value = "topicId") Long topicId,
-                                      @RequestParam(value = "tagId",required = false,defaultValue = "0") Long tagId,
+                                      @RequestParam(value = "topicId",defaultValue = "2",required = false) Long topicId,
+                                      @RequestParam(value = "tagId",defaultValue = "0",required = false) Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language.toUpperCase(), topicId, tagId)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language, topicId, tagId)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -70,7 +70,7 @@ public class NewsController {
         }
     }
 
-    @PostMapping("/view/hot-new")
+    @PostMapping("/view-topic")
     public ResponseEntity<?> getNewsAndHot(@RequestParam(value = "language") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsAndHots(language.toUpperCase())));
