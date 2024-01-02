@@ -21,6 +21,7 @@ public class CampaignDto {
     private String workStatus;
     private String categoryCampaign;
     private String timeDeadline;
+    private int campaignStatus;
 
 
     public CampaignDto(CampaignEntity campaignEntity) {
@@ -30,5 +31,6 @@ public class CampaignDto {
         this.workStatus = campaignEntity.getCampaignCategory();
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.categoryCampaign = campaignEntity.getCampaignCategory();
+        this.campaignStatus = campaignEntity.getCampaignStatus();
     }
 }

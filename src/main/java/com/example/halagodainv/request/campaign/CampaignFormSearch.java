@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class CampaignFormSearch extends SearchPageForm {
     private String industryId = "";
     private String communicationId = "";
+    private String campaginName = "";
 }

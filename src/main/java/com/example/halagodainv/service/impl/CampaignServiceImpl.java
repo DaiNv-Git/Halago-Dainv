@@ -58,8 +58,8 @@ public class CampaignServiceImpl implements CampaignService {
             offset = campaignSearch.getPageNo() - 1;
         }
         Pageable pageable = PageRequest.of(offset, campaignSearch.getPageSize());
-        int totalCountByCampaign = campaignRepository.countAllBy(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId());
-        List<CampaignEntity> campaignEntities = campaignRepository.getByCampaigns(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId(), pageable);
+        int totalCountByCampaign = campaignRepository.countAllBy(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId(),campaignSearch.getCampaginName());
+        List<CampaignEntity> campaignEntities = campaignRepository.getByCampaigns(campaignSearch.getIndustryId(), campaignSearch.getCommunicationId(),campaignSearch.getCampaginName(), pageable);
         List<CampaignDto> campaignDtos = new ArrayList<>();
         campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity)));
         return new PageResponse<>(new PageImpl<>(campaignDtos, pageable, totalCountByCampaign));
