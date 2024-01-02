@@ -34,6 +34,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
     private final ContactCustomerRepository contactCustomerRepository;
     private final FreeConsultationRepository freeConsultationRepository;
     private final JavaMailSender javaMailSender;
+
     @Override
     public PageResponse<FreeConsultationEntity> getListCustomers(int pageNo, int pageSize) {
         int offset = 0;
@@ -53,7 +54,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
 
     public Object add(ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
-        if (contactCustomerRepository.findByPhoneOrEmail(customerRequest.getPhone(),customerRequest.getEmail()).isPresent()) {
+        if (contactCustomerRepository.findByPhoneOrEmail(customerRequest.getPhone(), customerRequest.getEmail()).isPresent()) {
             return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED.value(), "Số điện thoại hoặc email đã được đăng ký", null);
         }
         contactCustomerEntity.setCreated(new Date());
@@ -90,6 +91,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setLiveStream(request.getIsLiveStream());
         freeConsultationEntity.setReview(request.getIsReview());
         freeConsultationEntity.setOther(request.getIsOther());
+        freeConsultationEntity.setCreated(new Date());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);

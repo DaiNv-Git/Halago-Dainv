@@ -53,8 +53,6 @@ public class NewsServiceImpl implements NewsService {
     @Autowired
     FileImageUtil fileImageUtil;
 
-    private static String NEW_UPLOAD = "news";
-
     @Override
     public Object getNews(NewsFormSearch newsSearch) {
         try {
