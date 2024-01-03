@@ -2,6 +2,7 @@ package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.ImageProductEntity;
 import com.example.halagodainv.model.campaign.CampaignEntity;
+import com.example.halagodainv.service.impl.InfluencerServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,8 @@ public class CampaignDetailDto {
     private String img;
     private String brandName;
     private String campaignName;
-    private String campaignCategory;
+    private List<Integer> campaignCategory = new ArrayList<>();
+    private List<Integer> campaignCommunication = new ArrayList<>();
     private int workStatus;
     private String conditionApply;
     private String method;
@@ -41,7 +43,8 @@ public class CampaignDetailDto {
         this.other = campaignEntity.getOther();
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.imageProductAddRequests = imageProductAddRequests;
-        this.campaignCategory = campaignEntity.getCampaignCategory();
+        this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
+        this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
         this.brandName = campaignEntity.getBrandName();
     }
 }
