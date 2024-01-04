@@ -1,6 +1,5 @@
 package com.example.halagodainv.model;
 
-import com.example.halagodainv.model.campaign.CampaignEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,4 @@ public class ImageProductEntity {
     private long id;
     @Column(name = "image_product")
     private String imageProduct;
-    @ManyToOne
-    private CampaignEntity campaignEntity;
 }

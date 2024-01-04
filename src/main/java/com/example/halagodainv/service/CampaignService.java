@@ -9,7 +9,9 @@ import java.text.ParseException;
 public interface CampaignService {
     Object getCampaigns(CampaignFormSearch campaignSearch);
 
-    Object getDetail(int campaignId);
+    Object getDetail(int campaignId, String language);
+
+    Object getDetailFull(int campaignId);
 
     Object add(CampaignAddRequest campaignAddRequest) throws ParseException;
 
@@ -27,7 +29,7 @@ public interface CampaignService {
 
     Object getCampaignCategories();
 
-    Object getRelateToCampaigns(String industryId, int camId, int workStatus);
+    Object getRelateToCampaigns(String industryId, int camId, int workStatus, String language);
 
 
 }

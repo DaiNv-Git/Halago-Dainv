@@ -12,4 +12,5 @@ public class CampaignFormSearch extends SearchPageForm {
     private String industryId = "";
     private String communicationId = "";
     private String campaginName = "";
+    private String language = "vn";
 }

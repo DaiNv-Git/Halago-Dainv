@@ -22,11 +22,15 @@ public class CampaignDto {
     private List<Integer> campaignCommunication = new ArrayList<>();
 
 
-    public CampaignDto(CampaignEntity campaignEntity) {
+    public CampaignDto(CampaignEntity campaignEntity, String language) {
         this.id = campaignEntity.getId();
         this.img = campaignEntity.getImg();
-        this.campaignName = campaignEntity.getCampaignName();
-        this.workStatus = campaignEntity.getCampaignStatus();
+        if (language.equals("vn")) {
+            this.campaignName = campaignEntity.getCampaignName();
+        } else if (language.equals("en")) {
+            this.campaignName = campaignEntity.getCampaignNameEN();
+        }
+        this.workStatus = campaignEntity.getWorkStatus();
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
         this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());

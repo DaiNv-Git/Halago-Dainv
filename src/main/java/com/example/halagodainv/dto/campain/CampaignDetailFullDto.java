@@ -9,48 +9,50 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CampaignDetailDto {
+@Data
+public class CampaignDetailFullDto {
     private int id;
     private String img;
     private String brandName;
     private String campaignName;
+    private String campaignNameEN;
     private List<Integer> campaignCategory = new ArrayList<>();
     private List<Integer> campaignCommunication = new ArrayList<>();
     private int workStatus;
     private String conditionApply;
+    private String conditionApplyEN;
     private String method;
+    private String methodEN;
     private String hashtag;
     private String outstandingProduct;
+    private String outstandingProductEN;
     private String content;
+    private String contentEN;
     private String other;
+    private String otherEN;
     private String timeDeadline;
     private String thumbnail1;
     private String thumbnail2;
     private String thumbnail3;
 
-    public CampaignDetailDto(CampaignEntity campaignEntity,String language) {
+    public CampaignDetailFullDto(CampaignEntity campaignEntity) {
         this.id = campaignEntity.getId();
         this.img = campaignEntity.getImg();
         this.workStatus = campaignEntity.getWorkStatus();
-        if (language.equals("vn")){
-            this.campaignName = campaignEntity.getCampaignName();
-            this.conditionApply = campaignEntity.getConditionApply();
-            this.method = campaignEntity.getMethod();
-            this.outstandingProduct = campaignEntity.getOutstandingProduct();
-            this.content = campaignEntity.getContent();
-            this.other = campaignEntity.getOther();
-        }else if (language.equals("en")){
-            this.campaignName = campaignEntity.getCampaignNameEN();
-            this.conditionApply = campaignEntity.getConditionApplyEN();
-            this.method = campaignEntity.getMethodEN();
-            this.outstandingProduct = campaignEntity.getOutstandingProductEN();
-            this.content = campaignEntity.getContentEN();
-            this.other = campaignEntity.getOtherEN();
-        }
-
+        this.campaignName = campaignEntity.getCampaignName();
+        this.conditionApply = campaignEntity.getConditionApply();
+        this.method = campaignEntity.getMethod();
+        this.outstandingProduct = campaignEntity.getOutstandingProduct();
+        this.content = campaignEntity.getContent();
+        this.other = campaignEntity.getOther();
+        this.campaignNameEN = campaignEntity.getCampaignNameEN();
+        this.conditionApplyEN = campaignEntity.getConditionApplyEN();
+        this.methodEN = campaignEntity.getMethodEN();
+        this.outstandingProductEN = campaignEntity.getOutstandingProductEN();
+        this.contentEN = campaignEntity.getContentEN();
+        this.otherEN = campaignEntity.getOtherEN();
         this.hashtag = campaignEntity.getHashtag();
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());

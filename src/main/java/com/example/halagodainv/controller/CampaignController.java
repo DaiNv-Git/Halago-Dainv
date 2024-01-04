@@ -27,13 +27,22 @@ public class CampaignController {
     }
 
     @PostMapping("/detail")
-    public ResponseEntity<Object> getDetail(@RequestParam("campaignId") int campaignId) {
-        return ResponseEntity.ok(campaignService.getDetail(campaignId));
+    public ResponseEntity<Object> getDetail(@RequestParam("campaignId") int campaignId,
+                                            @RequestParam(value = "language", required = false, defaultValue = "vn") String language) {
+        return ResponseEntity.ok(campaignService.getDetail(campaignId, language));
+    }
+
+    @PostMapping("/detail_full")
+    public ResponseEntity<Object> getDetailFull(@RequestParam("campaignId") int campaignId) {
+        return ResponseEntity.ok(campaignService.getDetailFull(campaignId));
     }
 
     @PostMapping("/relate_to_campaign")
-    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") String industryId,@RequestParam("campaignId") int campaignId,@RequestParam("workStatus") int workStatus) {
-        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryId,campaignId,workStatus));
+    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") String industryId,
+                                                    @RequestParam("campaignId") int campaignId,
+                                                    @RequestParam("workStatus") int workStatus,
+                                                    @RequestParam(value = "language", required = false, defaultValue = "vn") String language) {
+        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryId, campaignId, workStatus, language));
     }
 
     @PostMapping("/add")

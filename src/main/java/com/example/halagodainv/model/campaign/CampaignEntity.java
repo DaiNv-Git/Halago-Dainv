@@ -1,15 +1,11 @@
 package com.example.halagodainv.model.campaign;
 
 
-import com.example.halagodainv.model.ImageProductEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "campaign")
@@ -34,7 +30,7 @@ public class CampaignEntity implements Serializable {
     @Column(name = "communication")
     private String campaignCommunication;
     @Column(name = "work_status")
-    private int campaignStatus;
+    private int workStatus;
     @Column(name = "campaign_category")
     private String campaignCategory;
     @Column(name = "condition_apply")
@@ -51,6 +47,22 @@ public class CampaignEntity implements Serializable {
     private String other;
     @Column(name = "time_deadline")
     private String timeDeadline;
-    @OneToMany(mappedBy = "campaignEntity")
-    List<ImageProductEntity> productEntityList = new ArrayList<>();
+    @Column(name = "image1")
+    private String image1;
+    @Column(name = "image2")
+    private String image2;
+    @Column(name = "image3")
+    private String image3;
+    @Column(name = "campaign_name_en")
+    private String campaignNameEN;
+    @Column(name = "condition_apply_en")
+    private String conditionApplyEN;
+    @Column(name = "method_en")
+    private String methodEN;
+    @Column(name = "outstanding_product_en")
+    private String outstandingProductEN;
+    @Column(name = "content_en")
+    private String contentEN;
+    @Column(name = "other_en")
+    private String otherEN;
 }
