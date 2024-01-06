@@ -133,6 +133,7 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setOther(campaignAddRequest.getOther());
             campaignEntity.setOtherEN(campaignAddRequest.getOtherEN());
             campaignEntity.setHashtag(campaignAddRequest.getHashtag());
+            campaignEntity.setTimeDeadline(campaignAddRequest.getTimeDeadline());
             campaignEntity.setCreated(new Date());
             campaignEntity = campaignRepository.save(campaignEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDetailFullDto(campaignEntity));
@@ -172,6 +173,7 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setOther(campaignEditRequest.getOther());
             editEntity.setOtherEN(campaignEditRequest.getOtherEN());
             editEntity.setHashtag(campaignEditRequest.getHashtag());
+            editEntity.setTimeDeadline(campaignEditRequest.getTimeDeadline());
             editEntity = campaignRepository.save(editEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDetailFullDto(editEntity));
         } catch (Exception e) {

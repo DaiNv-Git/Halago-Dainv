@@ -30,4 +30,5 @@ public class CampaignEditRequest {
     private String outstandingProductEN;
     private String contentEN;
     private String otherEN;
+    private String timeDeadline;
 }

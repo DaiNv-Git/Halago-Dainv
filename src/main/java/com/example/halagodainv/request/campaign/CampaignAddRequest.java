@@ -29,5 +29,6 @@ public class CampaignAddRequest {
     private String outstandingProductEN;
     private String contentEN;
     private String otherEN;
+    private String timeDeadline;
 
 }

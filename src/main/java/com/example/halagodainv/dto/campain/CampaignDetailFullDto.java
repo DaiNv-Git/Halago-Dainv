@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class CampaignDetailFullDto {
     private int id;
-    private String img;
+    private String image;
     private String brandName;
     private String campaignName;
     private String campaignNameEN;
@@ -39,7 +39,7 @@ public class CampaignDetailFullDto {
 
     public CampaignDetailFullDto(CampaignEntity campaignEntity) {
         this.id = campaignEntity.getId();
-        this.img = campaignEntity.getImg();
+        this.image = campaignEntity.getImg();
         this.workStatus = campaignEntity.getWorkStatus();
         this.campaignName = campaignEntity.getCampaignName();
         this.conditionApply = campaignEntity.getConditionApply();
