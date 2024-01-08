@@ -8,12 +8,9 @@ import com.example.halagodainv.dto.campain.CampaignDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.repository.BrandRepository;
-import com.example.halagodainv.repository.campagin.CampaignRepository;
+import com.example.halagodainv.repository.campagin.*;
 import com.example.halagodainv.repository.ImageProductRepository;
 import com.example.halagodainv.repository.IndustryRepository;
-import com.example.halagodainv.repository.campagin.WorkCategoryRepository;
-import com.example.halagodainv.repository.campagin.WorkCommuniRepository;
-import com.example.halagodainv.repository.campagin.WorkStatusRepository;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
@@ -22,6 +19,7 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +45,8 @@ public class CampaignServiceImpl implements CampaignService {
     private final WorkCommuniRepository workCommuniRepository;
     private final WorkStatusRepository workStatusRepository;
     private final FileImageUtil fileImageUtil;
+
+    private final CampaignRecruitmentLog campaignRecruitmentLog;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -180,6 +180,15 @@ public class CampaignServiceImpl implements CampaignService {
             return new ErrorResponse(Constant.FAILED, "Sửa không thành công", null);
         }
     }
+
+    @Override
+    public String isCheckRecruitment(int idInflu, int idCampaign) {
+        if (campaignRecruitmentLog.findByIdInfluAndIdCampaign(idInflu, idCampaign).isPresent()) {
+            return "Tài khoản đã ứng tuyển chiến dịch này";
+        }
+        return "Ứng tuyển chiến dịch thành công";
+    }
+
 
     public Object deleteByCampaign(int campaignId) {
         Optional<CampaignEntity> optionalCampaignEntity = campaignRepository.findById(campaignId);

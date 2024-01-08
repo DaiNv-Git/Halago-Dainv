@@ -1,5 +1,6 @@
 package com.example.halagodainv.controller;
 
+import com.example.halagodainv.config.userconfig.UserAuthenLogin;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.repository.BankRepository;
 import com.example.halagodainv.repository.CityRepository;
@@ -23,7 +24,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/influencer")
-public class InfluencerController {
+public class InfluencerController extends UserAuthenLogin {
     Logger logger = LoggerFactory.getLogger(InfluencerController.class);
     @Autowired
     InfluencerService influencerService;

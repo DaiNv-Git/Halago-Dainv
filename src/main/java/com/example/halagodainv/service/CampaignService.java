@@ -31,5 +31,7 @@ public interface CampaignService {
 
     Object getRelateToCampaigns(String industryId, int camId, int workStatus, String language);
 
+    String isCheckRecruitment(int idInflu, int idCampaign);
+
 
 }

@@ -24,4 +24,6 @@ public class UserEntity {
     private int status;
     @Column(name = "email")
     private String email;
+    @Column(name = "phone")
+    private String phone;
 }

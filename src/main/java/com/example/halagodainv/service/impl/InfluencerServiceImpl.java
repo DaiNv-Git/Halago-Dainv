@@ -57,7 +57,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
             Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            PageResponse pageResponse;
+            PageResponse<?> pageResponse;
             int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
             int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
             if (StringUtils.isBlank(search.getExpanse()) && StringUtils.isBlank(search.getFollower())) {
@@ -85,7 +85,6 @@ public class InfluencerServiceImpl implements InfluencerService {
         } catch (Exception e) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
         }
-
     }
 
     public Object getInfluSubMenu(InfluencerSearch search) {
@@ -394,7 +393,6 @@ public class InfluencerServiceImpl implements InfluencerService {
             throw new RuntimeException(e.getMessage());
         }
     }
-
     @Override
     public void importExcel(MultipartFile file) throws GeneralException, IOException {
         influencerImportExcel.ImportFileExcel(file);

@@ -1,9 +1,7 @@
 package com.example.halagodainv.controller;
 
-import com.example.halagodainv.config.EmailConfig;
 import com.example.halagodainv.config.filter.JwtToken;
-import com.example.halagodainv.config.userconfig.UserAuthenConfig;
-import com.example.halagodainv.dto.user.UserDto;
+import com.example.halagodainv.config.userconfig.UserAuthenLogin;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.UserEntity;
@@ -15,46 +13,26 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.UserResponse;
 import com.example.halagodainv.service.UserService;
 import com.example.halagodainv.service.auth.UserServiceConfig;
-import com.example.halagodainv.until.DateUtilFormat;
-import com.example.halagodainv.until.FormatTimeSearch;
 import net.bytebuddy.utility.RandomString;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.aspectj.weaver.bcel.Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class UserController {
+public class UserController extends UserAuthenLogin{
     Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserServiceConfig authConfig;
@@ -67,8 +45,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserAuthenConfig authenConfig;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -117,10 +93,10 @@ public class UserController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
             UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
-            UserDto user = userRepository.getUser(userEntity.get().getId());
+            String strRoleName = userRepository.getUserStrRole(userEntity.get().getId());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(user.getUserName(), user.getEmail(), user.getRole(), token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), strRoleName, token, refreshToken)));
         } catch (Exception e) {
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Đăng nhập không thành công", null));
         }
@@ -132,9 +108,9 @@ public class UserController {
             String accessToken = jwtToken.getUserNameFromJWT(refreshToken);
             UserDetails userDetails = authConfig.loadUserByUsername(accessToken);
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
-            UserDto user = userRepository.getUser(userEntity.get().getId());
+            String strRoleName = userRepository.getUserStrRole(userEntity.get().getId());
             String newToken = jwtToken.generateToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(user.getUserName(), user.getEmail(), user.getRole(), newToken, refreshToken)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getUserName(), strRoleName, newToken, refreshToken)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -157,7 +133,7 @@ public class UserController {
     @PostMapping("/change_password")
     public ResponseEntity<BaseResponse<Object>> changePassword(@RequestParam("newPassword") String newPassword, @RequestParam("passwordAgain") String passwordAgain) throws GeneralException {
         try {
-            UserDetails userDetails = authConfig.loadUserByUsername(authenConfig.getUser());
+            UserDetails userDetails = authConfig.loadUserByUsername(getUser());
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             if (userEntity.isPresent()) {
                 if (newPassword.equalsIgnoreCase(passwordAgain)) {

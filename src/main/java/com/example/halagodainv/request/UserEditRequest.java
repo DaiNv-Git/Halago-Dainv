@@ -8,5 +8,6 @@ public class UserEditRequest {
     private String password = "";
     private String email;
     private String userName;
-    private int role;
+    private String phone;
+    private int roleId;
 }

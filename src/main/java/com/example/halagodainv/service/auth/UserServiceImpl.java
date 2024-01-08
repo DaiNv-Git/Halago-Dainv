@@ -50,10 +50,10 @@ public class UserServiceImpl implements UserService {
             Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id");
             List<UserDto> userDtos = userRepository.getAll(userName, pageable);
             if (CollectionUtils.isEmpty(userDtos)) {
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, 0));
+                PageResponse<UserDto> pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, 0));
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
             }
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, userRepository.totalElementAll(userName)));
+            PageResponse<UserDto> pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, userRepository.totalElementAll(userName)));
             return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception exception) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
@@ -71,6 +71,10 @@ public class UserServiceImpl implements UserService {
 
     public Object addUser(UserAddRequest userAddRequest) {
         try {
+            if (userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())){
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
+            }
+
             Optional<UserEntity> userDetails = userRepository.findByEmail(userAddRequest.getEmail());
             if (userDetails.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này đã tồn tại", null);
@@ -78,8 +82,9 @@ public class UserServiceImpl implements UserService {
             UserEntity user = new UserEntity();
             user.setUserName(userAddRequest.getUserName());
             user.setEmail(userAddRequest.getEmail());
+            user.setPhone(userAddRequest.getPhone());
+            user.setRole(userAddRequest.getRoleId());
             user.setPassword(passwordEncoder.encode(userAddRequest.getPassword()));
-            user.setRole(userAddRequest.getRole());
             user.setCreated(new Date());
             user = userRepository.save(user);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm liệu thành công", userRepository.getUser(user.getId()));
@@ -91,7 +96,7 @@ public class UserServiceImpl implements UserService {
     public Object updateUser(UserEditRequest userEditRequest) {
         try {
             Optional<UserEntity> user = userRepository.findById(userEditRequest.getId());
-            if (!user.isPresent()) {
+            if (user.isEmpty()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
             }
             user.get().setEmail(userEditRequest.getEmail());
@@ -99,7 +104,8 @@ public class UserServiceImpl implements UserService {
                 user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
             }
             user.get().setUserName(userEditRequest.getUserName());
-            user.get().setRole(userEditRequest.getRole());
+            user.get().setPhone(userEditRequest.getPhone());
+            user.get().setRole(userEditRequest.getRoleId());
             userRepository.save(user.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa dữ liệu thành công", userRepository.getUser(user.get().getId()));
         } catch (Exception exception) {

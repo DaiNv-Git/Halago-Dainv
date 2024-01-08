@@ -1,5 +1,6 @@
 package com.example.halagodainv.controller;
 
+import com.example.halagodainv.config.userconfig.UserAuthenLogin;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
@@ -16,7 +17,7 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/campaign")
-public class CampaignController {
+public class CampaignController extends UserAuthenLogin {
     Logger logger = LoggerFactory.getLogger(CampaignController.class);
     @Autowired
     private CampaignService campaignService;
@@ -68,6 +69,14 @@ public class CampaignController {
     @GetMapping("/industry")
     public ResponseEntity<Object> getIndustry() {
         return ResponseEntity.ok(campaignService.getByIndustry());
+    }
+
+    @GetMapping("/campaign-recruitment")
+    public ResponseEntity<String> campaignRecruitment(@RequestParam("idCampaign") int idCampagin) {
+        if (getUserLogin().isPresent() && getUserLogin().get().getRole() == 2) {
+            return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
+        }
+        return ResponseEntity.ok("Đây không phải là tài khoản influencer");
     }
 
     @GetMapping("/work-status")
