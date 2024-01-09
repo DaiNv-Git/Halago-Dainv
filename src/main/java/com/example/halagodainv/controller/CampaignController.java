@@ -76,7 +76,7 @@ public class CampaignController extends UserAuthenLogin {
         if (getUserLogin().isPresent() && getUserLogin().get().getRole() == 3) {
             return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
         }
-        return ResponseEntity.internalServerError().body("This is account not influencer");
+        return ResponseEntity.internalServerError().body("This is not account influencer");
     }
 
     @GetMapping("/work-status")
