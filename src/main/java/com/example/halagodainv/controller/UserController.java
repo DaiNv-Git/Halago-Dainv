@@ -4,7 +4,9 @@ import com.example.halagodainv.config.filter.JwtToken;
 import com.example.halagodainv.config.userconfig.UserAuthenLogin;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
+import com.example.halagodainv.model.RoleEntity;
 import com.example.halagodainv.model.UserEntity;
+import com.example.halagodainv.repository.RoleRepository;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserAddRequest;
 import com.example.halagodainv.request.UserEditRequest;
@@ -32,12 +34,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class UserController extends UserAuthenLogin{
+public class UserController extends UserAuthenLogin {
     Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserServiceConfig authConfig;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -88,15 +92,15 @@ public class UserController extends UserAuthenLogin{
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> user(@Valid @RequestBody UserLogin userLogin) {
+    public ResponseEntity<?> user(@Valid @RequestBody UserLogin userLogin) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
             UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
-            String strRoleName = userRepository.getUserStrRole(userEntity.get().getId());
+            Optional<RoleEntity> roleEntity = roleRepository.findById(userEntity.get().getRole());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), strRoleName, token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Đăng nhập thành công", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), roleEntity.get().getName(), token, refreshToken)));
         } catch (Exception e) {
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Đăng nhập không thành công", null));
         }
@@ -108,9 +112,9 @@ public class UserController extends UserAuthenLogin{
             String accessToken = jwtToken.getUserNameFromJWT(refreshToken);
             UserDetails userDetails = authConfig.loadUserByUsername(accessToken);
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
-            String strRoleName = userRepository.getUserStrRole(userEntity.get().getId());
+            Optional<RoleEntity> roleEntity = roleRepository.findById(userEntity.get().getRole());
             String newToken = jwtToken.generateToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getUserName(), strRoleName, newToken, refreshToken)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getUserName(), roleEntity.get().getName(), newToken, refreshToken)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

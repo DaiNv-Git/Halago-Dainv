@@ -22,9 +22,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Query("select new com.example.halagodainv.dto.user.UserDto(u.id,u.email,u.userName,r.idRole,u.phone) from UserEntity u left join RoleEntity r " +
             "on r.idRole = u.role where u.id =:userId ")
     UserDto getUser(@Param("userId") int userId);
-    @Query(value = "select r.name from UserEntity u left join RoleEntity r " +
-            "on r.idRole = u.role where u.id =:userId ",nativeQuery = true)
-    String getUserStrRole(@Param("userId") int userId);
 
     @Query("select new com.example.halagodainv.dto.user.UserDto(u.id,u.email,u.userName,r.idRole,u.phone) from UserEntity u left join RoleEntity r " +
             "on r.idRole = u.role where ifnull(u.userName,'') like concat('%',:userName,'%') ")

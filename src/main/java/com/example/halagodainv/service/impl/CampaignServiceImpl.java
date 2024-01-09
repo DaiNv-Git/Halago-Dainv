@@ -184,9 +184,9 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public String isCheckRecruitment(int idInflu, int idCampaign) {
         if (campaignRecruitmentLog.findByIdInfluAndIdCampaign(idInflu, idCampaign).isPresent()) {
-            return "Tài khoản đã ứng tuyển chiến dịch này";
+            return "Account has recruitment for this campaign!";
         }
-        return "Ứng tuyển chiến dịch thành công";
+        return "Recruitment campaign is exits!";
     }
 
 
