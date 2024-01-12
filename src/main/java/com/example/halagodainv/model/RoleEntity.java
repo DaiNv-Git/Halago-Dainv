@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name = "role")
+@Table(name = "role_user")
 public class RoleEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

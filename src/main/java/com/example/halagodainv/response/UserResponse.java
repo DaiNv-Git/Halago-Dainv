@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class UserResponse {
     private String userName;
     private String email;
-    private String role;
+    private int roleId;
     private String token;
     private String refreshToken;
 }

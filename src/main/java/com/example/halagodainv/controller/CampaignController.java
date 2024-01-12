@@ -73,7 +73,7 @@ public class CampaignController extends UserAuthenLogin {
 
     @GetMapping("/campaign-recruitment")
     public ResponseEntity<String> campaignRecruitment(@RequestParam("idCampaign") int idCampagin) {
-        if (getUserLogin().isPresent() && getUserLogin().get().getRole() == 3) {
+        if (getUserLogin().isPresent() && getUserLogin().get().getRoleId() == 3) {
             return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
         }
         return ResponseEntity.internalServerError().body("This is not account influencer");

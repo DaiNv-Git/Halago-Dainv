@@ -20,6 +20,7 @@ public class CampaignDetailFullDto {
     private String campaignNameEN;
     private List<Integer> campaignCategory = new ArrayList<>();
     private List<Integer> campaignCommunication = new ArrayList<>();
+    private List<Integer> industryIds = new ArrayList<>();
     private int workStatus;
     private String conditionApply;
     private String conditionApplyEN;
@@ -57,6 +58,7 @@ public class CampaignDetailFullDto {
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
         this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
+        this.industryIds = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getIndustryId());
         this.brandName = campaignEntity.getBrandName();
         this.thumbnail1 = campaignEntity.getImage1();
         this.thumbnail2 = campaignEntity.getImage2();

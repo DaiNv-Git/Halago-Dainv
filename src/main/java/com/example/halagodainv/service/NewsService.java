@@ -24,7 +24,7 @@ public interface NewsService {
 
     PageResponse<?> getViewNews(int pageNo, int pageSize, String language, Long topicId, Long tagId);
 
-    ViewNewsDetailDto getViewNewsDetail(int id, String language, Long topicId, Long tagId);
+    ViewNewsDetailDto getViewNewsDetail(int id, String language);
 
     ViewNewsAndHotDetailDto getViewNewsAndHots(String language);
 

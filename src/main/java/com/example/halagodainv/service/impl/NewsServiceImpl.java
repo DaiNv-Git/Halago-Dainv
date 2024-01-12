@@ -128,8 +128,8 @@ public class NewsServiceImpl implements NewsService {
         return pageResponse;
     }
 
-    public ViewNewsDetailDto getViewNewsDetail(int id, String language, Long topicId, Long tagId) {
-        ViewNewsMap viewNewsMaps = newsRepository.getDetailView(topicId, (tagId != 0L) ? String.valueOf(tagId) : "", language, id);
+    public ViewNewsDetailDto getViewNewsDetail(int id, String language) {
+        ViewNewsMap viewNewsMaps = newsRepository.getDetailView(language, id);
         if (ObjectUtils.isEmpty(viewNewsMaps)) {
             return null;
         }

@@ -60,11 +60,9 @@ public class NewsController {
 
     @PostMapping("/view-detail")
     public ResponseEntity<?> viewNews(@RequestParam(value = "viewId") int viewId,
-                                      @RequestParam(value = "topicId") Long topicId,
-                                      @RequestParam(value = "tagId",defaultValue = "0") Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsDetail(viewId, language.toUpperCase(), topicId, tagId)));
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "success", newsService.getViewNewsDetail(viewId, language.toUpperCase())));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

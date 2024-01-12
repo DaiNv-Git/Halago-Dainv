@@ -1,5 +1,6 @@
 package com.example.halagodainv.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -15,8 +16,8 @@ public class UserEntity {
     private String userName;
     @Column(name = "password")
     private String password;
-    @Column(name = "role")
-    private int role;
+    @Column(name = "role_id")
+    private int roleId;
     @Column(name = "created")
     @JsonFormat(pattern = "dd-MM-yyyy",timezone = "Asia/Ho_Chi_Minh")
     private Date created;

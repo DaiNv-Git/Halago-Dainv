@@ -3,6 +3,7 @@ package com.example.halagodainv.service.auth;
 import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.UserEntity;
+import com.example.halagodainv.repository.InfluencerEntityRepository;
 import com.example.halagodainv.repository.RoleRepository;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserAddRequest;
@@ -27,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -47,8 +49,9 @@ public class UserServiceImpl implements UserService {
             if (pageNo > 0) {
                 offset = pageNo - 1;
             }
-            Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id");
-            List<UserDto> userDtos = userRepository.getAll(userName, pageable);
+            Pageable pageable = PageRequest.of(offset, pageSize);
+            List<UserDto> userDtos = new ArrayList<>();
+            userRepository.getAll(userName, pageable).forEach(userEntity -> userDtos.add(new UserDto(userEntity)));
             if (CollectionUtils.isEmpty(userDtos)) {
                 PageResponse<UserDto> pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, 0));
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
@@ -63,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     public Object getDetail(int userId) {
         try {
-            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", userRepository.getUser(userId));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", new UserDto(userRepository.getUser(userId)));
         } catch (Exception exception) {
             return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
         }
@@ -71,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
     public Object addUser(UserAddRequest userAddRequest) {
         try {
-            if (userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())){
+            if (userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
             }
 
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService {
             user.setUserName(userAddRequest.getUserName());
             user.setEmail(userAddRequest.getEmail());
             user.setPhone(userAddRequest.getPhone());
-            user.setRole(userAddRequest.getRoleId());
+            user.setRoleId(userAddRequest.getRoleId());
             user.setPassword(passwordEncoder.encode(userAddRequest.getPassword()));
             user.setCreated(new Date());
             user = userRepository.save(user);
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
             }
             user.get().setUserName(userEditRequest.getUserName());
             user.get().setPhone(userEditRequest.getPhone());
-            user.get().setRole(userEditRequest.getRoleId());
+            user.get().setRoleId(userEditRequest.getRoleId());
             userRepository.save(user.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa dữ liệu thành công", userRepository.getUser(user.get().getId()));
         } catch (Exception exception) {
@@ -148,7 +151,7 @@ public class UserServiceImpl implements UserService {
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("This is the password code");
         String content = "<div><h3>New password: </h3>" +
-                        "<span>" + code + "</span></div>";
+                "<span>" + code + "</span></div>";
         mailMessage.setText(content, true);
         javaMailSender.send(message);
     }
