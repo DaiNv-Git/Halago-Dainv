@@ -99,7 +99,7 @@ public class UserController extends UserAuthenLogin {
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken)));
         } catch (Exception e) {
             return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
         }
@@ -118,7 +118,7 @@ public class UserController extends UserAuthenLogin {
                 }
                 String token = jwtToken.generateToken(userDetails);
                 String refreshToken = jwtToken.generateRefreshToken(userDetails);
-                baseResponse = new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken));
+                baseResponse = new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken));
             }
             return ResponseEntity.ok(baseResponse);
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class UserController extends UserAuthenLogin {
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             Optional<RoleEntity> roleEntity = roleRepository.findById(userEntity.get().getRoleId());
             String newToken = jwtToken.generateToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), newToken, refreshToken)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), newToken, refreshToken)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
