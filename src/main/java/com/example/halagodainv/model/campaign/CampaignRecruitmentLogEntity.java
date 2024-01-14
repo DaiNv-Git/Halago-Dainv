@@ -18,4 +18,5 @@ public class CampaignRecruitmentLogEntity {
     private int id;
     private int idInflu;
     private int idCampaign;
+    private Boolean isCheckAccept;
 }

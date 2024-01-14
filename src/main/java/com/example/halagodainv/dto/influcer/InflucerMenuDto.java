@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,6 +15,8 @@ public class InflucerMenuDto {
     private boolean isTikTok;
     private boolean isInstagram;
     private boolean isYouTube;
+    private String industryId;
     private String industry;
     private String phone;
+
 }

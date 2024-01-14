@@ -5,11 +5,11 @@ import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.campain.CampaignDetailDto;
 import com.example.halagodainv.dto.campain.CampaignDetailFullDto;
 import com.example.halagodainv.dto.campain.CampaignDto;
+import com.example.halagodainv.dto.campain.CampaignRecruitment;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.repository.BrandRepository;
 import com.example.halagodainv.repository.campagin.*;
-import com.example.halagodainv.repository.ImageProductRepository;
 import com.example.halagodainv.repository.IndustryRepository;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
@@ -19,7 +19,9 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
+import org.modelmapper.internal.bytebuddy.dynamic.Transformer;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
     private final CampaignRepository campaignRepository;
-    private final ImageProductRepository imageProductRepository;
     private final BrandRepository brandRepository;
     private final IndustryRepository industryRepository;
     private final WorkCategoryRepository workCategoryRepository;
@@ -187,6 +188,29 @@ public class CampaignServiceImpl implements CampaignService {
             return "Account has recruitment for this campaign!";
         }
         return "Recruitment campaign is exits!";
+    }
+
+    @Override
+    public PageResponse<CampaignRecruitment> getRecruitmentList(int campaignId, int pageSize, int pageNo, String language) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("select ");
+        if (language.equals("vn")) {
+            stringBuilder.append(" c.campaign_name as campaignName,");
+        } else if (language.equals("en")) {
+            stringBuilder.append(" c.campaign_name_en as campaignName,");
+        }
+        stringBuilder.append("c.id as campaignId,u.username as userName from campaign c " +
+                "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
+                "inner join users u on u.id = crl.id_influ " +
+                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
+                "where c.id = :campaignId ");
+        int offset = Math.max(0, pageNo - 1);
+        Pageable pageable = PageRequest.of(offset, pageSize);
+        Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
+        nativeQuery.setParameter("campaignId", campaignId);
+        List<CampaignRecruitment> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(CampaignRecruitment.class)).getResultList();
+        ;
+        return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
     }
 
 

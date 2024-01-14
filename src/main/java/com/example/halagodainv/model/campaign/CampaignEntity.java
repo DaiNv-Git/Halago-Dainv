@@ -17,7 +17,7 @@ public class CampaignEntity implements Serializable {
     private int id;
     @Column(name = "campaign_name")
     private String campaignName;
-    @Column(name = "brandName")
+    @Column(name = "brand_name")
     private String brandName;
     @Column(name = "description")
     private String description;
@@ -65,4 +65,9 @@ public class CampaignEntity implements Serializable {
     private String contentEN;
     @Column(name = "other_en")
     private String otherEN;
+    @Transient
+    @Column(name = "username")
+    private String username;
+    @Transient
+    private Boolean isAccept;
 }

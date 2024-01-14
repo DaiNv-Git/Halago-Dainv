@@ -38,7 +38,7 @@ public class CampaignController extends UserAuthenLogin {
         return ResponseEntity.ok(campaignService.getDetailFull(campaignId));
     }
 
-    @PostMapping("/relate_to_campaign")
+    @PostMapping("/relate-to-campaign")
     public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") String industryId,
                                                     @RequestParam("campaignId") int campaignId,
                                                     @RequestParam("workStatus") int workStatus,
@@ -77,6 +77,14 @@ public class CampaignController extends UserAuthenLogin {
             return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
         }
         return ResponseEntity.internalServerError().body("This is not account influencer");
+    }
+
+    @GetMapping("/campaign-recruitment-list")
+    public ResponseEntity<Object> campaignRecruitmentList(@RequestParam("campaignId") int campaignId,
+                                                          @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                                          @RequestParam(value = "language", defaultValue = "vn", required = false) String language) {
+        return ResponseEntity.ok(campaignService.getRecruitmentList(campaignId, pageSize, pageNo, language));
     }
 
     @GetMapping("/work-status")

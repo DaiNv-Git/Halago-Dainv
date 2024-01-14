@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
     Optional<InfluencerEntity> findByEmail(String email);
 
-    @Query(value = "SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone)  " +
+    @Query(value = "SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.industryName,ie.phone)  " +
             "FROM InfluencerEntity ie " +
             "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and " +
@@ -62,7 +62,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                    @Param("ageStart") int ageStart,
                    @Param("ageEnd") int ageEnd);
 
-    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.phone) " +
+    @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.industryName,ie.phone) " +
             "FROM InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId WHERE " +
             "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
             "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
@@ -120,7 +120,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                          @Param("ageEnd") int ageEnd);
 
 
-    @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry) from InfluencerEntity ie " +
+    @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry,ie.industryName) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE " +
             "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +

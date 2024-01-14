@@ -1,10 +1,13 @@
 package com.example.halagodainv.service;
 
+import com.example.halagodainv.dto.campain.CampaignRecruitment;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
+import com.example.halagodainv.response.PageResponse;
 
 import java.text.ParseException;
+import java.util.List;
 
 public interface CampaignService {
     Object getCampaigns(CampaignFormSearch campaignSearch);
@@ -33,5 +36,6 @@ public interface CampaignService {
 
     String isCheckRecruitment(int idInflu, int idCampaign);
 
+    PageResponse<CampaignRecruitment> getRecruitmentList(int campaignId, int pageSize, int pageNo, String language);
 
 }
