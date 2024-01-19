@@ -61,6 +61,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setLiveStream(request.getIsLiveStream());
         freeConsultationEntity.setReview(request.getIsReview());
         freeConsultationEntity.setOther(request.getIsOther());
+        freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(new Date());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -87,6 +88,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setLiveStream(request.getIsLiveStream());
         freeConsultationEntity.setReview(request.getIsReview());
         freeConsultationEntity.setOther(request.getIsOther());
+        freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(new Date());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
