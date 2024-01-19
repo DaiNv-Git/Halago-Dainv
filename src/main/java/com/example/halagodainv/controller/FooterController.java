@@ -1,6 +1,5 @@
 package com.example.halagodainv.controller;
 
-import com.example.halagodainv.request.about.AboutEditRequest;
 import com.example.halagodainv.request.foot.FootEditRequest;
 import com.example.halagodainv.service.FooterService;
 import org.springframework.beans.factory.annotation.Autowired;

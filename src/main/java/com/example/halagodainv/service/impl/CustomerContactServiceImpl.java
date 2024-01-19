@@ -1,11 +1,9 @@
 package com.example.halagodainv.service.impl;
 
 
-import com.example.halagodainv.model.ContactCustomerEntity;
 import com.example.halagodainv.model.viewdisplayentity.FreeConsultationEntity;
 import com.example.halagodainv.repository.ContactCustomerRepository;
 import com.example.halagodainv.repository.FreeConsultationRepository;
-import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
 import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
@@ -31,7 +29,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerContactServiceImpl implements ContactCustomerService {
-    private final ContactCustomerRepository contactCustomerRepository;
     private final FreeConsultationRepository freeConsultationRepository;
     private final JavaMailSender javaMailSender;
 

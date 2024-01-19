@@ -1,7 +1,7 @@
 package com.example.halagodainv.controller.viewdisplay;
 
 import com.example.halagodainv.exception.GeneralException;
-import com.example.halagodainv.request.concatcustomer.ConcatCustomerRequest;
+import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
 import com.example.halagodainv.request.homepage.HomeUpdateRequest;
 import com.example.halagodainv.request.homepage.PartnerRequest;
 import com.example.halagodainv.response.BaseResponse;
@@ -47,7 +47,7 @@ public class HomePageController {
     }
 
     @PostMapping("/add-contact")
-    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<Object> getALL(@RequestBody FreeConsultationRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(contactCustomerService.add(customerRequest));
     }
 
