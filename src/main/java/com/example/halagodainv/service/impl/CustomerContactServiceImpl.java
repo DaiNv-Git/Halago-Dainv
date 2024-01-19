@@ -39,7 +39,7 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
             offset = pageNo - 1;
         }
         Pageable pageable = PageRequest.of(offset, pageSize);
-        List<FreeConsultationEntity> entities = freeConsultationRepository.findAll(PageRequest.of(offset, pageSize, Sort.Direction.DESC, "id")).toList();
+        List<FreeConsultationEntity> entities = freeConsultationRepository.findAll(PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created")).toList();
         int totalCount = (int) freeConsultationRepository.count();
         if (CollectionUtils.isEmpty(entities)) {
             PageResponse<FreeConsultationEntity> response = new PageResponse<>(new PageImpl<>(entities, pageable, 0));
