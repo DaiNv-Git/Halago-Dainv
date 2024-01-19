@@ -52,35 +52,8 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         return response;
     }
 
-    public Object add(ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
-        ContactCustomerEntity contactCustomerEntity = new ContactCustomerEntity();
-        if (contactCustomerRepository.findByPhoneOrEmail(customerRequest.getPhone(), customerRequest.getEmail()).isPresent()) {
-            return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED.value(), "Số điện thoại hoặc email đã được đăng ký", null);
-        }
-        contactCustomerEntity.setCreated(new Date());
-        contactCustomerEntity.setEmail(customerRequest.getEmail());
-        contactCustomerEntity.setPhone(customerRequest.getPhone());
-        contactCustomerEntity.setName(customerRequest.getUserName());
-        contactCustomerEntity.setProduct(customerRequest.getProduct());
-        contactCustomerEntity.setNote(customerRequest.getNote());
-        contactCustomerRepository.save(contactCustomerEntity);
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
-        mailMessage.setSubject("Khách hàng đăng ký");
-        mailMessage.setTo(contactCustomerEntity.getEmail());
-        String content = "<div><h3>" + new Date() + " </h3>" +
-                "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
-        message.setContent(content, "text/html; charset=UTF-8");
-        javaMailSender.send(message);
-        return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", null);
-    }
-
-    public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
+    public Object add(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
         FreeConsultationEntity freeConsultationEntity = new FreeConsultationEntity();
-        if (freeConsultationRepository.findByPhoneOrEmail(request.getPhone(), request.getEmail()).isPresent()) {
-            return new BaseResponse<>(HttpStatus.EXPECTATION_FAILED.value(), "Số điện thoại hoặc email đã được đăng ký", null);
-        }
         freeConsultationEntity.setName(request.getName());
         freeConsultationEntity.setEmail(request.getEmail());
         freeConsultationEntity.setPhone(request.getPhone());
@@ -99,7 +72,33 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         mailMessage.setSubject("Khách hàng đăng ký");
         mailMessage.setTo(freeConsultationEntity.getEmail());
         String content = "<div><h3>" + new Date() + " </h3>" +
-                "<span>" + new String("Khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+        message.setContent(content, "text/html; charset=UTF-8");
+        javaMailSender.send(message);
+        return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
+    }
+
+    public BaseResponse<?> addFreeConsul(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
+        FreeConsultationEntity freeConsultationEntity = new FreeConsultationEntity();
+        freeConsultationEntity.setName(request.getName());
+        freeConsultationEntity.setEmail(request.getEmail());
+        freeConsultationEntity.setPhone(request.getPhone());
+        freeConsultationEntity.setWebsite(request.getWebsite());
+        freeConsultationEntity.setAdvertisementVTC(request.getIsAdvertisementVTC());
+        freeConsultationEntity.setBrandAmbassador(request.getIsBrandAmbassador());
+        freeConsultationEntity.setEvent(request.getIsEvent());
+        freeConsultationEntity.setLiveStream(request.getIsLiveStream());
+        freeConsultationEntity.setReview(request.getIsReview());
+        freeConsultationEntity.setOther(request.getIsOther());
+        freeConsultationEntity.setCreated(new Date());
+        freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+        mailMessage.setSubject("Khách hàng đăng ký");
+        mailMessage.setTo(freeConsultationEntity.getEmail());
+        String content = "<div><h3>" + new Date() + " </h3>" +
+                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
         message.setContent(content, "text/html; charset=UTF-8");
         javaMailSender.send(message);
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);

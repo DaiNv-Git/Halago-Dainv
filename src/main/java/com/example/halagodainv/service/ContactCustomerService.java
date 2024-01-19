@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 public interface ContactCustomerService {
     PageResponse<FreeConsultationEntity> getListCustomers(int pageNo, int pageSize);
 
-    Object add(ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException;
+    Object add(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException;
 
     BaseResponse<?> addFreeConsul(FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException;
 

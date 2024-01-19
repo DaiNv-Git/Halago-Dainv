@@ -30,8 +30,8 @@ public class ContactCustomerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> getALL(@RequestBody ConcatCustomerRequest customerRequest) throws MessagingException, UnsupportedEncodingException {
-        return ResponseEntity.ok(contactCustomerService.add(customerRequest));
+    public ResponseEntity<Object> getALL(@RequestBody FreeConsultationRequest request) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(contactCustomerService.add(request));
     }
 
     @PostMapping("/add-free-consul")
