@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class DateUtilFormat {
@@ -23,5 +25,11 @@ public class DateUtilFormat {
         DateFormat df = new SimpleDateFormat(dateType);
         Date startDate = df.parse(dateTime);
         return startDate;
+    }
+
+    public static Date newDateAsia(){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        return  Date.from(localDateTime.atZone(zoneId).toInstant());
     }
 }

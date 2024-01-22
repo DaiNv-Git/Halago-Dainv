@@ -1,6 +1,5 @@
 package com.example.halagodainv.model.viewdisplayentity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,4 +17,6 @@ public class PartnerEntity {
     private Integer indexLogo;
     @Column(name = "partner_id")
     private Integer partnerId;
+    @Column(name = "name_file")
+    private Integer nameFile;
 }

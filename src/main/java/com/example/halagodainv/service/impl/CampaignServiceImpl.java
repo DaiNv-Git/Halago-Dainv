@@ -17,6 +17,7 @@ import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
+import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.NativeQuery;
@@ -34,6 +35,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -135,7 +138,7 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setOtherEN(campaignAddRequest.getOtherEN());
             campaignEntity.setHashtag(campaignAddRequest.getHashtag());
             campaignEntity.setTimeDeadline(campaignAddRequest.getTimeDeadline());
-            campaignEntity.setCreated(new Date());
+            campaignEntity.setCreated(DateUtilFormat.newDateAsia());
             campaignEntity = campaignRepository.save(campaignEntity);
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDetailFullDto(campaignEntity));
         } catch (

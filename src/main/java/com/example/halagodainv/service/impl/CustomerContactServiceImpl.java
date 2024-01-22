@@ -8,6 +8,7 @@ import com.example.halagodainv.request.concatcustomer.FreeConsultationRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ContactCustomerService;
+import com.example.halagodainv.until.DateUtilFormat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -62,14 +63,14 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setReview(request.getIsReview());
         freeConsultationEntity.setOther(request.getIsOther());
         freeConsultationEntity.setNote(request.getNote());
-        freeConsultationEntity.setCreated(new Date());
+        freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
         mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
         mailMessage.setSubject("Khách hàng đăng ký");
         mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + new Date() + " </h3>" +
+        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
                 "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
         message.setContent(content, "text/html; charset=UTF-8");
         javaMailSender.send(message);
@@ -89,14 +90,14 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setReview(request.getIsReview());
         freeConsultationEntity.setOther(request.getIsOther());
         freeConsultationEntity.setNote(request.getNote());
-        freeConsultationEntity.setCreated(new Date());
+        freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
         mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
         mailMessage.setSubject("Khách hàng đăng ký");
         mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + new Date() + " </h3>" +
+        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
                 "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
         message.setContent(content, "text/html; charset=UTF-8");
         javaMailSender.send(message);

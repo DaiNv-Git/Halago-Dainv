@@ -79,6 +79,7 @@ public class HomePageServiceImpl implements HomePageService {
             PartnerEntity partnerNew = new PartnerEntity();
             partnerNew.setLogo(fileImageUtil.uploadImage(partnerRequest.getLogo()));
             partnerNew.setIndexLogo(partnerRequest.getIndexLogo());
+            partnerNew.setNameFile(partnerRequest.getNameFile());
             partnerNew.setPartnerId(partnerRequests.get(0).getPartnerId());
             partnerEntities.add(partnerNew);
         }
