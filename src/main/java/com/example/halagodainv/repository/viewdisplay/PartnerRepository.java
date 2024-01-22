@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface PartnerRepository extends JpaRepository<PartnerEntity, Long> {
 
-    List<PartnerEntity> findByPartnerIdOrderByIndexLogoAsc(Integer partnerId);
+    List<PartnerEntity> findByPartnerIdOrderByNameFileDesc(Integer partnerId);
 
     @Transactional
     @Modifying

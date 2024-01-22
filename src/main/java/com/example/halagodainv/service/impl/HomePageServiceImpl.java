@@ -66,7 +66,7 @@ public class HomePageServiceImpl implements HomePageService {
 
     public Object getPartner(int partnerID) throws GeneralException {
         try {
-            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.findByPartnerIdOrderByIndexLogoAsc(partnerID));
+            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.findByPartnerIdOrderByNameFileDesc(partnerID));
         } catch (Exception e) {
             throw new GeneralException(e.getLocalizedMessage());
         }
