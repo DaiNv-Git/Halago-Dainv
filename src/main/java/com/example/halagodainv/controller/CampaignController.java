@@ -6,6 +6,7 @@ import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.CampaignService;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/campaign")
@@ -39,11 +41,11 @@ public class CampaignController extends UserAuthenLogin {
     }
 
     @PostMapping("/relate-to-campaign")
-    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") String industryId,
+    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") List<Integer> industryIds,
                                                     @RequestParam("campaignId") int campaignId,
                                                     @RequestParam("workStatus") int workStatus,
                                                     @RequestParam(value = "language", required = false, defaultValue = "vn") String language) {
-        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryId, campaignId, workStatus, language));
+        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryIds, campaignId, workStatus, language));
     }
 
     @PostMapping("/add")

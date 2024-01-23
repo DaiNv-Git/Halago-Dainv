@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -66,15 +67,15 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public Object getRelateToCampaigns(String industryId, int camId, int workStatus,String language) {
+    public Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus,String language) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select * from campaign cam where ");
-        if (campaignRepository.findByIdAndIndustryId(camId, industryId).isPresent()) {
+        String industry = InfluencerServiceImpl.parseListIntegerToString(industryIds);
+        if (!StringUtils.isEmpty(industry) && campaignRepository.findByIdAndIndustryId(camId,industry).isPresent()) {
             stringBuilder.append("( ");
-            String[] industryArs = industryId.split(",");
-            for (int i = 0; i < industryArs.length; i++) {
-                stringBuilder.append("cam.industry_id like '%").append(industryArs[i].trim()).append("%'");
-                if (i < industryArs.length - 1) {
+            for (int i = 0; i < industryIds.size(); i++) {
+                stringBuilder.append("cam.industry_id like '%").append(industryIds.get(i)).append("%'");
+                if (i < industryIds.size() - 1) {
                     stringBuilder.append(" or ");
                 }
             }
@@ -82,7 +83,7 @@ public class CampaignServiceImpl implements CampaignService {
         }
         stringBuilder.append("cam.id <> ").append(camId).append(" and cam.work_status = ").append(workStatus).append(" limit 10");
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString(), CampaignEntity.class);
-        List<CampaignEntity> campaignEntities = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(CampaignEntity.class)).getResultList();
+        List<CampaignEntity> campaignEntities = nativeQuery.getResultList();
         List<CampaignDto> campaignDtos = new ArrayList<>();
         campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity,language)));
         return campaignDtos;

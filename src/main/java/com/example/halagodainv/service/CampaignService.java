@@ -32,7 +32,7 @@ public interface CampaignService {
 
     Object getCampaignCategories();
 
-    Object getRelateToCampaigns(String industryId, int camId, int workStatus, String language);
+    Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus, String language);
 
     String isCheckRecruitment(int idInflu, int idCampaign);
 
