@@ -3,6 +3,7 @@ package com.example.halagodainv.controller;
 import com.example.halagodainv.config.userconfig.UserAuthenLogin;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
+import com.example.halagodainv.request.campaign.CampaignFormRelate;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.CampaignService;
@@ -41,11 +42,8 @@ public class CampaignController extends UserAuthenLogin {
     }
 
     @PostMapping("/relate-to-campaign")
-    public ResponseEntity<Object> RelateToCampaigns(@RequestParam("industryId") List<Integer> industryIds,
-                                                    @RequestParam("campaignId") int campaignId,
-                                                    @RequestParam("workStatus") int workStatus,
-                                                    @RequestParam(value = "language", required = false, defaultValue = "vn") String language) {
-        return ResponseEntity.ok(campaignService.getRelateToCampaigns(industryIds, campaignId, workStatus, language));
+    public ResponseEntity<Object> RelateToCampaigns(@RequestBody CampaignFormRelate campaignFormRelate) {
+        return ResponseEntity.ok(campaignService.getRelateToCampaigns(campaignFormRelate.getIndustryIds(), campaignFormRelate.getCampaignId(), campaignFormRelate.getWorkStatus(), campaignFormRelate.getLanguage()));
     }
 
     @PostMapping("/add")
