@@ -145,8 +145,8 @@ public class NewsServiceImpl implements NewsService {
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
         Pageable pageableViewNews = PageRequest.of(0, 1, Sort.Direction.DESC, "created");
         Pageable pageableIsHot = PageRequest.of(0, 1);
-        List<ViewNewAndHot> viewNewsMaps = newsRepository.getViewhots(0L, "", language, pageableIsHot);
-        List<ViewNewsMap> viewNewHotsMap = newsRepository.getViewNews(0L, "", language);
+        List<ViewNewAndHot> viewHotMaps = newsRepository.getViewhots(0L, "", language, pageableIsHot);
+        List<ViewNewsMap> viewTopicList = newsRepository.getViewNews(0L, "", language);
         List<ViewNewAndHot> viewNews = newsRepository.getViewNew(0L, "", language, pageableViewNews);
         int count1 = 0;
         int count2 = 0;
@@ -161,7 +161,7 @@ public class NewsServiceImpl implements NewsService {
         ViewTopicDto viewTopicDto4 = new ViewTopicDto();
         ViewTopicDto viewTopicDto5 = new ViewTopicDto();
         List<ViewTopicDto> viewNewsTopicDto = new ArrayList<>();
-        for (ViewNewsMap viewMap : viewNewHotsMap) {
+        for (ViewNewsMap viewMap : viewTopicList) {
             if (viewMap.getTopicId() == 1) {
                 count1++;
             } else if (viewMap.getTopicId() == 2) {
@@ -206,7 +206,7 @@ public class NewsServiceImpl implements NewsService {
             viewNewDtos.add(viewNew);
         });
 
-        viewNewsMaps.forEach(viewMap -> {
+        viewHotMaps.forEach(viewMap -> {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
             viewNewsHotDto.setImg(viewMap.getImage());
