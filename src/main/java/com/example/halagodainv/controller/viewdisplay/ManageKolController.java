@@ -5,6 +5,8 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.ManageKolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,8 +24,8 @@ public class ManageKolController {
         return manageKolService.getManageKol();
     }
 
-    @GetMapping("/manage-kol/update")
-    public BaseResponse<ManageKolEntity> update(ManageKolEntity manageKolEntity) {
+    @PostMapping("/manage-kol/update")
+    public BaseResponse<ManageKolEntity> update(@RequestBody ManageKolEntity manageKolEntity) {
         return manageKolService.update(manageKolEntity);
     }
 }

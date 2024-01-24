@@ -29,6 +29,7 @@ public class ManageKolServiceImpl implements ManageKolService {
             manageKol.setImg2(fileImageUtil.uploadImage(manageKolEntity.getImg2()));
             manageKol.setImg3(fileImageUtil.uploadImage(manageKolEntity.getImg3()));
             manageKol.setImg4(fileImageUtil.uploadImage(manageKolEntity.getImg4()));
+            manageKol.setId(1);
             manageKolRepository.save(manageKol);
             return new BaseResponse<>(200, "success", manageKol);
         }

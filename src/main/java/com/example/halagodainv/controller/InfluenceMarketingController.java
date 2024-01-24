@@ -38,7 +38,7 @@ public class InfluenceMarketingController {
             return new ResponseEntity<>("Failed to update InfluenceMarketing", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("//{id}")
+    @GetMapping("/Marketing/{id}")
     public ResponseEntity<?> getInfluenceMarketingDetail(@PathVariable long id) {
         try {
             InfluenceMarketing influenceMarketing = inluenceMarketingRepository.findById(id)
