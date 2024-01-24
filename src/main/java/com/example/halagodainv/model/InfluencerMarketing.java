@@ -5,14 +5,13 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
+@Table(name = "influencer_marketing")
 @Entity
-@Table(name = "influence_marketing")
 public class InfluencerMarketing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "link_youtobe")
+    private long id;
     private String linkYoutobe;
-    @Column(name = "order")
-    private int order;
+    private String order;
+
 }
