@@ -186,7 +186,7 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public String isCheckRecruitment(int idInflu, int idCampaign) {
         if (campaignRecruitmentLog.findByIdInfluAndIdCampaign(idInflu, idCampaign).isPresent()) {
-            return "Account has recruitment for this campaign!";
+            return "Account had recruitment for this campaign!";
         }
         return "Recruitment campaign is exits!";
     }
