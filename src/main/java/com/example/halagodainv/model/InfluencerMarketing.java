@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "influence_marketing")
-public class InfluenceMarketing {
+public class InfluencerMarketing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

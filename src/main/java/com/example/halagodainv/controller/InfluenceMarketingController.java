@@ -1,7 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.exception.ResourceNotFoundException;
-import com.example.halagodainv.model.InfluenceMarketing;
+import com.example.halagodainv.model.InfluencerMarketing;
 import com.example.halagodainv.repository.InluenceMarketingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,24 +14,24 @@ public class InfluenceMarketingController {
     @Autowired
     private InluenceMarketingRepository inluenceMarketingRepository;
     @PostMapping("/create")
-    public ResponseEntity<?> createInfluenceMarketing(@RequestBody InfluenceMarketing influenceMarketing) {
+    public ResponseEntity<?> createInfluenceMarketing(@RequestBody InfluencerMarketing influencerMarketing) {
         try {
-            InfluenceMarketing createdInfluenceMarketing = inluenceMarketingRepository.save(influenceMarketing);
-            return new ResponseEntity<>(createdInfluenceMarketing, HttpStatus.CREATED);
+            InfluencerMarketing createdInfluencerMarketing = inluenceMarketingRepository.save(influencerMarketing);
+            return new ResponseEntity<>(createdInfluencerMarketing, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to create InfluenceMarketing", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateInfluenceMarketing(@PathVariable int id, @RequestBody InfluenceMarketing updatedInfluenceMarketing) {
+    public ResponseEntity<?> updateInfluenceMarketing(@PathVariable int id, @RequestBody InfluencerMarketing updatedInfluencerMarketing) {
         try {
-            InfluenceMarketing existingInfluenceMarketing = inluenceMarketingRepository.findById(id)
+            InfluencerMarketing existingInfluencerMarketing = inluenceMarketingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
-            existingInfluenceMarketing.setLinkYoutobe(updatedInfluenceMarketing.getLinkYoutobe());
-            existingInfluenceMarketing.setOrder(updatedInfluenceMarketing.getOrder());
-            InfluenceMarketing savedInfluenceMarketing = inluenceMarketingRepository.save(existingInfluenceMarketing);
-            return new ResponseEntity<>(savedInfluenceMarketing, HttpStatus.OK);
+            existingInfluencerMarketing.setLinkYoutobe(updatedInfluencerMarketing.getLinkYoutobe());
+            existingInfluencerMarketing.setOrder(updatedInfluencerMarketing.getOrder());
+            InfluencerMarketing savedInfluencerMarketing = inluenceMarketingRepository.save(existingInfluencerMarketing);
+            return new ResponseEntity<>(savedInfluencerMarketing, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -41,9 +41,9 @@ public class InfluenceMarketingController {
     @GetMapping("/Marketing/{id}")
     public ResponseEntity<?> getInfluenceMarketingDetail(@PathVariable int id) {
         try {
-            InfluenceMarketing influenceMarketing = inluenceMarketingRepository.findById(id)
+            InfluencerMarketing influencerMarketing = inluenceMarketingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
-            return new ResponseEntity<>(influenceMarketing, HttpStatus.OK);
+            return new ResponseEntity<>(influencerMarketing, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
