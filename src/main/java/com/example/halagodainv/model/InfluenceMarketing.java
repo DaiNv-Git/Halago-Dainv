@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class InfluenceMarketing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name = "link_youtobe")
     private String linkYoutobe;
     @Column(name = "order")

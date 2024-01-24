@@ -24,7 +24,7 @@ public class InfluenceMarketingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateInfluenceMarketing(@PathVariable long id, @RequestBody InfluenceMarketing updatedInfluenceMarketing) {
+    public ResponseEntity<?> updateInfluenceMarketing(@PathVariable int id, @RequestBody InfluenceMarketing updatedInfluenceMarketing) {
         try {
             InfluenceMarketing existingInfluenceMarketing = inluenceMarketingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
@@ -39,7 +39,7 @@ public class InfluenceMarketingController {
         }
     }
     @GetMapping("/Marketing/{id}")
-    public ResponseEntity<?> getInfluenceMarketingDetail(@PathVariable long id) {
+    public ResponseEntity<?> getInfluenceMarketingDetail(@PathVariable int id) {
         try {
             InfluenceMarketing influenceMarketing = inluenceMarketingRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
