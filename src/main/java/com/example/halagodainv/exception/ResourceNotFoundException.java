@@ -25,4 +25,6 @@ public class ResourceNotFoundException extends RuntimeException {
         this.causeMsg = causeMsg;
         this.detailsMessage = detailsMessage;
     }
+
+
 }
