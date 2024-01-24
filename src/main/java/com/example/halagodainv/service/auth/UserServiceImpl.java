@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     public Object addUser(UserAddRequest userAddRequest) {
         try {
-            if (userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())) {
+            if (!userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
             }
 

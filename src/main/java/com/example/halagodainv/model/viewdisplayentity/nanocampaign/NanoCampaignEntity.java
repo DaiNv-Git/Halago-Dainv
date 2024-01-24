@@ -11,6 +11,6 @@ public class NanoCampaignEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String nanoName;
+    private String nameFile;
     private String img;
 }
