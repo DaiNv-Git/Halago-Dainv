@@ -9,7 +9,6 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.CampaignUserResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
-import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/campaign")

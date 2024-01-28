@@ -211,7 +211,6 @@ public class CampaignServiceImpl implements CampaignService {
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
         nativeQuery.setParameter("campaignId", campaignId);
         List<CampaignRecruitment> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(CampaignRecruitment.class)).getResultList();
-        ;
         return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
     }
 

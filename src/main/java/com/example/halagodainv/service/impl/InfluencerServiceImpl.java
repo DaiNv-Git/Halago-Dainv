@@ -383,11 +383,14 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            influencerExcel.initializeData(facebooks, tiktoks, instagrams, youtubes, "template/Influencer.xls");
+            Boolean isFb = convertBoolean(search.getIsFacebook());
+            Boolean isTT = convertBoolean(search.getIsTikTok());
+            Boolean isIns = convertBoolean(search.getIsInstagram());
+            Boolean isYoutube = convertBoolean(search.getIsYoutube());
+            List<InfluencerExportExcelDto> exportAllData = influencerEntityRepository.getExportExcel(isFb, isYoutube, isIns, isTT,
+                    search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(),
+                    search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            influencerExcel.initializeData(exportAllData, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -431,5 +434,12 @@ public class InfluencerServiceImpl implements InfluencerService {
             return joiner.toString();
         }
         return "";
+    }
+
+    private static Boolean convertBoolean(Boolean value) {
+        if (value == null || Boolean.FALSE.equals(value)) {
+            return null;
+        }
+        return value;
     }
 }

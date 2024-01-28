@@ -23,25 +23,16 @@ import java.util.List;
 public class InfluencerExcel {
 
     private static final int SHEET_ZERO = 0;
-    private static final int SHEET_ONE = 1;
-    private static final int SHEET_TWO = 2;
-    private static final int SHEET_THREE = 3;
     private static final String FONT_NAME = "Calibri";
     private static final Short FONT_SIZE = 220;
     private static final int ROW_COUNT = 1;
     private Workbook workbook;
-    private List<InfluencerExportExcelDto> facebooks;
-    private List<InfluencerExportExcelDto> tiktoks;
-    private List<InfluencerExportExcelDto> instagrams;
-    private List<InfluencerExportExcelDto> youtubes;
+    private List<InfluencerExportExcelDto> exportAll;
     private String sourceFile;
     private final ResourceLoader resourceLoader;
 
-    public void initializeData(List<InfluencerExportExcelDto> facebooks, List<InfluencerExportExcelDto> tiktoks, List<InfluencerExportExcelDto> instagrams, List<InfluencerExportExcelDto> youtubes, String sourceFile) {
-        this.facebooks = facebooks;
-        this.tiktoks = tiktoks;
-        this.instagrams = instagrams;
-        this.youtubes = youtubes;
+    public void initializeData(List<InfluencerExportExcelDto> exportAll, String sourceFile) {
+        this.exportAll = exportAll;
         this.sourceFile = sourceFile;
     }
 
@@ -49,10 +40,7 @@ public class InfluencerExcel {
         Resource resource = resourceLoader.getResource("classpath:" + sourceFile);
         InputStream inp = resource.getInputStream();
         workbook = WorkbookFactory.create(inp);
-        Sheet sheetFacebook = workbook.getSheetAt(SHEET_ZERO);
-        Sheet sheetTiktok = workbook.getSheetAt(SHEET_ONE);
-        Sheet sheetInstagram = workbook.getSheetAt(SHEET_TWO);
-        Sheet sheetYoutube = workbook.getSheetAt(SHEET_THREE);
+        Sheet sheetInfluencers = workbook.getSheetAt(SHEET_ZERO);
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = (XSSFFont) workbook.createFont();
         font.setFontName(FONT_NAME);
@@ -60,13 +48,7 @@ public class InfluencerExcel {
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
         int countFacebook = ROW_COUNT;
-        int countTiktok = ROW_COUNT;
-        int countInstagram = ROW_COUNT;
-        int countYoutube = ROW_COUNT;
-        getData(facebooks, countFacebook, sheetFacebook, style);
-        getData(tiktoks, countTiktok, sheetTiktok, style);
-        getData(instagrams, countInstagram, sheetInstagram, style);
-        getData(youtubes, countYoutube, sheetYoutube, style);
+        getData(exportAll, countFacebook, sheetInfluencers, style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -101,14 +83,20 @@ public class InfluencerExcel {
             int columnCount = 0;
             createCell(row, columnCount++, count - 1, style);
             createCell(row, columnCount++, item.getName(), style);
+            createCell(row, columnCount++, item.getDateOfBirth(), style);
             createCell(row, columnCount++, item.getSex(), style);
-            createCell(row, columnCount++, item.getLink(), style);
-            createCell(row, columnCount++, item.getFollower(), style);
-            createCell(row, columnCount++, item.getExpense(), style);
+            createCell(row, columnCount++, isCheckBol(item.getFaceBook()), style);
+            createCell(row, columnCount++, isCheckBol(item.getInstagram()), style);
+            createCell(row, columnCount++, isCheckBol(item.getTikTok()), style);
+            createCell(row, columnCount++, isCheckBol(item.getYoutube()), style);
             createCell(row, columnCount++, item.getAddress(), style);
             createCell(row, columnCount++, item.getIndustry(), style);
-            createCell(row, columnCount, item.getClassify(), style);
+            createCell(row, columnCount++, item.getClassify(), style);
             createCell(row, columnCount, item.getPhone(), style);
         }
+    }
+
+    private static String isCheckBol(Boolean value) {
+        return value == null || Boolean.FALSE.equals(value) ? "false" : "true";
     }
 }

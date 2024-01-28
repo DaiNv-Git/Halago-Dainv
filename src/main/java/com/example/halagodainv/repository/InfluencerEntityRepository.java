@@ -180,12 +180,13 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("ageEnd") int ageEnd);
 
 
-    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
+    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,ie.yearOld,ie.isFacebook,ie.isInstagram,ie.isTiktok,ie.isYoutube,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex " +
-            "WHERE (:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
-            "(:#{#isYoutube} is null or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
-            "(:#{#isInstagram} is null or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
-            "(:#{#isTiktok} is null or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
+            "WHERE "+
+            "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
+            "(:isYoutube is null or (ie.isYoutube =:isYoutube and id.channel ='YOUTUBE')) and " +
+            "(:isInstagram is null or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +
+            "(:isTiktok is null or (ie.isTiktok =:isTiktok and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "IFNULL(id.expense,'') like concat('%',:#{#expense},'%') and " +
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
