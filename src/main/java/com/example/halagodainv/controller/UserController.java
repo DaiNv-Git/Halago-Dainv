@@ -66,13 +66,13 @@ public class UserController extends UserAuthenLogin {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<Object> addUser(@Valid @RequestBody UserAddRequest userAddRequest) {
-        return ResponseEntity.ok(userService.addUser(userAddRequest));
+    public Object addUser(@Valid @RequestBody UserAddRequest userAddRequest) {
+        return userService.addUser(userAddRequest);
     }
 
     @PostMapping("/insert-influencer")
-    public ResponseEntity<Object> addInfluencer(@Valid @RequestBody UserAddRequest userAddRequest) {
-        return ResponseEntity.ok(userService.addUser(userAddRequest));
+    public Object addInfluencer(@Valid @RequestBody UserAddRequest userAddRequest) {
+        return userService.addUser(userAddRequest);
     }
 
     @PostMapping("/update")

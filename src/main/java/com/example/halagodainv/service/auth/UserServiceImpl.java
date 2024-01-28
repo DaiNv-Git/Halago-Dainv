@@ -80,6 +80,11 @@ public class UserServiceImpl implements UserService {
             if (userDetails.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này đã tồn tại", null);
             }
+
+            Optional<UserEntity> userDetailUserName = userRepository.findByUserName(userAddRequest.getUserName());
+            if (userDetailUserName.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản này đã tồn tại", null);
+            }
             UserEntity user = new UserEntity();
             user.setUserName(userAddRequest.getUserName());
             user.setEmail(userAddRequest.getEmail());
@@ -99,6 +104,10 @@ public class UserServiceImpl implements UserService {
             Optional<UserEntity> user = userRepository.findById(userEditRequest.getId());
             if (user.isEmpty()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
+            }
+            Optional<UserEntity> userDetailUserName = userRepository.findByUserName(userEditRequest.getUserName());
+            if (userDetailUserName.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản này đã tồn tại", null);
             }
             user.get().setEmail(userEditRequest.getEmail());
             if (!Strings.isNullOrEmpty(userEditRequest.getPassword())) {
