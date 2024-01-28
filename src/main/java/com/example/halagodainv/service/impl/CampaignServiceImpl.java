@@ -15,6 +15,7 @@ import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
+import com.example.halagodainv.response.CampaignUserResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import com.example.halagodainv.until.DateUtilFormat;
@@ -213,6 +214,39 @@ public class CampaignServiceImpl implements CampaignService {
         ;
         return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
     }
+
+    @Override
+    public PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId, String userName, String language, int pageSize, int pageNo, Pageable pageable) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("select ");
+        if (language.equals("vn")) {
+            stringBuilder.append(" c.campaign_name as campaignName,");
+        } else if (language.equals("en")) {
+            stringBuilder.append(" c.campaign_name_en as campaignName,");
+        }
+        stringBuilder.append("u.username as userName,u.email as email,u.phone as phoneNumber,crl.id as id  from campaign c " +
+                "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
+                "inner join users u on u.id = crl.id_influ " +
+                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
+                "where c.id = :campaignId ");
+
+        if (userName !=null) {
+            stringBuilder.append("and u.username LIKE :userName ");
+        }
+
+        Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
+        nativeQuery.setParameter("campaignId", campaignId);
+        if (userName !=null) {
+            nativeQuery.setParameter("userName", "%" + userName + "%");
+        }
+
+        List<CampaignUserResponse> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class)
+                .setResultTransformer(Transformers.aliasToBean(CampaignUserResponse.class))
+                .getResultList();
+
+        return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
+    }
+
 
 
     public Object deleteByCampaign(int campaignId) {

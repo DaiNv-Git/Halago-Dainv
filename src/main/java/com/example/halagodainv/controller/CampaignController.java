@@ -6,11 +6,15 @@ import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormRelate;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
+import com.example.halagodainv.response.CampaignUserResponse;
+import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
 import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,5 +104,14 @@ public class CampaignController extends UserAuthenLogin {
     @GetMapping("/work-category")
     public ResponseEntity<Object> getCampaign() {
         return ResponseEntity.ok(campaignService.getCampaignCategories());
+    }
+    @GetMapping("/campaign-user-list")
+    public ResponseEntity<Object> campaignRecruitmentListUser(@RequestParam("campaignId") int campaignId,
+                                                              @RequestParam(value ="userName", required = false) String userName,
+                                                              @RequestParam(value = "language", defaultValue = "vn", required = false) String language,
+                                                          @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return ResponseEntity.ok(campaignService.getRecruitmentUserList(campaignId,userName,language, pageSize, pageNo, pageable));
     }
 }

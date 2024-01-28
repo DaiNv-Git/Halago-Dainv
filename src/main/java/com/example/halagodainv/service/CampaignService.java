@@ -4,7 +4,9 @@ import com.example.halagodainv.dto.campain.CampaignRecruitment;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
+import com.example.halagodainv.response.CampaignUserResponse;
 import com.example.halagodainv.response.PageResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.text.ParseException;
 import java.util.List;
@@ -37,5 +39,6 @@ public interface CampaignService {
     String isCheckRecruitment(int idInflu, int idCampaign);
 
     PageResponse<CampaignRecruitment> getRecruitmentList(int campaignId, int pageSize, int pageNo, String language);
+    PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId,String userName,String language, int pageSize, int pageNo, Pageable pageable);
 
 }
