@@ -29,7 +29,7 @@ public class FileImageUtil {
     private ImageRepository imageRepository;
 
     public String uploadImage(String base64Data) {
-        if (StringUtils.isBlank(base64Data)) {
+        if (StringUtils.isBlank(base64Data) || base64Data.startsWith("data:image")) {
             return "";
         }
         Optional<ImageFileEntity> existingImage = imageRepository.findByFilePath(base64Data);
@@ -86,7 +86,7 @@ public class FileImageUtil {
         deflater.finish();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4 * 1024];
+        byte[] tmp = new byte[2 * 1024];
         while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
             outputStream.write(tmp, 0, size);
@@ -103,7 +103,7 @@ public class FileImageUtil {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4 * 1024];
+        byte[] tmp = new byte[2 * 1024];
         try {
             while (!inflater.finished()) {
                 int count = inflater.inflate(tmp);

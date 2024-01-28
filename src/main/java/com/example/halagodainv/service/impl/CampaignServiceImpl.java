@@ -189,7 +189,7 @@ public class CampaignServiceImpl implements CampaignService {
         if (campaignRecruitmentLog.findByIdInfluAndIdCampaign(idInflu, idCampaign).isPresent()) {
             return "Account had recruitment for this campaign!";
         }
-        return "Recruitment campaign is exits!";
+        return "Recruitment campaign success!";
     }
 
     @Override
@@ -210,7 +210,8 @@ public class CampaignServiceImpl implements CampaignService {
         Pageable pageable = PageRequest.of(offset, pageSize);
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
         nativeQuery.setParameter("campaignId", campaignId);
-        List<CampaignRecruitment> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(CampaignRecruitment.class)).getResultList();
+        List<CampaignRecruitment> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class).
+                setResultTransformer(Transformers.aliasToBean(CampaignRecruitment.class)).getResultList();
         return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
     }
 

@@ -13,11 +13,16 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.HomePageService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.*;
 
 @Service
@@ -28,6 +33,8 @@ public class HomePageServiceImpl implements HomePageService {
     private final HomePageRepository homePageRepository;
     private final PartnerRepository partnerRepository;
     private final FileImageUtil fileImageUtil;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     public Object getHomePage(String language) throws GeneralException {
@@ -66,7 +73,12 @@ public class HomePageServiceImpl implements HomePageService {
 
     public Object getPartner(int partnerID) throws GeneralException {
         try {
-            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerRepository.findByPartnerIdOrderByNameFileDesc(partnerID));
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT * FROM partner WHERE partner_id =:partnerID ORDER BY IFNULL(SUBSTRING_INDEX(name_file, '_', -1),'') DESC ");
+            Query query = entityManager.createNativeQuery(stringBuilder.toString(), PartnerEntity.class);
+            query.setParameter("partnerID", partnerID);
+            List<PartnerEntity> partnerEntities = query.getResultList();
+            return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerEntities);
         } catch (Exception e) {
             throw new GeneralException(e.getLocalizedMessage());
         }

@@ -83,8 +83,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/influencer/add").permitAll()
                 .antMatchers("/brand/add-contact").permitAll()
                 .antMatchers("/nano-campaign").permitAll()
-                .antMatchers("/manage-kol").permitAll().
-                antMatchers("/campaign/campaign-user-list").permitAll()
+                .antMatchers("/manage-kol").permitAll()
+                .antMatchers("/campaign/campaign-user-list").permitAll()
+                .antMatchers("/media").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

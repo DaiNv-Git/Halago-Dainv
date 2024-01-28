@@ -7,5 +7,5 @@ public class PartnerRequest {
     private String logo;
     private Integer indexLogo;
     private Integer partnerId;
-    private Integer nameFile;
+    private String nameFile;
 }
