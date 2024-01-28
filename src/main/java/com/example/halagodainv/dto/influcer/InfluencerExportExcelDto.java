@@ -11,6 +11,7 @@ public class InfluencerExportExcelDto {
     private long id;
     private String name;
     private String sex;
+    private String dateOfBirth;
     private String link;
     private String follower;
     private String expense;

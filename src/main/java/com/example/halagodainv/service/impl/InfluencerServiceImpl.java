@@ -383,11 +383,8 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            List<InfluencerExportExcelDto> facebooks = influencerEntityRepository.getExportExcel(true, null, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> tiktoks = influencerEntityRepository.getExportExcel(null, null, null, true, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> instagrams = influencerEntityRepository.getExportExcel(null, null, true, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            List<InfluencerExportExcelDto> youtubes = influencerEntityRepository.getExportExcel(null, true, null, null, search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
-            influencerExcel.initializeData(facebooks, tiktoks, instagrams, youtubes, "template/Influencer.xls");
+            List<InfluencerExportExcelDto> exportAllData = influencerEntityRepository.getExportExcel( search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            influencerExcel.initializeData(exportAllData, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
