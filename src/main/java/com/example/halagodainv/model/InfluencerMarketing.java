@@ -13,5 +13,4 @@ public class InfluencerMarketing {
     private long id;
     private String linkYoutobe;
     private String order;
-
 }

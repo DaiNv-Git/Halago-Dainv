@@ -223,7 +223,7 @@ public class CampaignServiceImpl implements CampaignService {
         } else if (language.equals("en")) {
             stringBuilder.append(" c.campaign_name_en as campaignName,");
         }
-        stringBuilder.append("u.username as userName,u.email as email,u.phone as phoneNumber,crl.id as id  from campaign c " +
+        stringBuilder.append("u.username as userName,u.id as userId,u.email as email,u.phone as phoneNumber,crl.id as id  from campaign c " +
                 "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
                 "inner join users u on u.id = crl.id_influ " +
                 "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
