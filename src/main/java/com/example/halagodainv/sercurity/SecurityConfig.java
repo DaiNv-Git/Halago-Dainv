@@ -86,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/manage-kol").permitAll()
                 .antMatchers("/campaign/campaign-user-list").permitAll()
                 .antMatchers("/media").permitAll()
+                .antMatchers("/media-update-block-hide").permitAll()
+                .antMatchers("/img-list").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
