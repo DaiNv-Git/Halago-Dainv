@@ -12,9 +12,10 @@ public class InfluencerExportExcelDto {
     private String name;
     private String sex;
     private String dateOfBirth;
-    private String link;
-    private String follower;
-    private String expense;
+    private Boolean faceBook = false;
+    private Boolean instagram = false;
+    private Boolean tikTok = false;
+    private Boolean youtube = false;
     private String address;
     private String industry;
     private String classify;

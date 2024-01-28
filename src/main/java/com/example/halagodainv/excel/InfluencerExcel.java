@@ -85,13 +85,18 @@ public class InfluencerExcel {
             createCell(row, columnCount++, item.getName(), style);
             createCell(row, columnCount++, item.getDateOfBirth(), style);
             createCell(row, columnCount++, item.getSex(), style);
-            createCell(row, columnCount++, item.getLink(), style);
-            createCell(row, columnCount++, item.getFollower(), style);
-            createCell(row, columnCount++, item.getExpense(), style);
+            createCell(row, columnCount++, isCheckBol(item.getFaceBook()), style);
+            createCell(row, columnCount++, isCheckBol(item.getInstagram()), style);
+            createCell(row, columnCount++, isCheckBol(item.getTikTok()), style);
+            createCell(row, columnCount++, isCheckBol(item.getYoutube()), style);
             createCell(row, columnCount++, item.getAddress(), style);
             createCell(row, columnCount++, item.getIndustry(), style);
             createCell(row, columnCount++, item.getClassify(), style);
             createCell(row, columnCount, item.getPhone(), style);
         }
+    }
+
+    private static String isCheckBol(Boolean value) {
+        return value == null || Boolean.FALSE.equals(value) ? "false" : "true";
     }
 }

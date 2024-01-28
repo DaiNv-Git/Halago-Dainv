@@ -180,7 +180,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("ageEnd") int ageEnd);
 
 
-    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,ie.yearOld,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
+    @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,ie.yearOld,ie.isFacebook,ie.isInstagram,ie.isTiktok,ie.isYoutube,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex " +
             "WHERE "+
             "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
