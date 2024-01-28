@@ -183,6 +183,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
     @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,ie.yearOld,id.url,id.follower,id.expense,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex " +
             "WHERE "+
+            "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
+            "(:isYoutube is null or (ie.isYoutube =:isYoutube and id.channel ='YOUTUBE')) and " +
+            "(:isInstagram is null or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +
+            "(:isTiktok is null or (ie.isTiktok =:isTiktok and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "IFNULL(id.expense,'') like concat('%',:#{#expense},'%') and " +
             "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
@@ -193,7 +197,11 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) order by ie.id desc ")
-    List<InfluencerExportExcelDto> getExportExcel(@Param("industry") String industry,
+    List<InfluencerExportExcelDto> getExportExcel(@Param("isFacebook") Boolean isFacebook,
+                                                  @Param("isYoutube") Boolean isYoutube,
+                                                  @Param("isInstagram") Boolean isInstagram,
+                                                  @Param("isTiktok") Boolean isTiktok,
+                                                  @Param("industry") String industry,
                                                   @Param("expense") String expense,
                                                   @Param("follower") String follower,
                                                   @Param("provinceId") int provinceId,

@@ -383,7 +383,13 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public byte[] exportExcel(InfluceRequestExportExcel search) {
         try {
-            List<InfluencerExportExcelDto> exportAllData = influencerEntityRepository.getExportExcel( search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(), search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            Boolean isFb = convertBoolean(search.getIsFacebook());
+            Boolean isTT = convertBoolean(search.getIsTikTok());
+            Boolean isIns = convertBoolean(search.getIsInstagram());
+            Boolean isYoutube = convertBoolean(search.getIsYoutube());
+            List<InfluencerExportExcelDto> exportAllData = influencerEntityRepository.getExportExcel(isFb, isYoutube, isIns, isTT,
+                    search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(),
+                    search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
             influencerExcel.initializeData(exportAllData, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
@@ -428,5 +434,12 @@ public class InfluencerServiceImpl implements InfluencerService {
             return joiner.toString();
         }
         return "";
+    }
+
+    private static Boolean convertBoolean(Boolean value) {
+        if (value == null || Boolean.FALSE.equals(value)) {
+            return null;
+        }
+        return value;
     }
 }
