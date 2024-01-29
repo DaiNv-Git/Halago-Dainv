@@ -29,8 +29,8 @@ public class FileImageUtil {
     private ImageRepository imageRepository;
 
     public String uploadImage(String base64Data) {
-        if (StringUtils.isBlank(base64Data) || !base64Data.startsWith("data:image")) {
-            return "";
+        if (StringUtils.isEmpty(base64Data)) {
+                return "";
         }
         Optional<ImageFileEntity> existingImage = imageRepository.findByFilePath(base64Data);
         if (existingImage.isEmpty()) {
