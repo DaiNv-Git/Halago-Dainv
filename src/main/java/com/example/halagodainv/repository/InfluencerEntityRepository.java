@@ -40,10 +40,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                  @Param("ageEnd") int ageEnd, Pageable pageable);
 
     @Query("SELECT count(ie) FROM InfluencerEntity ie " +
-            "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
-            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and " +
-            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or ie.isInstagram =:#{#isInstagram}) and " +
-            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or ie.isTiktok =:#{#isTiktok}) and " +
+            "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or :#{#isFacebook} = false or ie.isFacebook =:#{#isFacebook}) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or :#{#isYoutube} = false or ie.isYoutube =:#{#isYoutube}) and " +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or :#{#isInstagram} = false or ie.isInstagram =:#{#isInstagram}) and " +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or :#{#isTiktok} = false or ie.isTiktok =:#{#isTiktok}) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
@@ -123,10 +123,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoSubMenu(ie.id,ie.influcerName,ie.phone,id.url,id.follower,id.expense,ie.industry,ie.industryName) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE " +
-            "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
-            "(:isYoutube is null or (ie.isYoutube =:isYoutube and id.channel ='YOUTUBE')) and " +
-            "(:isInstagram is null or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +
-            "(:isTiktok is null or (ie.isTiktok =:isTiktok and id.channel ='TIKTOK')) and " +
+            "(:isFacebook is null or :#{#isFacebook} = false or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
+            "(:isYoutube is null or :#{#isYoutube} = false or (ie.isYoutube =:isYoutube and id.channel ='YOUTUBE')) and " +
+            "(:isInstagram is null or :#{#isInstagram} = false or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +
+            "(:isTiktok is null or :#{#isTiktok} = false or (ie.isTiktok =:isTiktok and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:industry,'%') and " +
             "IFNULL(id.expense,'') like concat('%',:expense,'%') and " +
             "IFNULL(id.follower,'') like concat('%',:follower,'%') and " +
