@@ -17,10 +17,10 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
 
     @Query(value = "SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.industryName,ie.phone)  " +
             "FROM InfluencerEntity ie " +
-            "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or ie.isFacebook =:#{#isFacebook}) and " +
-            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or ie.isYoutube =:#{#isYoutube}) and " +
-            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or ie.isInstagram =:#{#isInstagram}) and " +
-            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or ie.isTiktok =:#{#isTiktok}) and " +
+            "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or :#{#isFacebook} = false or ie.isFacebook =:#{#isFacebook}) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or :#{#isYoutube} = false or ie.isYoutube =:#{#isYoutube}) and " +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or :#{#isInstagram} = false or ie.isInstagram =:#{#isInstagram}) and " +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or :#{#isTiktok} = false or ie.isTiktok =:#{#isTiktok}) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
