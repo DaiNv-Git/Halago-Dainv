@@ -15,6 +15,10 @@ import java.util.Optional;
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
     Optional<InfluencerEntity> findByEmail(String email);
 
+    Optional<InfluencerEntity> findByPhone(String phone);
+
+    Optional<InfluencerEntity> findByInflucerName(String name);
+
     @Query(value = "SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.industryName,ie.phone)  " +
             "FROM InfluencerEntity ie " +
             "WHERE ((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or :#{#isFacebook} = false or ie.isFacebook =:#{#isFacebook}) and " +
@@ -182,7 +186,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
 
     @Query("select new com.example.halagodainv.dto.influcer.InfluencerExportExcelDto(ie.id,ie.influcerName,e.name,ie.yearOld,ie.isFacebook,ie.isInstagram,ie.isTiktok,ie.isYoutube,ie.address,ie.industryName,ie.classifyName,ie.phone) from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId left join SexEntity e on e.id = ie.sex " +
-            "WHERE "+
+            "WHERE " +
             "(:isFacebook is null or (ie.isFacebook =:isFacebook and id.channel ='FACEBOOK')) and " +
             "(:isYoutube is null or (ie.isYoutube =:isYoutube and id.channel ='YOUTUBE')) and " +
             "(:isInstagram is null or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +

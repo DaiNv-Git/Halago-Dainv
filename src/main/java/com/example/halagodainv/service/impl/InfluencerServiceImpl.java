@@ -83,7 +83,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             }
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
+            throw new RuntimeException("Lấy thất bai");
         }
     }
 
@@ -107,7 +107,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
             return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy thất bai", null);
+            throw new RuntimeException("Lấy thất bai");
         }
     }
 
@@ -156,7 +156,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             dtoDetailsSet.add(dtoDetails);
             return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetailsSet);
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Tìm thất bại", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tìm thất bại", null);
         }
     }
 
@@ -166,7 +166,15 @@ public class InfluencerServiceImpl implements InfluencerService {
         try {
             Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
             if (isCheckEmail.isPresent()) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Email đã tồn tại! ", Collections.singletonList(request.getEmail()));
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
+            }
+            Optional<InfluencerEntity> isCheckPhone = influencerEntityRepository.findByPhone(request.getPhone());
+            if (isCheckPhone.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
+            }
+            Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
+            if (isCheckInfluName.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
             }
             InfluencerEntity influencer = new InfluencerEntity();
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
@@ -251,7 +259,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencerDetailRepository.saveAll(influencerDetailEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm thành công", findInfluencerById(influencer.getId()));
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Thêm thất bại", null);
+            throw new RuntimeException("Thêm dữ liệu thất bại !");
         }
     }
 
@@ -262,10 +270,20 @@ public class InfluencerServiceImpl implements InfluencerService {
             Optional<InfluencerEntity> entity = influencerEntityRepository.findById(request.getId());
             if (entity.isPresent()) {
                 entity.get().setEmail("");
+                entity.get().setPhone("");
+                entity.get().setInflucerName("");
                 influencerEntityRepository.save(entity.get());
                 Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
                 if (isCheckEmail.isPresent()) {
-                    return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Email đã tồn tại!", Collections.singletonList(request.getEmail()));
+                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
+                }
+                Optional<InfluencerEntity> isCheckPhone = influencerEntityRepository.findByPhone(request.getPhone());
+                if (isCheckPhone.isPresent()) {
+                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
+                }
+                Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
+                if (isCheckInfluName.isPresent()) {
+                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
                 }
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
@@ -361,9 +379,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
             }
-            return new ErrorResponse(HttpStatus.NO_CONTENT.value(), "Dữ liệu không tồn tại!", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu không tồn tại!", null);
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error server", Collections.singletonList(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa liệu thất bại !", null);
         }
     }
 
@@ -396,6 +414,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
     @Override
     public void importExcel(MultipartFile file) throws GeneralException, IOException {
         influencerImportExcel.ImportFileExcel(file);
