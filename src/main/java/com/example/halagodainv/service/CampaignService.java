@@ -36,7 +36,7 @@ public interface CampaignService {
 
     Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus, String language);
 
-    String isCheckRecruitment(int idInflu, int idCampaign);
+    Object isCheckRecruitment(int idInflu, int idCampaign);
 
     PageResponse<CampaignRecruitment> getRecruitmentList(int campaignId, int pageSize, int pageNo, String language);
     PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId,String userName,String language, int pageSize, int pageNo, Pageable pageable);

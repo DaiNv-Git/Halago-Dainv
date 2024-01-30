@@ -8,6 +8,7 @@ import com.example.halagodainv.dto.campain.CampaignDto;
 import com.example.halagodainv.dto.campain.CampaignRecruitment;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.campaign.CampaignEntity;
+import com.example.halagodainv.model.campaign.CampaignRecruitmentLogEntity;
 import com.example.halagodainv.repository.BrandRepository;
 import com.example.halagodainv.repository.campagin.*;
 import com.example.halagodainv.repository.IndustryRepository;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -68,11 +70,11 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus,String language) {
+    public Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus, String language) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select * from campaign cam where ");
         String industry = InfluencerServiceImpl.parseListIntegerToString(industryIds);
-        if (!StringUtils.isEmpty(industry) && campaignRepository.findByIdAndIndustryId(camId,industry).isPresent()) {
+        if (!StringUtils.isEmpty(industry) && campaignRepository.findByIdAndIndustryId(camId, industry).isPresent()) {
             stringBuilder.append("( ");
             for (int i = 0; i < industryIds.size(); i++) {
                 stringBuilder.append("cam.industry_id like '%").append(industryIds.get(i)).append("%'");
@@ -86,15 +88,15 @@ public class CampaignServiceImpl implements CampaignService {
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString(), CampaignEntity.class);
         List<CampaignEntity> campaignEntities = nativeQuery.getResultList();
         List<CampaignDto> campaignDtos = new ArrayList<>();
-        campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity,language)));
+        campaignEntities.forEach(campaignEntity -> campaignDtos.add(new CampaignDto(campaignEntity, language)));
         return campaignDtos;
     }
 
     @Override
-    public Object getDetail(int campaignId,String language) {
+    public Object getDetail(int campaignId, String language) {
         Optional<CampaignEntity> editEntity = campaignRepository.findById(campaignId);
         if (editEntity.isPresent()) {
-            CampaignDetailDto campaignDetailDto = new CampaignDetailDto(editEntity.get(),language);
+            CampaignDetailDto campaignDetailDto = new CampaignDetailDto(editEntity.get(), language);
             return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu chi tiết thành công", campaignDetailDto);
         }
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu chi tiết thất bại", null);
@@ -142,7 +144,7 @@ public class CampaignServiceImpl implements CampaignService {
             return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDetailFullDto(campaignEntity));
         } catch (
                 Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Thêm mới không thành công", null);
+            return new ErrorResponse<>(Constant.FAILED, "Thêm mới không thành công", null);
         }
     }
 
@@ -152,7 +154,7 @@ public class CampaignServiceImpl implements CampaignService {
         try {
             CampaignEntity editEntity = campaignRepository.findByCamId(campaignEditRequest.getId());
             if (ObjectUtils.isEmpty(editEntity)) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu Không tồn tại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu Không tồn tại", null);
             }
 
             editEntity.setCampaignName(campaignEditRequest.getCampaignName());
@@ -180,16 +182,20 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity = campaignRepository.save(editEntity);
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDetailFullDto(editEntity));
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Sửa không thành công", null);
+            return new ErrorResponse<>(Constant.FAILED, "Sửa không thành công", null);
         }
     }
 
     @Override
-    public String isCheckRecruitment(int idInflu, int idCampaign) {
+    public Object isCheckRecruitment(int idInflu, int idCampaign) {
         if (campaignRecruitmentLog.findByIdInfluAndIdCampaign(idInflu, idCampaign).isPresent()) {
-            return "Account had recruitment for this campaign!";
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tài khoản này đã ứng tuyển chiến dịch này!", null);
         }
-        return "Recruitment campaign success!";
+        CampaignRecruitmentLogEntity campaignRecruitmentLogEntity = new CampaignRecruitmentLogEntity();
+        campaignRecruitmentLogEntity.setIdCampaign(idCampaign);
+        campaignRecruitmentLogEntity.setIdInflu(idInflu);
+        campaignRecruitmentLog.save(campaignRecruitmentLogEntity);
+        return new BaseResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ứng tuyển thành công", null);
     }
 
     @Override
@@ -230,13 +236,13 @@ public class CampaignServiceImpl implements CampaignService {
                 "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
                 "where c.id = :campaignId ");
 
-        if (userName !=null) {
+        if (userName != null) {
             stringBuilder.append("and u.username LIKE :userName ");
         }
 
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
         nativeQuery.setParameter("campaignId", campaignId);
-        if (userName !=null) {
+        if (userName != null) {
             nativeQuery.setParameter("userName", "%" + userName + "%");
         }
 
@@ -248,11 +254,10 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
 
-
     public Object deleteByCampaign(int campaignId) {
         Optional<CampaignEntity> optionalCampaignEntity = campaignRepository.findById(campaignId);
         if (!optionalCampaignEntity.isPresent()) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "campagin is not exit!", null);
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "campagin is not exit!", null);
         }
         campaignRepository.deleteById(campaignId);
         return new BaseResponse<>(HttpStatus.OK.value(), "delete success", null);
