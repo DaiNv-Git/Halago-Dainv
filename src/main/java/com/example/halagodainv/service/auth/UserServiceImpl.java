@@ -12,6 +12,7 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.UserService;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
             PageResponse<UserDto> pageResponse = new PageResponse<>(new PageImpl<>(userDtos, pageable, userRepository.totalElementAll(userName)));
             return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu không thành công", null);
         }
     }
 
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
         try {
             return new BaseResponse<>(HttpStatus.OK.value(), "Lấy dữ liệu thành công", new UserDto(userRepository.getUser(userId)));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lấy dữ liệu thất bại", null);
+            throw new RuntimeException("Lấy dữ liệu thất bại");
         }
     }
 
@@ -76,14 +77,19 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
             }
 
-            Optional<UserEntity> userDetails = userRepository.findByEmail(userAddRequest.getEmail());
-            if (userDetails.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này đã tồn tại", null);
+            Optional<UserEntity> isCheckEmail = userRepository.findByEmail(userAddRequest.getEmail());
+            if (isCheckEmail.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + userAddRequest.getEmail() + "] này đã tồn tại", null);
             }
 
-            Optional<UserEntity> userDetailUserName = userRepository.findByUserName(userAddRequest.getUserName());
-            if (userDetailUserName.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản này đã tồn tại", null);
+            Optional<UserEntity> isCheckPhone = userRepository.findByPhone(userAddRequest.getPhone());
+            if (isCheckPhone.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + userAddRequest.getPhone() + "] này đã tồn tại", null);
+            }
+
+            Optional<UserEntity> isCheckUserName = userRepository.findByUserName(userAddRequest.getUserName());
+            if (isCheckUserName.isPresent()) {
+                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userAddRequest.getUserName() + "] này đã tồn tại", null);
             }
             UserEntity user = new UserEntity();
             user.setUserName(userAddRequest.getUserName());
@@ -93,33 +99,40 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(userAddRequest.getPassword()));
             user.setCreated(new Date());
             user = userRepository.save(user);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm liệu thành công", userRepository.getUser(user.getId()));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Thêm tài khoản thành công", userRepository.getUser(user.getId()));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm liệu không thành công", null);
+            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm tài khoản thất bại ", null);
         }
     }
 
     public Object updateUser(UserEditRequest userEditRequest) {
         try {
             Optional<UserEntity> user = userRepository.findById(userEditRequest.getId());
-            if (user.isEmpty()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email này không tồn tại", null);
+            if (user.isPresent()) {
+                Optional<UserEntity> isCheckEmail = userRepository.findByEmailAndIdIsNot(userEditRequest.getEmail(), user.get().getId());
+                if (isCheckEmail.isPresent()) {
+                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + userEditRequest.getEmail() + "] này đã tồn tại", null);
+                }
+                Optional<UserEntity> isCheckUserName = userRepository.findByUserNameAndIdIsNot(userEditRequest.getUserName(), user.get().getId());
+                if (isCheckUserName.isPresent()) {
+                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userEditRequest.getUserName() + "] này đã tồn tại", null);
+                }
+                Optional<UserEntity> isCheckPhone = userRepository.findByPhoneAndIdIsNot(userEditRequest.getPhone(), user.get().getId());
+                if (isCheckPhone.isPresent()) {
+                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + userEditRequest.getPhone() + "] này đã tồn tại", null);
+                }
+                user.get().setEmail(userEditRequest.getEmail());
+                if (!Strings.isNullOrEmpty(userEditRequest.getPassword())) {
+                    user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
+                }
+                user.get().setUserName(userEditRequest.getUserName());
+                user.get().setPhone(userEditRequest.getPhone());
+                user.get().setRoleId(userEditRequest.getRoleId());
+                userRepository.save(user.get());
             }
-            Optional<UserEntity> userDetailUserName = userRepository.findByUserName(userEditRequest.getUserName());
-            if (userDetailUserName.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản này đã tồn tại", null);
-            }
-            user.get().setEmail(userEditRequest.getEmail());
-            if (!Strings.isNullOrEmpty(userEditRequest.getPassword())) {
-                user.get().setPassword(passwordEncoder.encode(userEditRequest.getPassword()));
-            }
-            user.get().setUserName(userEditRequest.getUserName());
-            user.get().setPhone(userEditRequest.getPhone());
-            user.get().setRoleId(userEditRequest.getRoleId());
-            userRepository.save(user.get());
             return new BaseResponse<>(HttpStatus.OK.value(), "Sửa dữ liệu thành công", userRepository.getUser(user.get().getId()));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa dữ liệu thất bại", null);
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa dữ liệu không thành công", null);
         }
     }
 

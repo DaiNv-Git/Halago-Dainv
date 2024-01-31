@@ -1,6 +1,7 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.userconfig.UserAuthenLogin;
+import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.request.campaign.CampaignAddRequest;
 import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormRelate;
@@ -74,11 +75,11 @@ public class CampaignController extends UserAuthenLogin {
     }
 
     @GetMapping("/campaign-recruitment")
-    public ResponseEntity<String> campaignRecruitment(@RequestParam("idCampaign") int idCampagin) {
+    public ResponseEntity<?> campaignRecruitment(@RequestParam("idCampaign") int idCampagin) {
         if (getUserLogin().isPresent() && getUserLogin().get().getRoleId() == 3) {
             return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
         }
-        return ResponseEntity.internalServerError().body("This is not account influencer");
+        return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Đây không phải là tài khoản influencer!", null));
     }
 
     @GetMapping("/campaign-recruitment-list")

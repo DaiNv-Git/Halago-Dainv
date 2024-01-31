@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<CampaignEntity, Integer> {
+    Optional<CampaignEntity> findByCampaignName(String name);
     @Query(nativeQuery = true, value = "select * from campaign cam where " +
             "cam.industry_id like concat('%',:industryId,'%') and " +
             "cam.communication like concat('%',:communication,'%') and " +
