@@ -15,10 +15,13 @@ public class InfluencerSearch extends SearchPageForm {
     private Boolean isYoutube = null;
     private String industry = "";
     private String provinceId = "";
-    private String follower = "";
-    private String expanse = "";
+    private String startFollower = "";
+    private String endFollower = "";
+    private String startExpanse = "";
+    private String endExpanse = "";
     private String sex = "";
-    private String birhYear = "";
+    private String startYear = "";
+    private String endYear = "";
     private int ageStart = 0;
     private int ageEnd = 100;
 }

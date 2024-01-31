@@ -82,11 +82,6 @@ public class UserServiceImpl implements UserService {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + userAddRequest.getEmail() + "] này đã tồn tại", null);
             }
 
-            Optional<UserEntity> isCheckPhone = userRepository.findByPhone(userAddRequest.getPhone());
-            if (isCheckPhone.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + userAddRequest.getPhone() + "] này đã tồn tại", null);
-            }
-
             Optional<UserEntity> isCheckUserName = userRepository.findByUserName(userAddRequest.getUserName());
             if (isCheckUserName.isPresent()) {
                 return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userAddRequest.getUserName() + "] này đã tồn tại", null);
@@ -116,10 +111,6 @@ public class UserServiceImpl implements UserService {
                 Optional<UserEntity> isCheckUserName = userRepository.findByUserNameAndIdIsNot(userEditRequest.getUserName(), user.get().getId());
                 if (isCheckUserName.isPresent()) {
                     return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userEditRequest.getUserName() + "] này đã tồn tại", null);
-                }
-                Optional<UserEntity> isCheckPhone = userRepository.findByPhoneAndIdIsNot(userEditRequest.getPhone(), user.get().getId());
-                if (isCheckPhone.isPresent()) {
-                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + userEditRequest.getPhone() + "] này đã tồn tại", null);
                 }
                 user.get().setEmail(userEditRequest.getEmail());
                 if (!Strings.isNullOrEmpty(userEditRequest.getPassword())) {

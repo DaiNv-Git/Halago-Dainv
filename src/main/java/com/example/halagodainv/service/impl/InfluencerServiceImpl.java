@@ -52,17 +52,19 @@ public class InfluencerServiceImpl implements InfluencerService {
         try {
             int offset = 0;
             if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
-            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
-            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
-            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
+            Boolean isFB = isCheckBoolean(search.getIsFacebook());
+            Boolean isIns = isCheckBoolean(search.getIsInstagram());
+            Boolean isTT = isCheckBoolean(search.getIsTikTok());
+            Boolean isYT = isCheckBoolean(search.getIsYoutube());
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
             PageResponse<?> pageResponse;
             int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
             int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
-            if (StringUtils.isBlank(search.getExpanse()) && StringUtils.isBlank(search.getFollower())) {
-                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
-                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
+            String startYear= isStartYear(search.getStartYear());
+            String endYear= isEndYear(search.getEndYear());
+            if (isCheck(search.getStartExpanse()) && isCheck(search.getEndExpanse()) && isCheck(search.getStartFollower()) && isCheck(search.getEndFollower())) {
+                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
+                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
                 if (CollectionUtils.isEmpty(influcerMenuDtos)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
                     return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
@@ -70,8 +72,8 @@ public class InfluencerServiceImpl implements InfluencerService {
                 pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
                 return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             } else {
-                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
-                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getExpanse(), search.getFollower(), sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
+                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
+                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
                 Set<InflucerMenuDto> menuDtoSet = new HashSet<>(filterMenu);
                 if (CollectionUtils.isEmpty(filterMenu)) {
                     pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
@@ -87,28 +89,48 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
+
+
     public Object getInfluSubMenu(InfluencerSearch search) {
         try {
             int offset = 0;
             if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-            Boolean isFB = search.getIsFacebook() != null ? search.getIsFacebook() : null;
-            Boolean isIns = search.getIsInstagram() != null ? search.getIsInstagram() : null;
-            Boolean isTT = search.getIsTikTok() != null ? search.getIsTikTok() : null;
-            Boolean isYT = search.getIsYoutube() != null ? search.getIsYoutube() : null;
+            Boolean isFB = isCheckBoolean(search.getIsFacebook());
+            Boolean isIns = isCheckBoolean(search.getIsInstagram());
+            Boolean isTT = isCheckBoolean(search.getIsTikTok());
+            Boolean isYT = isCheckBoolean(search.getIsYoutube());
             Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
             int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
             int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
-            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd());
-            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), search.getExpanse(), search.getFollower(), proviceId, sexId, search.getBirhYear(), search.getAgeStart(), search.getAgeEnd(), pageable);
+            String startYear= isStartYear(search.getStartYear());
+            String endYear= isEndYear(search.getEndYear());
+            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
+            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
             if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
-                PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
-                return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+                PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
+                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
             }
-            PageResponse pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
-            return new BaseResponse(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+            PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
+            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
         } catch (Exception e) {
             throw new RuntimeException("Lấy thất bai");
         }
+    }
+
+    private static Boolean isCheck(String value) {
+        return StringUtils.isEmpty(value);
+    }
+
+    private static String isStartYear(String value) {
+        return StringUtils.isEmpty(value) ? "1900" : value;
+    }
+
+    private static String isEndYear(String value) {
+        return StringUtils.isEmpty(value) ? "9999" : value;
+    }
+
+    private static Boolean isCheckBoolean(Boolean value) {
+        return Boolean.TRUE.equals(value) ? true : null;
     }
 
     @Override
