@@ -13,15 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class InfluenceMarketingController {
     @Autowired
     private InluenceMarketingRepository inluenceMarketingRepository;
-    @PostMapping("/create")
-    public ResponseEntity<?> createInfluenceMarketing(@RequestBody InfluencerMarketing influencerMarketing) {
-        try {
-            InfluencerMarketing createdInfluencerMarketing = inluenceMarketingRepository.save(influencerMarketing);
-            return new ResponseEntity<>(createdInfluencerMarketing, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create InfluenceMarketing", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateInfluenceMarketing(@PathVariable int id, @RequestBody InfluencerMarketing updatedInfluencerMarketing) {
@@ -38,20 +29,18 @@ public class InfluenceMarketingController {
             return new ResponseEntity<>("Failed to update InfluenceMarketing", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/Marketing/{id}")
-    public ResponseEntity<?> getInfluenceMarketingDetail(@PathVariable int id) {
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAll() {
         try {
-            InfluencerMarketing influencerMarketing = inluenceMarketingRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
-            return new ResponseEntity<>(influencerMarketing, HttpStatus.OK);
+            return new ResponseEntity<>(inluenceMarketingRepository.findAll(), HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to retrieve InfluenceMarketing details", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAll() {
+    @GetMapping("/detail")
+    public ResponseEntity<?> detail() {
         try {
             return new ResponseEntity<>(inluenceMarketingRepository.findAll(), HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
