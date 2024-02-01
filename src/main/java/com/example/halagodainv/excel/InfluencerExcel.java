@@ -82,17 +82,22 @@ public class InfluencerExcel {
             Row row = sheet.createRow(count++);
             int columnCount = 0;
             createCell(row, columnCount++, count - 1, style);
+            createCell(row, columnCount++, item.getId(), style);
             createCell(row, columnCount++, item.getName(), style);
             createCell(row, columnCount++, item.getDateOfBirth(), style);
             createCell(row, columnCount++, item.getSex(), style);
-            createCell(row, columnCount++, isCheckBol(item.getFaceBook()), style);
-            createCell(row, columnCount++, isCheckBol(item.getInstagram()), style);
-            createCell(row, columnCount++, isCheckBol(item.getTikTok()), style);
-            createCell(row, columnCount++, isCheckBol(item.getYoutube()), style);
             createCell(row, columnCount++, item.getAddress(), style);
             createCell(row, columnCount++, item.getIndustry(), style);
             createCell(row, columnCount++, item.getClassify(), style);
-            createCell(row, columnCount, item.getPhone(), style);
+            createCell(row, columnCount++, item.getPhone(), style);
+            createCell(row, columnCount++, item.getFollowerFacebook(), style);
+            createCell(row, columnCount++, item.getExpenseFacebook(), style);
+            createCell(row, columnCount++, item.getFollowerInstagram(), style);
+            createCell(row, columnCount++, item.getExpenseInstagram(), style);
+            createCell(row, columnCount++, item.getFollowerTiktok(), style);
+            createCell(row, columnCount++, item.getExpenseTiktok(), style);
+            createCell(row, columnCount++, item.getFollowerYoutube(), style);
+            createCell(row, columnCount, item.getExpenseYoutube(), style);
         }
     }
 

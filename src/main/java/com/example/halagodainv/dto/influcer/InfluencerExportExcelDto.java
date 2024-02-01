@@ -8,14 +8,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InfluencerExportExcelDto {
-    private long id;
+    private Number id;
     private String name;
     private String sex;
     private String dateOfBirth;
-    private Boolean faceBook = false;
-    private Boolean instagram = false;
-    private Boolean tikTok = false;
-    private Boolean youtube = false;
+    private String followerFacebook;
+    private String expenseFacebook;
+    private String followerTiktok;
+    private String expenseTiktok;
+    private String followerInstagram ;
+    private String expenseInstagram ;
+    private String followerYoutube ;
+    private String expenseYoutube ;
     private String address;
     private String industry;
     private String classify;

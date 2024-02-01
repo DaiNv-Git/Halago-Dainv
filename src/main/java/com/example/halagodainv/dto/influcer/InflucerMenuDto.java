@@ -1,15 +1,15 @@
 package com.example.halagodainv.dto.influcer;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class InflucerMenuDto {
-    private long id;
+    private Number id;
     private String name;
     private boolean isFacebook;
     private boolean isTikTok;
@@ -18,5 +18,6 @@ public class InflucerMenuDto {
     private String industryId;
     private String industry;
     private String phone;
+
 
 }

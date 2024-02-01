@@ -22,16 +22,20 @@ import com.example.halagodainv.service.InfluencerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
@@ -46,80 +50,93 @@ public class InfluencerServiceImpl implements InfluencerService {
     private final ClassifyRepository classifyRepository;
     private final InfluencerImportExcel influencerImportExcel;
     private final DownFileImportExcel downFileImportExcel;
+    @PersistenceContext
+    private final EntityManager entityManager;
 
-    @Override
-    public Object getInfluMenu(InfluencerSearch search) {
-        try {
-            int offset = 0;
-            if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-            Boolean isFB = isCheckBoolean(search.getIsFacebook());
-            Boolean isIns = isCheckBoolean(search.getIsInstagram());
-            Boolean isTT = isCheckBoolean(search.getIsTikTok());
-            Boolean isYT = isCheckBoolean(search.getIsYoutube());
-            Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            PageResponse<?> pageResponse;
-            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
-            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
-            String startYear= isStartYear(search.getStartYear());
-            String endYear= isEndYear(search.getEndYear());
-            if (isCheck(search.getStartExpanse()) && isCheck(search.getEndExpanse()) && isCheck(search.getStartFollower()) && isCheck(search.getEndFollower())) {
-                long total = influencerEntityRepository.totalCount(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
-                List<InflucerMenuDto> influcerMenuDtos = influencerEntityRepository.getAll(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
-                if (CollectionUtils.isEmpty(influcerMenuDtos)) {
-                    pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, 0));
-                    return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-                }
-                pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, total));
-                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-            } else {
-                long total = influencerEntityRepository.countFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
-                List<InflucerMenuDto> filterMenu = influencerEntityRepository.getFilterMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
-                Set<InflucerMenuDto> menuDtoSet = new HashSet<>(filterMenu);
-                if (CollectionUtils.isEmpty(filterMenu)) {
-                    pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(menuDtoSet.toArray()), pageable, 0));
-                    return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-                }
-                Set<InflucerMenuDto> sortedMenuDtoSet = new TreeSet<>(Comparator.comparing(InflucerMenuDto::getId).reversed());
-                sortedMenuDtoSet.addAll(menuDtoSet);
-                pageResponse = new PageResponse<>(new PageImpl<>(Arrays.asList(sortedMenuDtoSet.toArray()), pageable, total));
-                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Lấy thất bai");
+    public Object getAll(InfluencerSearch search) {
+        int offset = 0;
+        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+        Pageable pageable = PageRequest.of(offset, search.getPageSize());
+        Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search));
+        List<InflucerMenuDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuDtos) ? 0 : influcerMenuDtos.size()));
+        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+    }
+
+    private static String StrSqlQuery(InfluencerSearch search) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
+                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
+                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
+                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        return stringBuilder.toString();
+    }
+
+    public Object getSubInflu(InfluencerSearch search) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
+                "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
+                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        int offset = 0;
+        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+        Pageable pageable = PageRequest.of(offset, search.getPageSize());
+        Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
+        List<InflucerDtoSubMenu> influcerMenuDtos;
+        if (isCheckBooleanSearch(search.getIsInstagram()) || isCheckBooleanSearch(search.getIsYoutube()) || isCheckBooleanSearch(search.getIsTikTok()) || isCheckBooleanSearch(search.getIsFacebook())) {
+            influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class)).getResultList();
+        } else {
+            influcerMenuDtos = new ArrayList<>();
         }
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuDtos) ? 0 : influcerMenuDtos.size()));
+        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
-
-
-    public Object getInfluSubMenu(InfluencerSearch search) {
-        try {
-            int offset = 0;
-            if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-            Boolean isFB = isCheckBoolean(search.getIsFacebook());
-            Boolean isIns = isCheckBoolean(search.getIsInstagram());
-            Boolean isTT = isCheckBoolean(search.getIsTikTok());
-            Boolean isYT = isCheckBoolean(search.getIsYoutube());
-            Pageable pageable = PageRequest.of(offset, search.getPageSize(), Sort.Direction.DESC, "id");
-            int proviceId = StringUtils.isBlank(search.getProvinceId()) ? 0 : Integer.parseInt(search.getProvinceId());
-            int sexId = StringUtils.isBlank(search.getSex()) ? 0 : Integer.parseInt(search.getSex());
-            String startYear= isStartYear(search.getStartYear());
-            String endYear= isEndYear(search.getEndYear());
-            long total = influencerEntityRepository.countSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd());
-            List<InflucerDtoSubMenu> influcerDtoSubMenus = influencerEntityRepository.getSubMenu(isFB, isYT, isIns, isTT, search.getIndustry(), proviceId, search.getStartExpanse(), search.getEndExpanse(), search.getStartFollower(), search.getEndFollower(), sexId, startYear, endYear, search.getAgeStart(), search.getAgeEnd(), pageable);
-            if (CollectionUtils.isEmpty(influcerDtoSubMenus)) {
-                PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, 0));
-                return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-            }
-            PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerDtoSubMenus, pageable, total));
-            return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-        } catch (Exception e) {
-            throw new RuntimeException("Lấy thất bai");
+    private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
+        if (isCheckBooleanSearch(search.getIsFacebook())) {
+            stringBuilder.append(" and ie.is_facebook = ").append(search.getIsFacebook()).append(" and id.channel ='FACEBOOK'");
         }
+        if (isCheckBooleanSearch(search.getIsInstagram())) {
+            stringBuilder.append(" and ie.is_instagram = ").append(search.getIsInstagram()).append(" and id.channel ='INSTAGRAM'");
+        }
+        if (isCheckBooleanSearch(search.getIsYoutube())) {
+            stringBuilder.append(" and ie.is_youtube = ").append(search.getIsYoutube()).append(" and id.channel ='YOUTUBE'");
+        }
+        if (isCheckBooleanSearch(search.getIsTikTok())) {
+            stringBuilder.append(" and ie.is_tiktok = ").append(search.getIsTikTok()).append(" and id.channel ='TIKTOK'");
+        }
+
+        if (!StringUtils.isEmpty(search.getIndustry())) {
+            stringBuilder.append(" and IFNULL(ie.industry,'') like concat('%',").append(search.getIndustry()).append(",'%') ");
+        }
+        if (!StringUtils.isEmpty(search.getSex())) {
+            stringBuilder.append(" and ie.sex = ").append(search.getSex());
+        }
+        String startYear = isStartYear(search.getStartYear());
+        String endYear = isEndYear(search.getEndYear());
+        stringBuilder.append(" and (IFNULL(ie.year_old,'') between concat('").append(startYear).append("','-00','-01') and concat('").append(endYear).append("','-31','-12'))");
+        if (!StringUtils.isEmpty(search.getStartExpanse()) && !StringUtils.isEmpty(search.getEndExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
+        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append("99999999999999").append(")");
+        } else if (!StringUtils.isEmpty(search.getEndExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(" 0 ").append("and").append(search.getEndExpanse().trim()).append(")");
+        }
+        if (!StringUtils.isEmpty(search.getStartFollower()) && !StringUtils.isEmpty(search.getEndFollower())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
+        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append("99999999999999").append(")");
+        } else if (!StringUtils.isEmpty(search.getEndFollower())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
+        }
+        stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
+        stringBuilder.append(" order by ie.id desc ");
+        return stringBuilder;
     }
 
-    private static Boolean isCheck(String value) {
-        return StringUtils.isEmpty(value);
-    }
 
     private static String isStartYear(String value) {
         return StringUtils.isEmpty(value) ? "1900" : value;
@@ -129,8 +146,9 @@ public class InfluencerServiceImpl implements InfluencerService {
         return StringUtils.isEmpty(value) ? "9999" : value;
     }
 
-    private static Boolean isCheckBoolean(Boolean value) {
-        return Boolean.TRUE.equals(value) ? true : null;
+
+    private static boolean isCheckBooleanSearch(Boolean value) {
+        return Boolean.TRUE.equals(value);
     }
 
     @Override
@@ -421,20 +439,44 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
-    public byte[] exportExcel(InfluceRequestExportExcel search) {
+    public byte[] exportExcel(InfluencerSearch search) {
         try {
-            Boolean isFb = convertBoolean(search.getIsFacebook());
-            Boolean isTT = convertBoolean(search.getIsTikTok());
-            Boolean isIns = convertBoolean(search.getIsInstagram());
-            Boolean isYoutube = convertBoolean(search.getIsYoutube());
-            List<InfluencerExportExcelDto> exportAllData = influencerEntityRepository.getExportExcel(isFb, isYoutube, isIns, isTT,
-                    search.getIndustry(), search.getExpanse(), search.getFollower(), search.getProvinceId(),
-                    search.getSex(), search.getBirhYear(), search.getListIds(), search.getAgeStart(), search.getAgeEnd());
+            List<InfluencerExportExcelDto> exportAllData = getExportExcel(search);
             influencerExcel.initializeData(exportAllData, "template/Influencer.xls");
             return influencerExcel.export();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public List<InfluencerExportExcelDto> getExportExcel(InfluencerSearch search) {
+        Query nativeQuery = entityManager.createNativeQuery(StrQueryExportExcel(search));
+        List<InfluencerExportExcelDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InfluencerExportExcelDto.class)).getResultList();
+        return influcerMenuDtos;
+    }
+
+    private static String StrQueryExportExcel(InfluencerSearch search) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id ,ie.name, " +
+                "(CASE " +
+                "    WHEN ie.sex = 1 THEN 'Nam'\n" +
+                "    WHEN ie.sex = 2 THEN 'Nữ'\n" +
+                "    ELSE 'LGBT'\n" +
+                "  END) as sex ,ie.year_old as dateOfBirth ,\n" +
+                "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='FACEBOOK') as followerFacebook," +
+                "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='FACEBOOK') as expenseFacebook," +
+                "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='TIKTOK') as followerTiktok," +
+                "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='TIKTOK') as expenseTiktok," +
+                "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='INSTAGRAM') as followerInstagram," +
+                "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='INSTAGRAM') as expenseInstagram," +
+                "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='YOUTUBE') as followerYoutube," +
+                "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='YOUTUBE') as expenseYoutube," +
+                "ie.address ,ie.industry_name as industry ,ie.classify_name as classify,ie.phone \n" +
+                "FROM influencer_entity ie \n" +
+                "left join influencer_detail id on ie.id = id.influ_id\n" +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        return stringBuilder.toString();
     }
 
     @Override

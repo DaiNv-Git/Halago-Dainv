@@ -39,12 +39,12 @@ public class InfluencerController extends UserAuthenLogin {
 
     @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
-        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluMenu(search));
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getAll(search));
     }
 
     @PostMapping(value = "/getSubMenuInflu")
     public ResponseEntity<Object> getSubMenu(@RequestBody InfluencerSearch search) {
-        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluSubMenu(search));
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getSubInflu(search));
     }
 
     @PostMapping(value = "/findById")
@@ -88,7 +88,7 @@ public class InfluencerController extends UserAuthenLogin {
     }
 
     @PostMapping("/export-excel")
-    public ResponseEntity<Object> exportExcel(@RequestBody InfluceRequestExportExcel search) {
+    public ResponseEntity<Object> exportExcel(@RequestBody InfluencerSearch search) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.exportExcel(search)));
     }
 
