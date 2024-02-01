@@ -14,6 +14,7 @@ public class UserDto {
     private String email;
     private String userName;
     private int roleId;
+    private String role;
     private String phone;
 
     public UserDto(UserEntity userEntity) {
@@ -21,6 +22,19 @@ public class UserDto {
         this.email = userEntity.getEmail();
         this.userName = StringUtils.isEmpty(userEntity.getUserName()) ? "" : userEntity.getUserName();
         this.roleId = userEntity.getRoleId();
+        this.role = role(userEntity.getRoleId());
         this.phone = StringUtils.isEmpty(userEntity.getPhone()) ? "" : userEntity.getPhone();
+    }
+
+    private static String role(int roleId) {
+        switch (roleId) {
+            case 1:
+                return "Admin";
+            case 2:
+                return "Marketing";
+            case 3:
+                return "Project";
+        }
+        return "";
     }
 }

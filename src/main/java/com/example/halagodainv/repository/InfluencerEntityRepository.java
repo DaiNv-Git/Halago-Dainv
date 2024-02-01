@@ -28,7 +28,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and  " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -39,7 +39,8 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                  @Param("industry") String industry,
                                  @Param("provinceId") int provinceId,
                                  @Param("sex") int sex,
-                                 @Param("birtYear") String birtYear,
+                                 @Param("startYear") String startYear,
+                                 @Param("endYear") String endYear,
                                  @Param("ageStart") int ageStart,
                                  @Param("ageEnd") int ageEnd, Pageable pageable);
 
@@ -51,7 +52,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -62,22 +63,23 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                    @Param("industry") String industry,
                    @Param("provinceId") int provinceId,
                    @Param("sex") int sex,
-                   @Param("birtYear") String birtYear,
+                   @Param("startYear") String startYear,
+                   @Param("endYear") String endYear,
                    @Param("ageStart") int ageStart,
                    @Param("ageEnd") int ageEnd);
 
     @Query("SELECT new com.example.halagodainv.dto.influcer.InflucerMenuDto(ie.id,ie.influcerName,ie.isFacebook,ie.isTiktok,ie.isInstagram,ie.isYoutube,ie.industry,ie.industryName,ie.phone) " +
             "FROM InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId WHERE " +
-            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
-            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
-            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
-            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
+            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or :#{#isFacebook} = false or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or :#{#isYoutube} = false or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or :#{#isInstagram} = false or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false))  or :#{#isTiktok} = false or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
-            "IFNULL(id.expense,'') like concat('%',:#{#expense},'%') and " +
-            "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
+            "IFNULL(id.expense,'') between :#{#startExpanse} and :#{#endExpanse} and " +
+            "IFNULL(id.follower,'') between :#{#startFollower} and :#{#endFollower} and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -87,26 +89,29 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("isTiktok") Boolean isTiktok,
                                         @Param("industry") String industry,
                                         @Param("provinceId") int provinceId,
-                                        @Param("expense") String expense,
-                                        @Param("follower") String follower,
+                                        @Param("startExpanse") String startExpanse,
+                                        @Param("endExpanse") String endExpanse,
+                                        @Param("startFollower") String startFollower,
+                                        @Param("endFollower") String endFollower,
                                         @Param("sex") int sex,
-                                        @Param("birtYear") String birtYear,
+                                        @Param("startYear") String startYear,
+                                        @Param("endYear") String endYear,
                                         @Param("ageStart") int ageStart,
                                         @Param("ageEnd") int ageEnd,
                                         Pageable pageable);
 
     @Query("SELECT count(ie) " +
             "from InfluencerEntity ie left join InfluencerDetailEntity id on ie.id= id.influId where " +
-            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
-            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
-            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
-            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false)) or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
+            "((:#{#isFacebook} is null and (ie.isFacebook = true or ie.isFacebook = false)) or :#{#isFacebook} = false or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "((:#{#isYoutube} is null and (ie.isYoutube = true or ie.isYoutube = false)) or :#{#isYoutube} = false or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
+            "((:#{#isInstagram} is null and (ie.isInstagram = true or ie.isInstagram = false)) or :#{#isInstagram} = false or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
+            "((:#{#isTiktok} is null and (ie.isTiktok = true or ie.isTiktok = false))  or :#{#isTiktok} = false or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
-            "IFNULL(id.expense,'') like concat('%',:#{#expense},'%') and " +
-            "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
+            "IFNULL(id.expense,'') between :#{#startExpanse} and :#{#endExpanse} and " +
+            "IFNULL(id.follower,'') between :#{#startFollower} and :#{#endFollower} and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId})  and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -116,10 +121,13 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                          @Param("isTiktok") Boolean isTiktok,
                          @Param("industry") String industry,
                          @Param("provinceId") int provinceId,
-                         @Param("expense") String expense,
-                         @Param("follower") String follower,
+                         @Param("startExpanse") String startExpanse,
+                         @Param("endExpanse") String endExpanse,
+                         @Param("startFollower") String startFollower,
+                         @Param("endFollower") String endFollower,
                          @Param("sex") int sex,
-                         @Param("birtYear") String birtYear,
+                         @Param("startYear") String startYear,
+                         @Param("endYear") String endYear,
                          @Param("ageStart") int ageStart,
                          @Param("ageEnd") int ageEnd);
 
@@ -132,11 +140,11 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
             "(:isInstagram is null or :#{#isInstagram} = false or (ie.isInstagram =:isInstagram and id.channel ='INSTAGRAM')) and " +
             "(:isTiktok is null or :#{#isTiktok} = false or (ie.isTiktok =:isTiktok and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:industry,'%') and " +
-            "IFNULL(id.expense,'') like concat('%',:expense,'%') and " +
-            "IFNULL(id.follower,'') like concat('%',:follower,'%') and " +
+            "IFNULL(id.expense,'') between :#{#startExpanse} and :#{#endExpanse} and " +
+            "IFNULL(id.follower,'') between :#{#startFollower} and :#{#endFollower} and " +
             "(:provinceId = 0 or ie.provinceId =:provinceId) and " +
             "(:sex = 0 or ie.sex =:sex) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:birtYear,'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -145,11 +153,14 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                                         @Param("isInstagram") Boolean isInstagram,
                                         @Param("isTiktok") Boolean isTiktok,
                                         @Param("industry") String industry,
-                                        @Param("expense") String expense,
-                                        @Param("follower") String follower,
                                         @Param("provinceId") int provinceId,
+                                        @Param("startExpanse") String startExpanse,
+                                        @Param("endExpanse") String endExpanse,
+                                        @Param("startFollower") String startFollower,
+                                        @Param("endFollower") String endFollower,
                                         @Param("sex") int sex,
-                                        @Param("birtYear") String birtYear,
+                                        @Param("startYear") String startYear,
+                                        @Param("endYear") String endYear,
                                         @Param("ageStart") int ageStart,
                                         @Param("ageEnd") int ageEnd,
                                         Pageable pageable);
@@ -157,16 +168,16 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
     @Query("select count(ie)from InfluencerEntity ie " +
             "left join InfluencerDetailEntity id on ie.id= id.influId  " +
             "WHERE " +
-            "(:#{#isFacebook} is null or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
-            "(:#{#isYoutube} is null or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
-            "(:#{#isInstagram} is null or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
-            "(:#{#isTiktok} is null or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
+            "(:#{#isFacebook} is null or :#{#isFacebook} = false or (ie.isFacebook =:#{#isFacebook} and id.channel ='FACEBOOK')) and " +
+            "(:#{#isYoutube} is null or :#{#isYoutube} = false or (ie.isYoutube =:#{#isYoutube} and id.channel ='YOUTUBE')) and " +
+            "(:#{#isInstagram} is null or :#{#isInstagram} = false or (ie.isInstagram =:#{#isInstagram} and id.channel ='INSTAGRAM')) and " +
+            "(:#{#isTiktok} is null or :#{#isTiktok} = false or (ie.isTiktok =:#{#isTiktok} and id.channel ='TIKTOK')) and " +
             "IFNULL(ie.industry,'') like concat('%',:#{#industry},'%') and " +
-            "IFNULL(id.expense,'') like concat('%',:#{#expense},'%') and " +
-            "IFNULL(id.follower,'') like concat('%',:#{#follower},'%') and " +
+            "IFNULL(id.expense,'') between :#{#startExpanse} and :#{#endExpanse} and " +
+            "IFNULL(id.follower,'') between :#{#startFollower} and :#{#endFollower} and " +
             "(:#{#provinceId} = 0 or ie.provinceId =:#{#provinceId}) and " +
             "(:#{#sex} = 0 or ie.sex =:#{#sex}) and " +
-            "IFNULL(ie.yearOld,'') like concat('%',:#{#birtYear},'%') " +
+            "IFNULL(ie.yearOld,'') between concat(:#{#startYear},'-00','-01') and concat(:#{#endYear},'-31','-12') " +
             "and (ie.phone is not null or ie.phone <>'') " +
             "and (ie.influcerName is not null or ie.influcerName <>'') and " +
             "((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.yearOld, 1, 4), 1999)) BETWEEN :ageStart AND :ageEnd ) ")
@@ -175,11 +186,14 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
                       @Param("isInstagram") Boolean isInstagram,
                       @Param("isTiktok") Boolean isTiktok,
                       @Param("industry") String industry,
-                      @Param("expense") String expense,
-                      @Param("follower") String follower,
                       @Param("provinceId") int provinceId,
+                      @Param("startExpanse") String startExpanse,
+                      @Param("endExpanse") String endExpanse,
+                      @Param("startFollower") String startFollower,
+                      @Param("endFollower") String endFollower,
                       @Param("sex") int sex,
-                      @Param("birtYear") String birtYear,
+                      @Param("startYear") String startYear,
+                      @Param("endYear") String endYear,
                       @Param("ageStart") int ageStart,
                       @Param("ageEnd") int ageEnd);
 
