@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InluenceMarketingRepository extends JpaRepository<InfluencerMarketing, Integer> {
+public interface InluenceMarketingRepository extends JpaRepository<InfluencerMarketing, Long> {
 }

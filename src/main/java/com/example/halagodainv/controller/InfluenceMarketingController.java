@@ -8,27 +8,43 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/influence-marketing")
 public class InfluenceMarketingController {
     @Autowired
     private InluenceMarketingRepository inluenceMarketingRepository;
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateInfluenceMarketing(@PathVariable int id, @RequestBody InfluencerMarketing updatedInfluencerMarketing) {
+    @PutMapping("/update")
+    public ResponseEntity<?> updateInfluenceMarketingList(@RequestBody List<InfluencerMarketing> updatedInfluencerMarketingList) {
         try {
-            InfluencerMarketing existingInfluencerMarketing = inluenceMarketingRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + id));
-            existingInfluencerMarketing.setLinkYoutobe(updatedInfluencerMarketing.getLinkYoutobe());
-            existingInfluencerMarketing.setOrder(updatedInfluencerMarketing.getOrder());
-            InfluencerMarketing savedInfluencerMarketing = inluenceMarketingRepository.save(existingInfluencerMarketing);
-            return new ResponseEntity<>(savedInfluencerMarketing, HttpStatus.OK);
+            List<InfluencerMarketing> savedInfluencerMarketingList = new ArrayList<>();
+
+            for (InfluencerMarketing updatedInfluencerMarketing : updatedInfluencerMarketingList) {
+                // Check if ID is present for update, else create a new entry
+                if (updatedInfluencerMarketing.getId() != null) {
+                    InfluencerMarketing existingInfluencerMarketing = inluenceMarketingRepository.findById(updatedInfluencerMarketing.getId())
+                            .orElseThrow(() -> new RuntimeException("InfluenceMarketing not found with id " + updatedInfluencerMarketing.getId()));
+
+                    existingInfluencerMarketing.setLinkYoutobe(updatedInfluencerMarketing.getLinkYoutobe());
+                    existingInfluencerMarketing.setOrders(updatedInfluencerMarketing.getOrders());
+
+                    savedInfluencerMarketingList.add(inluenceMarketingRepository.save(existingInfluencerMarketing));
+                } else {
+                    savedInfluencerMarketingList.add(inluenceMarketingRepository.save(updatedInfluencerMarketing));
+                }
+            }
+
+            return new ResponseEntity<>(savedInfluencerMarketingList, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update InfluenceMarketing", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Failed to update InfluenceMarketing list", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {

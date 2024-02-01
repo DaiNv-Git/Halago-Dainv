@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class InfluencerMarketing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String linkYoutobe;
-    private String order;
+    private Integer orders;
 }

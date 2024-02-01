@@ -22,7 +22,7 @@ public class ManageKolServiceImpl implements ManageKolService {
     }
 
     public BaseResponse<ManageKolEntity> update(ManageKolEntity manageKolEntity) {
-        if (manageKolRepository.findById(1).isPresent()){
+            if (manageKolRepository.findById(1).isPresent()){
             ManageKolEntity manageKol = manageKolRepository.findById(1).get();
             manageKol.setProfessionalManagement(fileImageUtil.uploadImage(manageKolEntity.getProfessionalManagement()));
             manageKol.setImg1(fileImageUtil.uploadImage(manageKolEntity.getImg1()));
