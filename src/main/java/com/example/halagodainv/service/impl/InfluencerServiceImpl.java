@@ -13,7 +13,6 @@ import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.model.InfluencerDetailEntity;
 import com.example.halagodainv.model.InfluencerEntity;
 import com.example.halagodainv.repository.*;
-import com.example.halagodainv.request.excel.InfluceRequestExportExcel;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
@@ -57,13 +56,28 @@ public class InfluencerServiceImpl implements InfluencerService {
         int offset = 0;
         if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
         Pageable pageable = PageRequest.of(offset, search.getPageSize());
-        Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search));
+        Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search, offset));
         List<InflucerMenuDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuDtos) ? 0 : influcerMenuDtos.size()));
+        Query nativeQueryCount = entityManager.createNativeQuery(countInfluQuery(search));
+        List<InflucerMenuDto> countQuery = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
+        ;
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
-    private static String StrSqlQuery(InfluencerSearch search) {
+    private static String StrSqlQuery(InfluencerSearch search, int offset) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
+                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
+                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
+                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
+        return stringBuilder.toString();
+    }
+
+    private static String countInfluQuery(InfluencerSearch search) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
                 "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
@@ -75,23 +89,33 @@ public class InfluencerServiceImpl implements InfluencerService {
     }
 
     public Object getSubInflu(InfluencerSearch search) {
+        int offset = 0;
+        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
                 "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
                 "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
         strSqlQuerySearch(search, stringBuilder);
-        int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
         Pageable pageable = PageRequest.of(offset, search.getPageSize());
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
         List<InflucerDtoSubMenu> influcerMenuDtos;
+        List<InflucerDtoSubMenu> influcerMenuCount = new ArrayList<>();
         if (isCheckBooleanSearch(search.getIsInstagram()) || isCheckBooleanSearch(search.getIsYoutube()) || isCheckBooleanSearch(search.getIsTikTok()) || isCheckBooleanSearch(search.getIsFacebook())) {
             influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class)).getResultList();
+            StringBuilder countSubInflu = new StringBuilder();
+            countSubInflu.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
+                    "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
+                    "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                    "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+            strSqlQuerySearch(search, countSubInflu);
+            Query nativeQueryCount = entityManager.createNativeQuery(stringBuilder.toString());
+            influcerMenuCount = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class)).getResultList();
         } else {
             influcerMenuDtos = new ArrayList<>();
         }
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuDtos) ? 0 : influcerMenuDtos.size()));
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuCount) ? 0 : influcerMenuCount.size()));
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
