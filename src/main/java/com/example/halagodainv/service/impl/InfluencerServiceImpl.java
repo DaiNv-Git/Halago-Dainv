@@ -120,6 +120,7 @@ public class InfluencerServiceImpl implements InfluencerService {
     }
 
     private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
+        stringBuilder.append(" and ie.name like '%").append(search.getName()).append("%'");
         if (isCheckBooleanSearch(search.getIsFacebook())) {
             stringBuilder.append(" and ie.is_facebook = ").append(search.getIsFacebook()).append(" and id.channel ='FACEBOOK'");
         }
@@ -134,7 +135,8 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
 
         if (!StringUtils.isEmpty(search.getIndustry())) {
-            stringBuilder.append(" and IFNULL(ie.industry,'') like concat('%',").append(search.getIndustry()).append(",'%') ");
+//            stringBuilder.append(" and ie.industry like concat('%','").append(search.getIndustry()).append("','%') ");
+            stringBuilder.append(" and FIND_IN_SET('").append(search.getIndustry()).append("',ie.industry) > 0 ");
         }
         if (!StringUtils.isEmpty(search.getSex())) {
             stringBuilder.append(" and ie.sex = ").append(search.getSex());
