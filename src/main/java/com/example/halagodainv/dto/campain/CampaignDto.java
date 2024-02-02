@@ -16,7 +16,7 @@ public class CampaignDto {
     private int id;
     private String img;
     private String campaignName;
-    private int workStatus;
+    private String workStatus;
     private List<Integer> campaignCategory = new ArrayList<>();
     private String timeDeadline;
     private List<Integer> campaignCommunication = new ArrayList<>();
@@ -30,7 +30,7 @@ public class CampaignDto {
         } else if (language.equals("en")) {
             this.campaignName = campaignEntity.getCampaignNameEN();
         }
-        this.workStatus = campaignEntity.getWorkStatus();
+        this.workStatus = campaignEntity.getWorkStatus()==1 ? "Đang triển khai" : "Đã kết thúc";
         this.timeDeadline = campaignEntity.getTimeDeadline();
         this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
         this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
