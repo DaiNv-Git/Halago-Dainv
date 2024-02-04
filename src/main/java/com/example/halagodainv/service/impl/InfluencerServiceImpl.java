@@ -549,10 +549,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         return "";
     }
 
-    private static Boolean convertBoolean(Boolean value) {
-        if (value == null || Boolean.FALSE.equals(value)) {
-            return null;
-        }
-        return value;
+    public boolean isCheckInforInflu(String email) {
+        return influencerEntityRepository.findByEmail(email).isPresent();
     }
 }

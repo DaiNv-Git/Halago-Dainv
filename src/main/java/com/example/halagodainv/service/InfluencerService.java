@@ -27,4 +27,5 @@ public interface InfluencerService {
     void importExcel(MultipartFile file) throws GeneralException, IOException;
 
     byte[] downFileImportExcel();
+    boolean isCheckInforInflu(String email);
 }

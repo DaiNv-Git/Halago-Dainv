@@ -195,7 +195,7 @@ public class CampaignServiceImpl implements CampaignService {
         campaignRecruitmentLogEntity.setIdCampaign(idCampaign);
         campaignRecruitmentLogEntity.setIdInflu(idInflu);
         campaignRecruitmentLog.save(campaignRecruitmentLogEntity);
-        return new BaseResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ứng tuyển thành công", null);
+        return new BaseResponse<>(HttpStatus.OK.value(), "Ứng tuyển thành công", null);
     }
 
     @Override

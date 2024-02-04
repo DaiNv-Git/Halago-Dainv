@@ -106,4 +106,9 @@ public class InfluencerController extends UserAuthenLogin {
     public ResponseEntity<Object> downFileImportExcel() {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.downFileImportExcel()));
     }
+
+    @PostMapping("/isCheckAccount")
+    public ResponseEntity<Object> IsCheckEmailAccount(@RequestParam("email") String email) {
+        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "", influencerService.isCheckInforInflu(email)));
+    }
 }
