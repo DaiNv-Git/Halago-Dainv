@@ -39,7 +39,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
 
     @Query("select new com.example.halagodainv.dto.news.NewDetails(n.idNews,nl.title,n.thumbnail, " +
-            "nl.description,nl.content,c.id,n.status,n.titleSeo,n.linkPapers,nl.language,n.topicId,n.tagId,n.isHot,n.authorName,n.authorAvatar,n.tagName) " +
+            "nl.description,nl.content,c.id,n.titleSeo,n.linkPapers,nl.language,n.topicId,n.tagId,n.isHot,n.authorName,n.authorAvatar,n.tagName) " +
             "from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
             "left join CategoryEntity c on c.id = n.type where n.idNews =:idNews ")

@@ -1,7 +1,6 @@
 package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.common.Language;
-import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.news.NewDtoDetails;
@@ -15,7 +14,6 @@ import com.example.halagodainv.model.TopicEntity;
 import com.example.halagodainv.model.viewdisplayentity.TagEntity;
 import com.example.halagodainv.repository.NewsLanguageRepository;
 import com.example.halagodainv.repository.NewsRepository;
-import com.example.halagodainv.repository.NewsTypeRepository;
 import com.example.halagodainv.repository.viewdisplay.TagRepository;
 import com.example.halagodainv.repository.viewdisplay.TopicRepository;
 import com.example.halagodainv.request.news.NewsAddRequest;
@@ -24,7 +22,7 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FileImageUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,19 +37,13 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
-    @Autowired
-    NewsLanguageRepository newsLanguageRepository;
-    @Autowired
-    NewsTypeRepository newsTypeRepository;
-    @Autowired
-    TopicRepository topicRepository;
-    @Autowired
-    NewsRepository newsRepository;
-    @Autowired
-    TagRepository tagRepository;
-    @Autowired
-    FileImageUtil fileImageUtil;
+    private final NewsLanguageRepository newsLanguageRepository;
+    private final TopicRepository topicRepository;
+    private final NewsRepository newsRepository;
+    private final TagRepository tagRepository;
+    private final FileImageUtil fileImageUtil;
 
     @Override
     public Object getNews(NewsFormSearch newsSearch) {
@@ -63,15 +55,15 @@ public class NewsServiceImpl implements NewsService {
             int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot());
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
             List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot(), pageable);
-            PageResponse pageResponse;
+            PageResponse<?> pageResponse;
             if (CollectionUtils.isEmpty(newsEntityList)) {
-                pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, 0));
+                pageResponse = new PageResponse<>(new PageImpl<>(newsEntityList, pageable, 0));
                 return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
             }
-            pageResponse = new PageResponse(new PageImpl(newsEntityList, pageable, totalCountNews));
+            pageResponse = new PageResponse<>(new PageImpl<>(newsEntityList, pageable, totalCountNews));
             return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
         } catch (Exception e) {
-            return new ErrorResponse(500, "Lấy dữ liệu thất bại", null);
+            return new ErrorResponse<>(500, "Lấy dữ liệu thất bại", null);
         }
     }
 
@@ -105,9 +97,9 @@ public class NewsServiceImpl implements NewsService {
                         }
                     });
             newDtoDetail.add(newewDtoDetailsss);
-            return new BaseResponse<>(HttpStatus.OK.value(), "lấy dữ liệu chi tiết thành công", newDtoDetail);
+            return new BaseResponse<>(200, "lấy dữ liệu chi tiết thành công", newDtoDetail);
         } catch (Exception e) {
-            return new ErrorResponse(Constant.FAILED, "Lấy dữ liệu chi tiết thất bại", null);
+            return new ErrorResponse<>(500, "Lấy dữ liệu chi tiết thất bại", null);
         }
     }
 
@@ -216,6 +208,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Transactional
     public Object insertNews(NewsAddRequest request) {
         try {
             //add news
@@ -227,11 +220,10 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
-            newsEntity.setStatus(0);
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
-            if (request.getTagId().size() > 0) {
+            if (!request.getTagId().isEmpty()) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
                 List<TagEntity> tagEntities = tagRepository.findByIdIn(request.getTagId());
@@ -259,9 +251,9 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(newsEntity);
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Thêm tin tức  thành công", getDetail(newsEntity.getIdNews()));
+            return new BaseResponse<>(200, "Thêm tin tức  thành công", getDetail(newsEntity.getIdNews()));
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Thêm tin tức  thất bại", null);
+            return new BaseResponse<>(500, "Thêm tin tức  thất bại", null);
         }
     }
 
@@ -272,7 +264,7 @@ public class NewsServiceImpl implements NewsService {
         try {
             Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
             if (news.isEmpty()) {
-                return new ErrorResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa tin tức  thất bại", null);
             }
             //xoa detail
             //add
@@ -280,11 +272,10 @@ public class NewsServiceImpl implements NewsService {
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
-            news.get().setStatus(0);
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
-            if (newsAddRequest.getTagId().size() > 0) {
+            if (!newsAddRequest.getTagId().isEmpty()) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
                 List<TagEntity> tagEntities = tagRepository.findByIdIn(newsAddRequest.getTagId());
@@ -314,9 +305,9 @@ public class NewsServiceImpl implements NewsService {
             newsVN.setLanguage(String.valueOf(Language.VN));
             newsVN.setNewsEntity(news.get());
             newsLanguageRepository.save(newsVN);
-            return new BaseResponse(Constant.SUCCESS, "Sửa tin tức  thành công", getDetail(news.get().getIdNews()));
+            return new BaseResponse<>(200, "Sửa tin tức  thành công", getDetail(news.get().getIdNews()));
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Sửa tin tức  thất bại", null);
+            return new BaseResponse<>(500, "Sửa tin tức  thất bại", null);
         }
     }
 
@@ -327,9 +318,9 @@ public class NewsServiceImpl implements NewsService {
         try {
             newsLanguageRepository.deleteByNewId(id);
             newsRepository.deleteById(id);
-            return new BaseResponse(Constant.SUCCESS, "Xóa tin tức  thành công", new BaseResponse(1, "Xóa tin tức  thành công", null));
+            return new BaseResponse<>(200, "Xóa tin tức  thành công", null);
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Xóa tin tức  thất bại", new BaseResponse(0, "Xóa tin tức  thất bại\"", null));
+            return new BaseResponse<>(500, "Xóa tin tức  thất bại", null);
         }
 
     }
@@ -339,10 +330,10 @@ public class NewsServiceImpl implements NewsService {
         List<com.example.halagodainv.dto.topic.TopicDto> topicDtos = new ArrayList<>();
         entities.forEach(map -> {
             com.example.halagodainv.dto.topic.TopicDto topicDto = new com.example.halagodainv.dto.topic.TopicDto();
-            if (language.equals("VN")) {
+            if ("VN".equals(language)) {
                 topicDto.setId(map.getId());
                 topicDto.setTopicName(map.getTopicName());
-            } else if (language.equals("EN")) {
+            } else if ("EN".equals(language)) {
                 topicDto.setId(map.getId());
                 topicDto.setTopicName(map.getTopicNameEN());
             }

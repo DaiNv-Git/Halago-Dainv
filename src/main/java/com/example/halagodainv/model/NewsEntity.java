@@ -1,9 +1,7 @@
 package com.example.halagodainv.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,8 +24,6 @@ public class NewsEntity {
     private Date created;
     @Column(name = "type")
     int type;
-    @Column(name = "status")
-    int status;
     @Column(name = "title_seo")
     String titleSeo;
     @Column(name = "link_papers")
