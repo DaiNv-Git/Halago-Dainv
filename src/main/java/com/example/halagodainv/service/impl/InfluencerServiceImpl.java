@@ -491,12 +491,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                 "  END) as sex ,ie.year_old as dateOfBirth ,\n" +
                 "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='FACEBOOK') as followerFacebook," +
                 "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='FACEBOOK') as expenseFacebook," +
+                "(SELECT id1.url from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='FACEBOOK') as linkFacebook," +
                 "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='TIKTOK') as followerTiktok," +
                 "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='TIKTOK') as expenseTiktok," +
+                "(SELECT id1.url from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='TIKTOK') as linkTiktok," +
                 "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='INSTAGRAM') as followerInstagram," +
                 "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='INSTAGRAM') as expenseInstagram," +
+                "(SELECT id1.url from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='INSTAGRAM') as linkInstagram," +
                 "(SELECT id1.follower from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='YOUTUBE') as followerYoutube," +
                 "(SELECT id1.expense from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='YOUTUBE') as expenseYoutube," +
+                "(SELECT id1.url from influencer_detail id1 WHERE id1.influ_id = ie.id and id1.channel ='YOUTUBE') as linkYoutube," +
                 "ie.address ,ie.industry_name as industry ,ie.classify_name as classify,ie.phone \n" +
                 "FROM influencer_entity ie \n" +
                 "left join influencer_detail id on ie.id = id.influ_id\n" +

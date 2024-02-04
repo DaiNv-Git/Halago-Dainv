@@ -13,13 +13,17 @@ public class InfluencerExportExcelDto {
     private String sex;
     private String dateOfBirth;
     private String followerFacebook;
+    private String linkFacebook;
     private String expenseFacebook;
     private String followerTiktok;
     private String expenseTiktok;
+    private String linkTiktok;
     private String followerInstagram ;
     private String expenseInstagram ;
+    private String linkInstagram ;
     private String followerYoutube ;
     private String expenseYoutube ;
+    private String linkYoutube;
     private String address;
     private String industry;
     private String classify;
