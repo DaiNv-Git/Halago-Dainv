@@ -227,6 +227,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
             newsEntity.setType(request.getType());
+            newsEntity.setStatus(0);
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
@@ -279,7 +280,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
             news.get().setType(newsAddRequest.getType());
-            news.get().setType(newsAddRequest.getType());
+            news.get().setStatus(0);
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
