@@ -17,7 +17,7 @@ public class ViewNewsMap {
     private String title;
     private String content;
     private String createdDate;
-    private Long topicId;
+    private int topicId;
     private List<Integer> tagId;
     private String img;
 
@@ -26,7 +26,7 @@ public class ViewNewsMap {
         this.title = title;
         this.content = content;
         this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
-        this.topicId = topicId;
+        this.topicId = Integer.parseInt(String.valueOf(topicId));
         this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
         this.img = img;
     }

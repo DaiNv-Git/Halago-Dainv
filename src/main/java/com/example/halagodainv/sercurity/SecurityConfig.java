@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/news/view-detail").permitAll()
                 .antMatchers("/news/view/set-hot").permitAll()
                 .antMatchers("/news/view/set-not-hot").permitAll()
+                .antMatchers("/news/view/relation-topics").permitAll()
                 .antMatchers("/api/images/get/{fileName}").permitAll()
                 .antMatchers("/api/insert-influencer").permitAll()
                 .antMatchers("/brand-give").permitAll()

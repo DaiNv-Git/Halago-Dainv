@@ -4,6 +4,7 @@ import com.example.halagodainv.common.Language;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.news.NewDtoDetails;
+import com.example.halagodainv.dto.news.NewRelationTopicDto;
 import com.example.halagodainv.dto.topic.TopicDto;
 import com.example.halagodainv.dto.viewnews.*;
 import com.example.halagodainv.exception.ErrorResponse;
@@ -22,7 +23,10 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FileImageUtil;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -44,6 +51,9 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final TagRepository tagRepository;
     private final FileImageUtil fileImageUtil;
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Override
     public Object getNews(NewsFormSearch newsSearch) {
@@ -110,7 +120,7 @@ public class NewsServiceImpl implements NewsService {
         String tagId1 = (tagId != 0L) ? String.valueOf(tagId) : "";
         List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, tagId1, language, pageable);
         List<ViewNewsDto> newsDtos = new ArrayList<>();
-        viewNewsMaps.forEach(i -> newsDtos.add(new ViewNewsDto(i.getId(),i.getImg(),i.getTitle(), i.getCreatedDate())));
+        viewNewsMaps.forEach(i -> newsDtos.add(new ViewNewsDto(i.getId(), i.getImg(), i.getTitle(), i.getCreatedDate())));
         if (CollectionUtils.isEmpty(viewNewsMaps)) {
             pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
             return pageResponse;
@@ -131,6 +141,7 @@ public class NewsServiceImpl implements NewsService {
         viewNewsDetailDto.setContent(viewNewsMaps.getContent());
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
         viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
+        viewNewsDetailDto.setTopicId(viewNewsMaps.getTopicId());
         return viewNewsDetailDto;
     }
 
@@ -374,5 +385,14 @@ public class NewsServiceImpl implements NewsService {
         } else {
             throw new GeneralException("New is not exits");
         }
+    }
+
+    public List<NewRelationTopicDto> getNewRelationTopics(int topicId, int newId,String language){
+        StringBuilder convertSql = new StringBuilder();
+        convertSql.append("SELECT n.id_news as newId ,IFNULL(nl.title,'') as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
+                .append(" on n.id_news = nl.new_id and nl.`language` = '").append(language).append("'").
+               append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created");
+        Query query = entityManager.createNativeQuery(convertSql.toString());
+        return query.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewRelationTopicDto.class)).getResultList();
     }
 }

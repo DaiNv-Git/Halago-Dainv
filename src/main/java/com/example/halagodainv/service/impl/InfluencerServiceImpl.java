@@ -135,7 +135,6 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
 
         if (!StringUtils.isEmpty(search.getIndustry())) {
-//            stringBuilder.append(" and ie.industry like concat('%','").append(search.getIndustry()).append("','%') ");
             stringBuilder.append(" and FIND_IN_SET('").append(search.getIndustry()).append("',ie.industry) > 0 ");
         }
         if (!StringUtils.isEmpty(search.getSex())) {
