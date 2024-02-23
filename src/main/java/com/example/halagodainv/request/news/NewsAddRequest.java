@@ -22,6 +22,6 @@ public class NewsAddRequest {
     private String authorAvatar;
     private Long topicId;
     private List<Integer> tagId;
-    private Boolean isHot =false;
+    private Boolean isHot = false;
 
 }

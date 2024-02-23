@@ -222,6 +222,10 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     public Object insertNews(NewsAddRequest request) {
         try {
+            List<NewsEntity> isCheckHot = newsRepository.findByIsHot(request.getIsHot());
+            if (Boolean.TRUE.equals(request.getIsHot()) && isCheckHot.size() != 0) {
+                return new ErrorResponse<>(500, "Đã tồn tại tin tức nổi bật", null);
+            }
             //add news
             NewsEntity newsEntity = new NewsEntity();
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
@@ -273,6 +277,10 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     public Object update(NewsAddRequest newsAddRequest) {
         try {
+            List<NewsEntity> isCheckHot = newsRepository.findByIsHot(newsAddRequest.getIsHot());
+            if (Boolean.TRUE.equals(newsAddRequest.getIsHot()) && isCheckHot.size() != 0) {
+                return new ErrorResponse<>(500, "Đã tồn tại tin tức nổi bật", null);
+            }
             Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
             if (news.isEmpty()) {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa tin tức  thất bại", null);
@@ -365,8 +373,8 @@ public class NewsServiceImpl implements NewsService {
                 count++;
             }
         }
-        if (count > 3) {
-            throw new GeneralException("new hot only 3 articles");
+        if (count >= 2) {
+            throw new GeneralException("new hot only 1 articles");
         }
         Optional<NewsEntity> entity = newsRepository.findById(idNew);
         if (entity.isPresent()) {
@@ -387,11 +395,11 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    public List<NewRelationTopicDto> getNewRelationTopics(int topicId, int newId,String language){
+    public List<NewRelationTopicDto> getNewRelationTopics(int topicId, int newId, String language) {
         StringBuilder convertSql = new StringBuilder();
         convertSql.append("SELECT n.id_news as newId ,IFNULL(nl.title,'') as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
                 .append(" on n.id_news = nl.new_id and nl.`language` = '").append(language).append("'").
-               append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created");
+                append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created");
         Query query = entityManager.createNativeQuery(convertSql.toString());
         return query.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewRelationTopicDto.class)).getResultList();
     }
