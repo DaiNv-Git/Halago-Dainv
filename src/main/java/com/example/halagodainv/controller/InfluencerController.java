@@ -93,7 +93,7 @@ public class InfluencerController extends UserAuthenLogin {
     }
 
     @PostMapping("/import-excel")
-    public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file) throws GeneralException, IOException {
+    public ResponseEntity<Object> importExcel(@RequestParam MultipartFile file) throws GeneralException, IOException {
         try {
             influencerService.importExcel(file);
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", null));

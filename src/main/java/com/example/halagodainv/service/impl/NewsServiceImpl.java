@@ -399,7 +399,7 @@ public class NewsServiceImpl implements NewsService {
         StringBuilder convertSql = new StringBuilder();
         convertSql.append("SELECT n.id_news as newId ,IFNULL(nl.title,'') as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
                 .append(" on n.id_news = nl.new_id and nl.`language` = '").append(language).append("'").
-                append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created");
+                append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created limit 4");
         Query query = entityManager.createNativeQuery(convertSql.toString());
         return query.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewRelationTopicDto.class)).getResultList();
     }
