@@ -231,16 +231,16 @@ public class InfluencerServiceImpl implements InfluencerService {
         try {
             Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
             if (isCheckEmail.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
             }
             Optional<InfluencerEntity> isCheckPhone = influencerEntityRepository.findByPhone(request.getPhone());
             if (isCheckPhone.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
             }
             Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
-            if (isCheckInfluName.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
-            }
+//            if (isCheckInfluName.isPresent()) {
+//                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
+//            }
             InfluencerEntity influencer = new InfluencerEntity();
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
             influencer.setInflucerName(request.getName());
@@ -340,16 +340,16 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencerEntityRepository.save(entity.get());
                 Optional<InfluencerEntity> isCheckEmail = influencerEntityRepository.findByEmail(request.getEmail());
                 if (isCheckEmail.isPresent()) {
-                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
+                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + request.getEmail() + "] này đã tồn tại", null);
                 }
                 Optional<InfluencerEntity> isCheckPhone = influencerEntityRepository.findByPhone(request.getPhone());
                 if (isCheckPhone.isPresent()) {
-                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
+                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
                 }
-                Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
-                if (isCheckInfluName.isPresent()) {
-                    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
-                }
+//                Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
+//                if (isCheckInfluName.isPresent()) {
+//                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
+//                }
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
                 entity.get().setSex(request.getSex());
@@ -444,9 +444,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
             }
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu không tồn tại!", null);
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Dữ liệu không tồn tại!", null);
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa liệu thất bại !", null);
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa liệu thất bại !", null);
         }
     }
 
@@ -476,8 +476,7 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public List<InfluencerExportExcelDto> getExportExcel(InfluencerSearch search) {
         Query nativeQuery = entityManager.createNativeQuery(StrQueryExportExcel(search));
-        List<InfluencerExportExcelDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InfluencerExportExcelDto.class)).getResultList();
-        return influcerMenuDtos;
+        return nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InfluencerExportExcelDto.class)).getResultList();
     }
 
     private static String StrQueryExportExcel(InfluencerSearch search) {
