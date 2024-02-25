@@ -9,5 +9,6 @@ public class CampaignUserResponse {
     private String userName;
     private String phoneNumber;
     private String campaignName;
+    private int campaignId;
     private String email;
 }

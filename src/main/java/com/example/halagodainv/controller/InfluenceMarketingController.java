@@ -36,7 +36,6 @@ public class InfluenceMarketingController {
                     savedInfluencerMarketingList.add(inluenceMarketingRepository.save(updatedInfluencerMarketing));
                 }
             }
-
             return new ResponseEntity<>(savedInfluencerMarketingList, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

@@ -7,8 +7,7 @@ import com.example.halagodainv.request.campaign.CampaignEditRequest;
 import com.example.halagodainv.request.campaign.CampaignFormRelate;
 import com.example.halagodainv.request.campaign.CampaignFormSearch;
 import com.example.halagodainv.response.BaseResponse;
-import com.example.halagodainv.response.CampaignUserResponse;
-import com.example.halagodainv.response.PageResponse;
+
 import com.example.halagodainv.service.CampaignService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,5 +111,10 @@ public class CampaignController extends UserAuthenLogin {
                                                           @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return ResponseEntity.ok(campaignService.getRecruitmentUserList(campaignId,userName,language, pageSize, pageNo, pageable));
+    }
+    @DeleteMapping("/delete/influ")
+    public ResponseEntity<?> delete(@RequestParam int campainId,@RequestParam int influId) {
+        campaignService.deleteByInfluId(campainId,influId);
+        return ResponseEntity.ok("OK");
     }
 }

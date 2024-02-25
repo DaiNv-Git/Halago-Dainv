@@ -1,6 +1,4 @@
 package com.example.halagodainv.service.impl;
-
-
 import com.example.halagodainv.config.Constant;
 import com.example.halagodainv.dto.campain.CampaignDetailDto;
 import com.example.halagodainv.dto.campain.CampaignDetailFullDto;
@@ -27,19 +25,17 @@ import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.*;
-
 @Service
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
@@ -226,7 +222,7 @@ public class CampaignServiceImpl implements CampaignService {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select ");
         if (language.equals("vn")) {
-            stringBuilder.append(" c.campaign_name as campaignName,");
+            stringBuilder.append(" c.campaign_name as campaignName,c.id as campaignId,");
         } else if (language.equals("en")) {
             stringBuilder.append(" c.campaign_name_en as campaignName,");
         }
@@ -261,6 +257,13 @@ public class CampaignServiceImpl implements CampaignService {
         }
         campaignRepository.deleteById(campaignId);
         return new BaseResponse<>(HttpStatus.OK.value(), "delete success", null);
+    }
+
+    @Override
+    @Transactional
+    @Modifying
+    public void deleteByInfluId(int campainId,int influId) {
+         campaignRecruitmentLog.deleteByIdCampaignAndIdInflu(campainId,influId);
     }
 
     public Object getByBrands() {

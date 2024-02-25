@@ -13,4 +13,5 @@ import java.util.Optional;
 @Repository
 public interface CampaignRecruitmentLog extends JpaRepository<CampaignRecruitmentLogEntity, Integer> {
     Optional<CampaignRecruitmentLogEntity> findByIdInfluAndIdCampaign(int idInflu, int idCampaign);
+   void deleteByIdCampaignAndIdInflu( int idCampaign,int idInflu);
 }
