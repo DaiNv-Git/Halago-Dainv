@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
@@ -39,7 +40,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
 
     @Query("select new com.example.halagodainv.dto.news.NewDetails(n.idNews,nl.title,n.thumbnail, " +
-            "nl.description,nl.content,c.id,n.status,n.titleSeo,n.linkPapers,nl.language,n.topicId,n.tagId,n.isHot,n.authorName,n.authorAvatar,n.tagName) " +
+            "nl.description,nl.content,c.id,n.titleSeo,n.linkPapers,nl.language,n.topicId,n.tagId,n.isHot,n.authorName,n.authorAvatar,n.tagName) " +
             "from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
             "left join CategoryEntity c on c.id = n.type where n.idNews =:idNews ")
@@ -80,4 +81,6 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
             "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language =:#{#language} and n.isHot =true ")
     List<ViewNewAndHot> getViewhots(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
+
+    List<NewsEntity> findByIsHot(boolean isHot);
 }

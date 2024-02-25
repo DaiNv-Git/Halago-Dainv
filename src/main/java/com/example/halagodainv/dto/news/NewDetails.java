@@ -14,7 +14,6 @@ public class NewDetails {
     private String description;
     private String content;
     private Integer type;
-    private Integer status;
     private String photoTitle;
     private String linkPost;
     private String language;

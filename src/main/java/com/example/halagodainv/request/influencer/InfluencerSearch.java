@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InfluencerSearch extends SearchPageForm {
+    private String name = "";
     private Boolean isFacebook = null;
     private Boolean isInstagram = null;
     private Boolean isTikTok = null;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InflucerDtoSubMenu {
-    private long id;
+    private Number id;
     private String name;
     private String phone;
     private String link;

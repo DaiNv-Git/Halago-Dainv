@@ -10,14 +10,13 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import javax.swing.text.Style;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @Component
-@SuppressWarnings("deprecation")
 @Slf4j
 @RequiredArgsConstructor
 public class InfluencerExcel {
@@ -47,8 +46,7 @@ public class InfluencerExcel {
         font.setFontHeight(FONT_SIZE);
         style.setFont(font);
         style.setAlignment(HorizontalAlignment.CENTER);
-        int countFacebook = ROW_COUNT;
-        getData(exportAll, countFacebook, sheetInfluencers, style);
+        getData(exportAll, ROW_COUNT, sheetInfluencers, style);
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -67,11 +65,10 @@ public class InfluencerExcel {
 
     public byte[] export() throws IOException {
         writeDataLines();
-        org.apache.commons.io.output.ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (bos) {
             workbook.write(bos);
         } finally {
-            bos.close();
             workbook.close();
         }
         return bos.toByteArray();
@@ -82,21 +79,30 @@ public class InfluencerExcel {
             Row row = sheet.createRow(count++);
             int columnCount = 0;
             createCell(row, columnCount++, count - 1, style);
-            createCell(row, columnCount++, item.getName(), style);
-            createCell(row, columnCount++, item.getDateOfBirth(), style);
-            createCell(row, columnCount++, item.getSex(), style);
-            createCell(row, columnCount++, isCheckBol(item.getFaceBook()), style);
-            createCell(row, columnCount++, isCheckBol(item.getInstagram()), style);
-            createCell(row, columnCount++, isCheckBol(item.getTikTok()), style);
-            createCell(row, columnCount++, isCheckBol(item.getYoutube()), style);
-            createCell(row, columnCount++, item.getAddress(), style);
-            createCell(row, columnCount++, item.getIndustry(), style);
-            createCell(row, columnCount++, item.getClassify(), style);
-            createCell(row, columnCount, item.getPhone(), style);
+            createCell(row, columnCount++, item.getId(), style);
+            createCell(row, columnCount++, valueEmpty(item.getName()), style);
+            createCell(row, columnCount++, valueEmpty(item.getDateOfBirth()), style);
+            createCell(row, columnCount++, valueEmpty(item.getSex()), style);
+            createCell(row, columnCount++, valueEmpty(item.getAddress()), style);
+            createCell(row, columnCount++, valueEmpty(item.getIndustry()), style);
+            createCell(row, columnCount++, valueEmpty(item.getClassify()), style);
+            createCell(row, columnCount++, valueEmpty(item.getPhone()), style);
+            createCell(row, columnCount++, valueEmpty(item.getLinkFacebook()), style);
+            createCell(row, columnCount++, valueEmpty(item.getFollowerFacebook()), style);
+            createCell(row, columnCount++, valueEmpty(item.getExpenseFacebook()), style);
+            createCell(row, columnCount++, valueEmpty(item.getLinkInstagram()), style);
+            createCell(row, columnCount++, valueEmpty(item.getFollowerInstagram()), style);
+            createCell(row, columnCount++, valueEmpty(item.getExpenseInstagram()), style);
+            createCell(row, columnCount++, valueEmpty(item.getLinkTiktok()), style);
+            createCell(row, columnCount++, valueEmpty(item.getFollowerTiktok()), style);
+            createCell(row, columnCount++, valueEmpty(item.getExpenseTiktok()), style);
+            createCell(row, columnCount++, valueEmpty(item.getLinkYoutube()), style);
+            createCell(row, columnCount++, valueEmpty(item.getFollowerYoutube()), style);
+            createCell(row, columnCount, valueEmpty(item.getExpenseYoutube()), style);
         }
     }
 
-    private static String isCheckBol(Boolean value) {
-        return value == null || Boolean.FALSE.equals(value) ? "false" : "true";
+    private static String valueEmpty(String value) {
+        return value == null || value.equalsIgnoreCase("null") ? "" : value;
     }
 }

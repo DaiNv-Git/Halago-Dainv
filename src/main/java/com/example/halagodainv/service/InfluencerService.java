@@ -10,9 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface InfluencerService {
-    Object getInfluMenu(InfluencerSearch search);
+    Object getAll(InfluencerSearch search);
 
-    Object getInfluSubMenu(InfluencerSearch search);
+    Object getSubInflu(InfluencerSearch search);
 
     Object findInfluencerById(long id);
 
@@ -22,9 +22,10 @@ public interface InfluencerService {
 
     Object delete(long id);
 
-    byte[] exportExcel(InfluceRequestExportExcel search);
+    byte[] exportExcel(InfluencerSearch search);
 
     void importExcel(MultipartFile file) throws GeneralException, IOException;
 
     byte[] downFileImportExcel();
+    boolean isCheckInforInflu(String email);
 }

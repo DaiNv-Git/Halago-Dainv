@@ -39,12 +39,12 @@ public class InfluencerController extends UserAuthenLogin {
 
     @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
-        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluMenu(search));
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getAll(search));
     }
 
     @PostMapping(value = "/getSubMenuInflu")
     public ResponseEntity<Object> getSubMenu(@RequestBody InfluencerSearch search) {
-        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getInfluSubMenu(search));
+        return ResponseEntity.status(HttpStatus.OK).body(influencerService.getSubInflu(search));
     }
 
     @PostMapping(value = "/findById")
@@ -88,12 +88,12 @@ public class InfluencerController extends UserAuthenLogin {
     }
 
     @PostMapping("/export-excel")
-    public ResponseEntity<Object> exportExcel(@RequestBody InfluceRequestExportExcel search) {
+    public ResponseEntity<Object> exportExcel(@RequestBody InfluencerSearch search) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.exportExcel(search)));
     }
 
     @PostMapping("/import-excel")
-    public ResponseEntity<Object> importExcel(@RequestBody MultipartFile file) throws GeneralException, IOException {
+    public ResponseEntity<Object> importExcel(@RequestParam MultipartFile file) throws GeneralException, IOException {
         try {
             influencerService.importExcel(file);
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", null));
@@ -105,5 +105,10 @@ public class InfluencerController extends UserAuthenLogin {
     @PostMapping("/down-file-import-excel")
     public ResponseEntity<Object> downFileImportExcel() {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.downFileImportExcel()));
+    }
+
+    @PostMapping("/isCheckAccount")
+    public ResponseEntity<Object> IsCheckEmailAccount(@RequestParam("email") String email) {
+        return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "", influencerService.isCheckInforInflu(email)));
     }
 }

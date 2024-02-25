@@ -16,7 +16,7 @@ public interface CampaignRepository extends JpaRepository<CampaignEntity, Intege
     @Query(nativeQuery = true, value = "select * from campaign cam where " +
             "cam.industry_id like concat('%',:industryId,'%') and " +
             "cam.communication like concat('%',:communication,'%') and " +
-            "cam.campaign_name like concat('%',:campaignName,'%') order by cam.id desc, cam.work_status asc ")
+            "cam.campaign_name like concat('%',:campaignName,'%') order by cam.work_status asc,cam.id desc ")
     List<CampaignEntity> getByCampaigns(@Param("industryId") String industryId,
                                         @Param("communication") String communication,
                                         @Param("campaignName") String campaignName, Pageable pageable);
