@@ -87,4 +87,9 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
     void deleteAllByIsProduct(int isProduct);
 
     List<NewsEntity> findAllByIsProduct(int isProduct);
+    List<NewsEntity> findAllByRepresentativeIdIsNotNull();
+
+
+
+    List<NewsEntity> findAllByRepresentativeIdIn(List<Long> isProduct);
 }

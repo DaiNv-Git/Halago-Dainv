@@ -31,4 +31,6 @@ public class RepresentativeEntity {
     private String nameEN;
     @Column(name = "contentEN")
     private String contentEN;
+//    @Column(name = "newsId")
+//    private Integer newsId;
 }

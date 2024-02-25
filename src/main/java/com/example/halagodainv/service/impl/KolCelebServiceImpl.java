@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,14 +81,27 @@ public class KolCelebServiceImpl implements KolCelebService {
     public Object getDetail() {
         try {
             List<RepresentativeMapEntity> representatives = representativesRepository.getAll();
+            List<NewsEntity> newsEntities = newsRepository.findAllByRepresentativeIdIsNotNull();
             List<KolMapEntity> kols = bestKolRepository.getAllImage();
-            KolAndRepresentDetailDto detailDto = new KolAndRepresentDetailDto(representatives, kols);
+            List<RepresentativeMapEntity> representatives1 = assignIdNewsToRepresentatives(representatives,newsEntities);
+            KolAndRepresentDetailDto detailDto = new KolAndRepresentDetailDto(representatives1, kols);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), detailDto);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
     }
+    public List<RepresentativeMapEntity> assignIdNewsToRepresentatives(List<RepresentativeMapEntity> representatives, List<NewsEntity> newsEntities) {
+        Map<Long, Integer> newsIdToIdMap = newsEntities.stream()
+                .collect(Collectors.toMap(NewsEntity::getRepresentativeId, NewsEntity::getIdNews));
+        for (RepresentativeMapEntity representative : representatives) {
+            Long newsId = representative.getId();
+            if (newsIdToIdMap.containsKey(newsId)) {
+                representative.setIdNews(Long.valueOf(newsIdToIdMap.get(newsId)));
+            }
+        }
 
+        return representatives;
+    }
     @Transactional
     public Object update(KolCelebRequest request) {
         try {
@@ -96,11 +110,7 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<RepresentativeEntity> representativeEntities = new ArrayList<>();
             List<NewsAddRequest> newsList = new ArrayList<>();
             for (RepresentativeMapEntity representativeMap : request.getRepresentative()) {
-                NewsAddRequest news= new NewsAddRequest();
-                news.setImg(representativeMap.getImg());
-                news.setContentVN(representativeMap.getContent());
-                news.setContentEN(representativeMap.getContentEN());
-                newsList.add(news);
+
                 RepresentativeEntity representativeEntity = new RepresentativeEntity();
                 representativeEntity.setImg(fileImageUtil.uploadImage(representativeMap.getImg()));
                 representativeEntity.setImg2(fileImageUtil.uploadImage(representativeMap.getImg2()));
@@ -125,7 +135,17 @@ public class KolCelebServiceImpl implements KolCelebService {
                 bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntities.add(bestKolEntity);
             }
-            representativesRepository.saveAll(representativeEntities);
+            List<RepresentativeEntity>  res =  representativesRepository.saveAll(representativeEntities);
+            for (RepresentativeEntity representativeMap : res) {
+                NewsAddRequest news= new NewsAddRequest();
+                news.setImg(representativeMap.getImg());
+                news.setTitleEN(representativeMap.getNameEN());
+                news.setTitleVN(representativeMap.getName());
+                news.setContentVN(representativeMap.getContent());
+                news.setContentEN(representativeMap.getContentEN());
+                news.setRepresentativeId(representativeMap.getId());
+                newsList.add(news);
+            }
             bestKolRepository.saveAll(bestKolEntities);
             List<Integer> ids = newsRepository.findAllByIsProduct(1).stream().map(NewsEntity::getIdNews).collect(Collectors.toList());
             newsRepository.deleteAllByIsProduct(1);

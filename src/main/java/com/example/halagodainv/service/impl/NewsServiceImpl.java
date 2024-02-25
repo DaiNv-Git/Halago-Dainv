@@ -342,6 +342,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getTitleVN());
             newsEntity.setIsProduct(1);
             newsEntity.setTopicId(8l);
+            newsEntity.setRepresentativeId(request.getRepresentativeId());
             newsRepository.save(newsEntity);
             NewsLanguageEntity newsEN = new NewsLanguageEntity();
             newsEN.setTitle(request.getTitleEN());
