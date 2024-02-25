@@ -97,11 +97,14 @@ public class UserController extends UserAuthenLogin {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
             UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
+            if(userEntity.isPresent() && userEntity.get().getRoleId() == 4){
+                return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+            }
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken)));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+            return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
         }
     }
 
@@ -113,8 +116,8 @@ public class UserController extends UserAuthenLogin {
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
             BaseResponse<Object> baseResponse = new BaseResponse<>();
             if (userEntity.isPresent()) {
-                if (userEntity.get().getRoleId() == 2) {
-                    return ResponseEntity.internalServerError().body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+                if (userEntity.get().getRoleId() == 2 || userEntity.get().getRoleId() == 3) {
+                    return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
                 }
                 String token = jwtToken.generateToken(userDetails);
                 String refreshToken = jwtToken.generateRefreshToken(userDetails);
@@ -122,7 +125,7 @@ public class UserController extends UserAuthenLogin {
             }
             return ResponseEntity.ok(baseResponse);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+            return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
         }
     }
 

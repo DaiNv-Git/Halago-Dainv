@@ -75,7 +75,7 @@ public class CampaignController extends UserAuthenLogin {
 
     @GetMapping("/campaign-recruitment")
     public ResponseEntity<?> campaignRecruitment(@RequestParam("idCampaign") int idCampagin) {
-        if (getUserLogin().isPresent() && getUserLogin().get().getRoleId() == 3) {
+        if (getUserLogin().isPresent() && getUserLogin().get().getRoleId() == 4) {
             return ResponseEntity.ok(campaignService.isCheckRecruitment(getUserLogin().get().getId(), idCampagin));
         }
         return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Đây không phải là tài khoản influencer!", null));

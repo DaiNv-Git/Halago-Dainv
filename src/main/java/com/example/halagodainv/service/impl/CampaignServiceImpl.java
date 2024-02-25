@@ -206,7 +206,7 @@ public class CampaignServiceImpl implements CampaignService {
         stringBuilder.append("c.id as campaignId,u.username as userName from campaign c " +
                 "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
                 "inner join users u on u.id = crl.id_influ " +
-                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
+                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 4 " +
                 "where c.id = :campaignId ");
         int offset = Math.max(0, pageNo - 1);
         Pageable pageable = PageRequest.of(offset, pageSize);
@@ -229,7 +229,7 @@ public class CampaignServiceImpl implements CampaignService {
         stringBuilder.append("u.username as userName,u.id as userId,u.email as email,u.phone as phoneNumber,crl.id as id  from campaign c " +
                 "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
                 "inner join users u on u.id = crl.id_influ " +
-                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 3 " +
+                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 4 " +
                 "where c.id = :campaignId ");
 
         if (userName != null) {
