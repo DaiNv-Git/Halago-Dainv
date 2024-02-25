@@ -2,26 +2,34 @@ package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.dto.kol.*;
 import com.example.halagodainv.model.BestKolEntity;
+import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.RepresentativeEntity;
-import com.example.halagodainv.repository.BestKolRepository;
-import com.example.halagodainv.repository.RepresentativesRepository;
+import com.example.halagodainv.repository.*;
 import com.example.halagodainv.request.kolCeleb.KolCelebRequest;
+import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.KolCelebService;
+import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class KolCelebServiceImpl implements KolCelebService {
     private final RepresentativesRepository representativesRepository;
     private final BestKolRepository bestKolRepository;
+    private final NewsRepository newsRepository;
     private final FileImageUtil fileImageUtil;
+    private final NewsService newsService;
+    private final NewsLanguageRepository newsLanguageRepository;
     private static String KOL_UPLOAD= "kol";
 
     public Object getKolAll(String language) {
@@ -58,6 +66,7 @@ public class KolCelebServiceImpl implements KolCelebService {
                 }
                 mapsDto.add(bestPickDto);
             }
+
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), new KolAndRepresenDto(mapsDto, representativeDtos));
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
@@ -79,12 +88,19 @@ public class KolCelebServiceImpl implements KolCelebService {
         }
     }
 
+    @Transactional
     public Object update(KolCelebRequest request) {
         try {
             representativesRepository.deleteAll();
             bestKolRepository.deleteAll();
             List<RepresentativeEntity> representativeEntities = new ArrayList<>();
+            List<NewsAddRequest> newsList = new ArrayList<>();
             for (RepresentativeMapEntity representativeMap : request.getRepresentative()) {
+                NewsAddRequest news= new NewsAddRequest();
+                news.setImg(representativeMap.getImg());
+                news.setContentVN(representativeMap.getContent());
+                news.setContentEN(representativeMap.getContentEN());
+                newsList.add(news);
                 RepresentativeEntity representativeEntity = new RepresentativeEntity();
                 representativeEntity.setImg(fileImageUtil.uploadImage(representativeMap.getImg()));
                 representativeEntity.setImg2(fileImageUtil.uploadImage(representativeMap.getImg2()));
@@ -106,10 +122,15 @@ public class KolCelebServiceImpl implements KolCelebService {
                 bestKolEntity.setNameEN(kolMapEntity.getNameEN());
                 bestKolEntity.setJob(kolMapEntity.getJob());
                 bestKolEntity.setJobEN(kolMapEntity.getJobEN());
+                bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntities.add(bestKolEntity);
             }
             representativesRepository.saveAll(representativeEntities);
             bestKolRepository.saveAll(bestKolEntities);
+            List<Integer> ids = newsRepository.findAllByIsProduct(1).stream().map(NewsEntity::getIdNews).collect(Collectors.toList());
+            newsRepository.deleteAllByIsProduct(1);
+            newsLanguageRepository.deleteAllByNewIds(ids);
+            newsService.update(newsList);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), getDetail());
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());

@@ -26,6 +26,7 @@ public class NewDtoDetails {
     private String authorName;
     private String authorAvatar;
     private Long topicId;
+    private String topicName;
     private List<Integer> tagId;
     private String tagNames;
 

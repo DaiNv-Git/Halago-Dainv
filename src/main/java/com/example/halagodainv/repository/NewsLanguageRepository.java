@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface NewsLanguageRepository extends JpaRepository<NewsLanguageEntity,String> {
@@ -16,4 +17,9 @@ public interface NewsLanguageRepository extends JpaRepository<NewsLanguageEntity
     @Transactional
     @Query(nativeQuery = true,value = "delete from news_language where new_id =:newId")
     void deleteByNewId(@Param("newId") int newId);
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "delete from news_language where new_id IN (:newIds)")
+    void deleteAllByNewIds(@Param("newIds") List<Integer> newIds);
+
 }

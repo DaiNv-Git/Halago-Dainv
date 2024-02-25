@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NewsTypeRepository extends JpaRepository<NewsType, String> {
-
 }

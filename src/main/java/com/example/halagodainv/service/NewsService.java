@@ -20,6 +20,7 @@ public interface NewsService {
     Object insertNews(NewsAddRequest newsAddRequest);
 
     Object update(NewsAddRequest newsAddRequest);
+    Object update(List<NewsAddRequest> newsAddRequest);
 
     Object delete(Integer id);
 

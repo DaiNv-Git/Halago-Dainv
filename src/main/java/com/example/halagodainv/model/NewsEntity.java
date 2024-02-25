@@ -30,6 +30,10 @@ public class NewsEntity {
     String linkPapers;
     @Column(name = "topic_id")
     private Long topicId;
+    @Column(name = "productId")
+    private int productId;
+    @Column(name = "is_product")
+    private int isProduct;
     @Column(name = "tagId")
     private String tagId;
     @Column(name = "tag_name")

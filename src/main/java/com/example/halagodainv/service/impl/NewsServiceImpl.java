@@ -96,14 +96,18 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setAuthorName(i.getAuthorName());
                         newewDtoDetailsss.setAuthorAvatar(i.getAuthorAvatar());
                         newewDtoDetailsss.setTagNames(i.getTagName());
+                       TopicEntity topic= topicRepository.findById(i.getTopicId()).get();
                         if (i.getLanguage().equalsIgnoreCase("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
+                            newewDtoDetailsss.setTopicName(topic.getTopicName());
                             newewDtoDetailsss.setTitleVN(i.getTitle());
+
                         } else if (i.getLanguage().equalsIgnoreCase("EN")) {
                             newewDtoDetailsss.setTitleEN(i.getTitle());
                             newewDtoDetailsss.setDescriptionEN(i.getDescription());
                             newewDtoDetailsss.setContentEN(i.getContent());
+                            newewDtoDetailsss.setTopicName(topic.getTopicNameEN());
                         }
                     });
             newDtoDetail.add(newewDtoDetailsss);
@@ -329,6 +333,33 @@ public class NewsServiceImpl implements NewsService {
             return new BaseResponse<>(500, "Sửa tin tức  thất bại", null);
         }
     }
+
+    @Override
+    public Object update(List<NewsAddRequest> newsAddRequests) {
+        List<NewsLanguageEntity> newsList = new ArrayList<>();
+        for (NewsAddRequest request : newsAddRequests) {
+            NewsEntity newsEntity = new NewsEntity();
+            newsEntity.setTitleSeo(request.getTitleVN());
+            newsEntity.setIsProduct(1);
+            newsEntity.setTopicId(8l);
+            newsRepository.save(newsEntity);
+            NewsLanguageEntity newsEN = new NewsLanguageEntity();
+            newsEN.setTitle(request.getTitleEN());
+            newsEN.setContent(request.getContentEN());
+            newsEN.setLanguage(String.valueOf(Language.EN));
+            newsEN.setNewsEntity(newsEntity);
+            newsList.add(newsEN);
+            NewsLanguageEntity newsVN = new NewsLanguageEntity();
+            newsVN.setTitle(request.getTitleVN());
+            newsVN.setContent(request.getContentVN());
+            newsVN.setLanguage(String.valueOf(Language.VN));
+            newsVN.setNewsEntity(newsEntity);
+            newsList.add(newsVN);
+        }
+        newsLanguageRepository.saveAll(newsList);
+        return new BaseResponse<>(200, "Sửa tin tức  thành công", null);
+    }
+
 
     @Override
     @Transactional

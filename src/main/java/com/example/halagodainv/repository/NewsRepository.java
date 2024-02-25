@@ -83,4 +83,8 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
     List<ViewNewAndHot> getViewhots(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
 
     List<NewsEntity> findByIsHot(boolean isHot);
+
+    void deleteAllByIsProduct(int isProduct);
+
+    List<NewsEntity> findAllByIsProduct(int isProduct);
 }
