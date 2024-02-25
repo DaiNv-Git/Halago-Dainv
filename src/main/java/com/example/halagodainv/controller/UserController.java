@@ -116,8 +116,8 @@ public class UserController extends UserAuthenLogin {
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
             BaseResponse<Object> baseResponse = new BaseResponse<>();
             if (userEntity.isPresent()) {
-                if (userEntity.get().getRoleId() == 2) {
-                    return ResponseEntity.internalServerError().body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+                if (userEntity.get().getRoleId() == 2 || userEntity.get().getRoleId() == 3) {
+                    return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
                 }
                 String token = jwtToken.generateToken(userDetails);
                 String refreshToken = jwtToken.generateRefreshToken(userDetails);
@@ -125,7 +125,7 @@ public class UserController extends UserAuthenLogin {
             }
             return ResponseEntity.ok(baseResponse);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Login not success", null));
+            return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
         }
     }
 
