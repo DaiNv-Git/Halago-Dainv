@@ -342,6 +342,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTitleSeo(request.getTitleVN());
             newsEntity.setIsProduct(1);
             newsEntity.setTopicId(8l);
+            newsEntity.setThumbnail(fileImageUtil.uploadImage(request.getImg()));
             newsEntity.setRepresentativeId(request.getRepresentativeId());
             newsEntity.setCreated(new Date());
             newsRepository.save(newsEntity);
