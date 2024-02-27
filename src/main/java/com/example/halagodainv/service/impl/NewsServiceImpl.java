@@ -136,6 +136,7 @@ public class NewsServiceImpl implements NewsService {
 
     public ViewNewsDetailDto getViewNewsDetail(int id, String language) {
         ViewNewsMap viewNewsMaps = newsRepository.getDetailView(language, id);
+
         if (ObjectUtils.isEmpty(viewNewsMaps)) {
             return null;
         }
@@ -146,6 +147,8 @@ public class NewsServiceImpl implements NewsService {
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
         viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
         viewNewsDetailDto.setTopicId(viewNewsMaps.getTopicId());
+        TopicEntity topic= topicRepository.findById((long) viewNewsMaps.getTopicId()).get();
+        viewNewsDetailDto.setTopicName(topic.getTopicName());
         return viewNewsDetailDto;
     }
 

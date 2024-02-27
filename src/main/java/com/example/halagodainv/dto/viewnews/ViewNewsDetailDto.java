@@ -16,4 +16,5 @@ public class ViewNewsDetailDto {
     private String createdDate;
     private List<Integer> tagId;
     private int topicId;
+    private String topicName;
 }
