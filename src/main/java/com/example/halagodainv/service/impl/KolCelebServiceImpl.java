@@ -44,6 +44,10 @@ public class KolCelebServiceImpl implements KolCelebService {
                 dto.setInteractions(map.getInteractions());
                 dto.setInteractionRate(map.getInteractionRate());
                 dto.setReach(map.getReach());
+                List<NewsEntity> news= newsRepository.findAllByRepresentativeId(map.getId());
+                if(news.size() > 0){
+                    dto.setNewsId(news.get(0).getIdNews());
+                }
                 if ("VN".equals(language.toUpperCase())) {
                     dto.setName(map.getName());
                     dto.setContent(map.getContent());

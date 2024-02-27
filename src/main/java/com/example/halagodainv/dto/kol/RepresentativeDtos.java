@@ -15,4 +15,5 @@ public class RepresentativeDtos {
     private String reach;
     private String interactions;
     private String interactionRate;
+    private Integer newsId;
 }

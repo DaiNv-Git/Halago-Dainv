@@ -22,12 +22,12 @@ public class ViewNewsMap {
     private String img;
 
     public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
-        this.topicId = Integer.parseInt(String.valueOf(topicId));
-        this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
-        this.img = img;
+            this.id = id;
+            this.title = title;
+            this.content = content;
+            this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
+            this.topicId = Integer.parseInt(String.valueOf(topicId));
+            this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
+            this.img = img;
     }
 }
