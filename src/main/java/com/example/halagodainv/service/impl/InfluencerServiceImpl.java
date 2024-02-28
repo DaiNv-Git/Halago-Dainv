@@ -45,6 +45,7 @@ public class InfluencerServiceImpl implements InfluencerService {
     private final InfluencerEntityRepository influencerEntityRepository;
     private final InfluencerDetailRepository influencerDetailRepository;
     private final InfluencerExcel influencerExcel;
+    private final UserRepository userRepository;
     private final IndustryRepository industryRepository;
     private final ClassifyRepository classifyRepository;
     private final InfluencerImportExcel influencerImportExcel;
@@ -456,8 +457,15 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Modifying
     public Object delete(long id) {
         try {
+           Optional<InfluencerEntity> influencer= influencerEntityRepository.findById(id);
+           if(!influencer.isPresent()){
+               return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
+           }
             influencerDetailRepository.deleteByInfluId(id);
             influencerEntityRepository.deleteById(id);
+            if(influencer.get().getUserId()!=null){
+                userRepository.deleteById(influencer.get().getUserId());
+            }
             return new BaseResponse(Constant.SUCCESS, "Xóa  thành công", new BaseResponse(1, "Xóa  thành công", null));
         } catch (Exception e) {
             return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
