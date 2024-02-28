@@ -2,7 +2,10 @@ package com.example.halagodainv.service.auth;
 
 import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.model.InfluencerEntity;
 import com.example.halagodainv.model.UserEntity;
+import com.example.halagodainv.repository.InfluencerDetailRepository;
+import com.example.halagodainv.repository.InfluencerEntityRepository;
 import com.example.halagodainv.repository.RoleRepository;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.request.UserAddRequest;
@@ -39,6 +42,8 @@ public class UserServiceImpl implements UserService {
     private final UserServiceConfig userServiceConfig;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final InfluencerEntityRepository influencerEntityRepository;
+    private final InfluencerDetailRepository influencerDetailRepository;
 
     private final JavaMailSender javaMailSender;
 
@@ -128,6 +133,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteUser(int userId) {
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if (userEntity.isPresent()){
+            Optional<InfluencerEntity> influencerEntity =influencerEntityRepository.findByEmail(userEntity.get().getEmail());
+            if (influencerEntity.isPresent()){
+                influencerDetailRepository.deleteByInfluId(influencerEntity.get().getId());
+            }
+            influencerEntityRepository.deleteByEmail(userEntity.get().getEmail());
+        }
         userRepository.deleteById(userId);
     }
 
