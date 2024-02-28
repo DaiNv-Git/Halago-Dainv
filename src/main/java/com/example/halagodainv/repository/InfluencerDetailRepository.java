@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Repository
 public interface InfluencerDetailRepository extends JpaRepository<InfluencerDetailEntity, Long> {
@@ -13,4 +14,6 @@ public interface InfluencerDetailRepository extends JpaRepository<InfluencerDeta
     @Modifying
     @Transactional
     void deleteByInfluId(long influId);
+    Optional<InfluencerDetailEntity> findByInfluId(long influId);
+
 }

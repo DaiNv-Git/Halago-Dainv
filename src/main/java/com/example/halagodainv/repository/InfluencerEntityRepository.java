@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface InfluencerEntityRepository extends JpaRepository<InfluencerEntity, Long> {
     Optional<InfluencerEntity> findByEmail(String email);
+    Optional<InfluencerEntity> findByUserId(Integer userId);
 
     Optional<InfluencerEntity> findByPhone(String phone);
 

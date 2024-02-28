@@ -251,6 +251,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencer.setEmail(request.getEmail());
             influencer.setBankId(request.getBankId().toUpperCase());
             influencer.setAccountNumber(request.getBankNumber());
+            influencer.setUserId(request.getUserId());
             influencer.setCreated(new Date());
             if (request.getIndustry().size() > 0) {
                 influencer.setIndustry(parseListIntegerToString(request.getIndustry()));

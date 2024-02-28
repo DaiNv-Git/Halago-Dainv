@@ -1,16 +1,18 @@
 package com.example.halagodainv.controller;
 
 import com.example.halagodainv.config.userconfig.UserAuthenLogin;
+import com.example.halagodainv.dto.influcer.FullInfluencerDetailDTO;
 import com.example.halagodainv.exception.GeneralException;
-import com.example.halagodainv.repository.BankRepository;
-import com.example.halagodainv.repository.CityRepository;
-import com.example.halagodainv.repository.ClassifyRepository;
-import com.example.halagodainv.repository.IndustryRepository;
+import com.example.halagodainv.model.InfluencerDetailEntity;
+import com.example.halagodainv.model.InfluencerEntity;
+import com.example.halagodainv.model.UserEntity;
+import com.example.halagodainv.repository.*;
 import com.example.halagodainv.request.excel.InfluceRequestExportExcel;
 import com.example.halagodainv.request.influencer.InfluencerAddRequest;
 import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.InfluencerService;
+import com.google.api.gax.rpc.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/influencer")
@@ -31,11 +34,17 @@ public class InfluencerController extends UserAuthenLogin {
     @Autowired
     ClassifyRepository classifyRepository;
     @Autowired
+    InfluencerEntityRepository influencerEntityRepository;
+    @Autowired
     IndustryRepository industryRepository;
     @Autowired
     private CityRepository cityRepository;
     @Autowired
     private BankRepository bankRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private InfluencerEntityRepository influencerRepository;
 
     @PostMapping(value = "/getMenuInflu")
     public ResponseEntity<Object> getMenul(@RequestBody InfluencerSearch search) {
@@ -50,6 +59,11 @@ public class InfluencerController extends UserAuthenLogin {
     @PostMapping(value = "/findById")
     public ResponseEntity<?> findInfluencerById(@RequestParam("id") long id) {
         return ResponseEntity.ok(influencerService.findInfluencerById(id));
+    }
+    @PostMapping(value = "user/findById")
+    public ResponseEntity<?> findInfluencerUserById(@RequestParam("id") Integer id) {
+            Optional<InfluencerEntity> influencerOptional = influencerRepository.findByUserId(id);
+            return ResponseEntity.ok(influencerService.findInfluencerById(influencerOptional.get().getId()));
     }
 
     @PostMapping("/add")
@@ -87,6 +101,7 @@ public class InfluencerController extends UserAuthenLogin {
         return ResponseEntity.ok(influencerService.delete(id));
     }
 
+
     @PostMapping("/export-excel")
     public ResponseEntity<Object> exportExcel(@RequestBody InfluencerSearch search) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", influencerService.exportExcel(search)));
@@ -111,4 +126,5 @@ public class InfluencerController extends UserAuthenLogin {
     public ResponseEntity<Object> IsCheckEmailAccount(@RequestParam("email") String email) {
         return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "", influencerService.isCheckInforInflu(email)));
     }
+
 }

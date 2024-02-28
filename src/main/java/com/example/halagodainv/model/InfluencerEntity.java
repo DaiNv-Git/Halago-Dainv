@@ -52,5 +52,7 @@ public class InfluencerEntity {
     private String accountNumber;
     @Column(name = "age")
     private Integer age;
+    @Column(name = "userId")
+    private Integer userId;
 
 }
