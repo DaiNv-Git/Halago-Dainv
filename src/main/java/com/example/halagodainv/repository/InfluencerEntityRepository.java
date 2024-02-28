@@ -23,7 +23,7 @@ public interface InfluencerEntityRepository extends JpaRepository<InfluencerEnti
     Optional<InfluencerEntity> findByInflucerName(String name);
     @Transactional
     @Modifying
-    void deleteByEmail(String email);
+    void deleteByUserId(int userId);
 
 
     @Query("select new com.example.halagodainv.dto.influcer.InflucerDtoListDetail(ie.id,ie.influcerName,ie.isFacebook, " +

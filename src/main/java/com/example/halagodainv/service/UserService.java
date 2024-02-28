@@ -17,10 +17,13 @@ public interface UserService {
     Object updateUser(UserEditRequest userEditRequest);
 
     void deleteUser(int userId);
+
     Object getRole();
+
     void updateResetPasswordToken(String token, String email);
 
     void sendEmail(String recipientEmail, String code)
-            throws MessagingException, UnsupportedEncodingException ;
+            throws MessagingException, UnsupportedEncodingException;
+
     void updatePassword(UserEntity customer, String newPassword);
 }
