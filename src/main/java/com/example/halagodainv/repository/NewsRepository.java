@@ -32,10 +32,11 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     @Query(value = "select count(n) from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
-            "left join CategoryEntity c on c.id = n.type where nl.language ='VN' " +
+            "where nl.language ='VN' " +
             "and IFNULL(nl.title,'') like concat('%',:title,'%') " +
             "and IFNULL(n.tagId,'') like concat('%',:tagId,'%') " +
-            "and (:topicId is null or :topicId = 0l or n.topicId =:topicId ) and (:isHot is null or n.isHot =:isHot) and n.newsFromKol <> 1 ")
+            "and (:topicId is null or :topicId = 0l or n.topicId =:topicId ) " +
+            "and (:isHot is null or n.isHot =:isHot) and n.newsFromKol <> 1 ")
     int countByAll(@Param("title") String title, @Param("topicId") Long topicId, @Param("tagId") String tagId,@Param("isHot") Boolean isHot);
 
 
@@ -59,7 +60,9 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.content,n.created,n.topicId,n.tagId,n.thumbnail) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
-            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language = :#{#language} and n.newsFromKol <> 1 ")
+            "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and " +
+            "IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') " +
+            "and nl.language = :#{#language} and n.newsFromKol <> 1 ")
     List<ViewNewsMap> getPageViewNews(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
 
     @Query("select count (n) from  NewsEntity n " +
