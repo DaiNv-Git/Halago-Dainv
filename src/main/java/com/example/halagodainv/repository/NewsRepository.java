@@ -32,7 +32,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     @Query(value = "select count(n) from NewsEntity n left join NewsLanguageEntity nl " +
             "on n.idNews = nl.newsEntity.idNews " +
-            "where nl.language ='VN' " +
+            "left join CategoryEntity c on c.id = n.type where nl.language ='VN' " +
             "and IFNULL(nl.title,'') like concat('%',:title,'%') " +
             "and IFNULL(n.tagId,'') like concat('%',:tagId,'%') " +
             "and (:topicId is null or :topicId = 0l or n.topicId =:topicId ) " +

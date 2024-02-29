@@ -237,7 +237,7 @@ public class NewsServiceImpl implements NewsService {
             } else {
                 newsEntity.setTagId("");
             }
-            newsEntity.setIsHot(request.getIsHot());
+            newsEntity.setIsHot(request.getIsHot() != null);
             newsRepository.save(newsEntity);
             //add news language
             //add en
@@ -293,7 +293,7 @@ public class NewsServiceImpl implements NewsService {
             } else {
                 news.get().setTagId("");
             }
-            news.get().setIsHot(newsAddRequest.getIsHot());
+            news.get().setIsHot(newsAddRequest.getIsHot() != null);
             newsRepository.save(news.get());
             //add detail
             newsLanguageRepository.deleteByNewId(news.get().getIdNews());
