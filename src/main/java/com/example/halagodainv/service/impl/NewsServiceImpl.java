@@ -22,6 +22,7 @@ import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
+import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import lombok.RequiredArgsConstructor;
@@ -194,6 +195,7 @@ public class NewsServiceImpl implements NewsService {
             ViewNewsHotDto viewNew = new ViewNewsHotDto();
             viewNew.setTitle(viewMap.getTitle());
             viewNew.setImg(viewMap.getImage());
+            viewNew.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(),"yyyy-MM-dd"));
             viewNewDtos.add(viewNew);
         });
 
@@ -201,6 +203,7 @@ public class NewsServiceImpl implements NewsService {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
             viewNewsHotDto.setImg(viewMap.getImage());
+            viewNewsHotDto.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(),"yyyy-MM-dd"));
             viewNewHots.add(viewNewsHotDto);
         });
         return new ViewNewsAndHotDetailDto(viewNewsTopicDto, viewNewDtos, viewNewHots);

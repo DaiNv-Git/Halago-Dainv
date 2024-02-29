@@ -75,12 +75,12 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
             "where nl.language =:#{#language} and n.idNews =:#{#id}")
     ViewNewsMap getDetailView(@Param("language") String language, @Param("id") Integer id);
 
-    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewAndHot(n.idNews,nl.title,n.thumbnail) from  NewsEntity n " +
+    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewAndHot(n.idNews,nl.title,n.thumbnail,n.created) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
             "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language =:#{#language} and n.topicId <> 1 and n.topicId <> 6 and n.newsFromKol <> 1  ")
     List<ViewNewAndHot> getViewNew(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
 
-    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewAndHot(n.idNews,nl.title,n.thumbnail) from  NewsEntity n " +
+    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewAndHot(n.idNews,nl.title,n.thumbnail,n.created) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
             "where (:#{#topicId} = 0l or n.topicId=:#{#topicId}) and IFNULL(n.tagId,'') like concat('%',:#{#tagId},'%') and nl.language =:#{#language} and n.isHot =true ")
     List<ViewNewAndHot> getViewhots(@Param("topicId") Long topicId, @Param("tagId") String tagId, @Param("language") String language, Pageable pageable);
