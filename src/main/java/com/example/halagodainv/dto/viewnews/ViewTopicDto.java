@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewTopicDto {
+    private Long id;
     private String title;
     private Integer count;
 }

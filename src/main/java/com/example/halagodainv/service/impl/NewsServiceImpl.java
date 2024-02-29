@@ -153,59 +153,40 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public ViewNewsAndHotDetailDto getViewNewsAndHots(String language) {
-        Pageable pageableViewNews = PageRequest.of(0, 1, Sort.Direction.DESC, "created");
+        Pageable pageableViewNews = PageRequest.of(0, 3, Sort.Direction.DESC, "created");
         Pageable pageableIsHot = PageRequest.of(0, 1);
         List<ViewNewAndHot> viewHotMaps = newsRepository.getViewhots(0L, "", language, pageableIsHot);
-        List<ViewNewsMap> viewTopicList = newsRepository.getViewNews(0L, "", language);
         List<ViewNewAndHot> viewNews = newsRepository.getViewNew(0L, "", language, pageableViewNews);
-        int count1 = 0;
-        int count2 = 0;
-        int count3 = 0;
-        int count4 = 0;
-        int count5 = 0;
-        int count6 = 0;
         ViewTopicDto viewTopicDto = new ViewTopicDto();
         ViewTopicDto viewTopicDto1 = new ViewTopicDto();
         ViewTopicDto viewTopicDto2 = new ViewTopicDto();
         ViewTopicDto viewTopicDto3 = new ViewTopicDto();
         ViewTopicDto viewTopicDto4 = new ViewTopicDto();
         ViewTopicDto viewTopicDto5 = new ViewTopicDto();
+        ViewTopicDto viewTopicDto6 = new ViewTopicDto();
         List<ViewTopicDto> viewNewsTopicDto = new ArrayList<>();
-        for (ViewNewsMap viewMap : viewTopicList) {
-            if (viewMap.getTopicId() == 1) {
-                count1++;
-            } else if (viewMap.getTopicId() == 2) {
-                count2++;
-            } else if (viewMap.getTopicId() == 3) {
-                count3++;
-            } else if (viewMap.getTopicId() == 4) {
-                count4++;
-            } else if (viewMap.getTopicId() == 5) {
-                count5++;
-            } else if (viewMap.getTopicId() == 6) {
-                count6++;
-            }
-        }
+        viewTopicDto.setId(topicRepository.findAll().get(0).getId());
+        viewTopicDto1.setId(topicRepository.findAll().get(1).getId());
+        viewTopicDto2.setId(topicRepository.findAll().get(2).getId());
+        viewTopicDto3.setId(topicRepository.findAll().get(3).getId());
+        viewTopicDto4.setId(topicRepository.findAll().get(4).getId());
+        viewTopicDto5.setId(topicRepository.findAll().get(5).getId());
+        viewTopicDto6.setId(topicRepository.findAll().get(7).getId());
+
         viewTopicDto.setTitle(language.equals("VN") ? topicRepository.findAll().get(0).getTopicName() : topicRepository.findAll().get(0).getTopicNameEN());
         viewTopicDto1.setTitle(language.equals("VN") ? topicRepository.findAll().get(1).getTopicName() : topicRepository.findAll().get(1).getTopicNameEN());
         viewTopicDto2.setTitle(language.equals("VN") ? topicRepository.findAll().get(2).getTopicName() : topicRepository.findAll().get(2).getTopicNameEN());
         viewTopicDto3.setTitle(language.equals("VN") ? topicRepository.findAll().get(3).getTopicName() : topicRepository.findAll().get(3).getTopicNameEN());
         viewTopicDto4.setTitle(language.equals("VN") ? topicRepository.findAll().get(4).getTopicName() : topicRepository.findAll().get(4).getTopicNameEN());
         viewTopicDto5.setTitle(language.equals("VN") ? topicRepository.findAll().get(5).getTopicName() : topicRepository.findAll().get(5).getTopicNameEN());
-
-        viewTopicDto.setCount(count1);
-        viewTopicDto1.setCount(count2);
-        viewTopicDto2.setCount(count3);
-        viewTopicDto3.setCount(count4);
-        viewTopicDto4.setCount(count5);
-        viewTopicDto5.setCount(count6);
+        viewTopicDto6.setTitle(language.equals("VN") ? topicRepository.findAll().get(7).getTopicName() : topicRepository.findAll().get(7).getTopicNameEN());
 
         viewNewsTopicDto.add(viewTopicDto);
         viewNewsTopicDto.add(viewTopicDto1);
         viewNewsTopicDto.add(viewTopicDto2);
         viewNewsTopicDto.add(viewTopicDto3);
         viewNewsTopicDto.add(viewTopicDto4);
-        viewNewsTopicDto.add(viewTopicDto5);
+        viewNewsTopicDto.add(viewTopicDto6);
 
         List<ViewNewsHotDto> viewNewDtos = new ArrayList<>();
         List<ViewNewsHotDto> viewNewHots = new ArrayList<>();
@@ -437,7 +418,7 @@ public class NewsServiceImpl implements NewsService {
         StringBuilder convertSql = new StringBuilder();
         convertSql.append("SELECT n.id_news as newId ,IFNULL(nl.title,'') as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
                 .append(" on n.id_news = nl.new_id and nl.`language` = '").append(language).append("'").
-                append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" order by n.created limit 4");
+                append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" AND n.news_from_kol <> 1 ").append(" order by n.created limit 4");
         Query query = entityManager.createNativeQuery(convertSql.toString());
         return query.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewRelationTopicDto.class)).getResultList();
     }
