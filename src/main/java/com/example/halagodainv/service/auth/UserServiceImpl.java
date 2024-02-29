@@ -79,17 +79,17 @@ public class UserServiceImpl implements UserService {
     public Object addUser(UserAddRequest userAddRequest) {
         try {
             if (!userAddRequest.getPassword().equals(userAddRequest.getPasswordConfirm())) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Mật khẩu xác nhận đang không giống nhau", null);
             }
 
             Optional<UserEntity> isCheckEmail = userRepository.findByEmail(userAddRequest.getEmail());
             if (isCheckEmail.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + userAddRequest.getEmail() + "] này đã tồn tại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email [" + userAddRequest.getEmail() + "] này đã tồn tại", null);
             }
 
             Optional<UserEntity> isCheckUserName = userRepository.findByUserName(userAddRequest.getUserName());
             if (isCheckUserName.isPresent()) {
-                return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userAddRequest.getUserName() + "] này đã tồn tại", null);
+                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên tài khoản [" + userAddRequest.getUserName() + "] này đã tồn tại", null);
             }
             UserEntity user = new UserEntity();
             user.setUserName(userAddRequest.getUserName());
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
             user = userRepository.save(user);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm tài khoản thành công", userRepository.getUser(user.getId()));
         } catch (Exception exception) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm tài khoản thất bại ", null);
+            return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Thêm tài khoản thất bại ", null);
         }
     }
 
@@ -134,12 +134,10 @@ public class UserServiceImpl implements UserService {
 
     public void deleteUser(int userId) {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
-        if (userEntity.isPresent()){
-            Optional<InfluencerEntity> influencerEntity =influencerEntityRepository.findByEmail(userEntity.get().getEmail());
-            if (influencerEntity.isPresent()){
-                influencerDetailRepository.deleteByInfluId(influencerEntity.get().getId());
-            }
-            influencerEntityRepository.deleteByEmail(userEntity.get().getEmail());
+        if (userEntity.isPresent()) {
+            Optional<InfluencerEntity> influencerEntity = influencerEntityRepository.findByUserId(userId);
+            influencerEntity.ifPresent(entity -> influencerDetailRepository.deleteByInfluId(entity.getId()));
+            influencerEntityRepository.deleteByUserId(userId);
         }
         userRepository.deleteById(userId);
     }
