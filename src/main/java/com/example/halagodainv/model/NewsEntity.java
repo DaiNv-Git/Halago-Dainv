@@ -46,6 +46,8 @@ public class NewsEntity {
     private String authorAvatar;
     @Column(name = "representative_id")
     private Long representativeId;
+    @Column(name = "news_from_kol")
+    private Long newsFromKol;
     @JsonIgnore
     @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();
