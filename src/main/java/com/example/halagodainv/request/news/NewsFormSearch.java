@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NewsFormSearch extends SearchPageForm {
     private String title = "";
-    private Long topicId;
-    private Integer tagId =null;
-    private Boolean isHot;
+    private Long topicId ;
+    private Long tagId ;
+    private Boolean isHot = false;
 }

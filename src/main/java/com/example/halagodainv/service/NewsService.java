@@ -8,12 +8,13 @@ import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.viewdisplayentity.TagEntity;
 import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.request.news.NewsFormSearch;
+import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 
 import java.util.List;
 
 public interface NewsService {
-    Object getNews(NewsFormSearch newsSearch);
+    BaseResponse<?> getNews(NewsFormSearch newsSearch);
 
     Object getDetail(int newId);
 

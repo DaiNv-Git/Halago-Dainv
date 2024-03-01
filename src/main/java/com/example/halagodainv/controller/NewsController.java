@@ -21,7 +21,7 @@ public class NewsController {
     private NewsService newsService;
 
     @PostMapping("")
-    public ResponseEntity<Object> get(@RequestBody NewsFormSearch newsSearch) {
+    public ResponseEntity<BaseResponse<?>> get(@RequestBody NewsFormSearch newsSearch) {
         return ResponseEntity.ok(newsService.getNews(newsSearch));
     }
 

@@ -18,27 +18,6 @@ import java.util.List;
 
 @Repository
 public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
-    @Query("select new com.example.halagodainv.dto.news.NewDto(n.idNews,nl.title,n.thumbnail,c.categoryName,n.created,n.topicId,n.tagId,n.tagName) " +
-            "from NewsEntity n left join NewsLanguageEntity nl " +
-            "on n.idNews = nl.newsEntity.idNews " +
-            "left join CategoryEntity c on c.id = n.type " +
-            "where upper(nl.language) ='VN' " +
-            "and IFNULL(nl.title,'') like concat('%',:title,'%') " +
-            "and IFNULL(n.tagId,'') like concat('%',:tagId,'%') " +
-            "and (:topicId is null or :topicId = 0l or n.topicId =:topicId ) and (:isHot is null or n.isHot =:isHot) and n.newsFromKol <> 1 " +
-            "ORDER BY n.idNews DESC  ")
-    List<NewDto> getNewList(@Param("title") String title, @Param("topicId") Long topicId, @Param("tagId") String tagId,@Param("isHot") Boolean isHot, Pageable pageable);
-
-    @Query(value = "select count(n) from NewsEntity n left join NewsLanguageEntity nl " +
-            "on n.idNews = nl.newsEntity.idNews " +
-            "left join CategoryEntity c on c.id = n.type where nl.language ='VN' " +
-            "and IFNULL(nl.title,'') like concat('%',:title,'%') " +
-            "and IFNULL(n.tagId,'') like concat('%',:tagId,'%') " +
-            "and (:topicId is null or :topicId = 0l or n.topicId =:topicId ) " +
-            "and (:isHot is null or n.isHot =:isHot) and n.newsFromKol <> 1 ")
-    int countByAll(@Param("title") String title, @Param("topicId") Long topicId, @Param("tagId") String tagId,@Param("isHot") Boolean isHot);
-
-
     @Query("select new com.example.halagodainv.dto.news.NewDetails(n.idNews,nl.title,n.thumbnail, " +
             "nl.description,nl.content,c.id,n.titleSeo,n.linkPapers,nl.language,n.topicId,n.tagId,n.isHot,n.authorName,n.authorAvatar,n.tagName) " +
             "from NewsEntity n left join NewsLanguageEntity nl " +

@@ -1,7 +1,6 @@
 package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.common.Language;
-import com.example.halagodainv.dto.influcer.InflucerMenuDto;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.news.NewDtoDetails;
@@ -25,7 +24,6 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
@@ -58,25 +56,45 @@ public class NewsServiceImpl implements NewsService {
     private final EntityManager entityManager;
 
     @Override
-    public Object getNews(NewsFormSearch newsSearch) {
-        try {
+    public  BaseResponse<?> getNews(NewsFormSearch newsSearch) {
+//        try {
             int offset = 0;
             if (newsSearch.getPageNo() > 0) {
                 offset = newsSearch.getPageNo() - 1;
             }
-            int totalCountNews = newsRepository.countByAll(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot());
+            StringBuilder selectNewAdmin= new StringBuilder();
+            selectNewAdmin.append("select n.id_news as id,nl.title,n.thumbnail as img, DATE_FORMAT(n.created,'%Y-%m-%d') as created, n.tag_name as tagNames, ")
+                    .append("CASE " )
+                    .append("WHEN n.topic_id = 1 THEN 'Các dự án đã triển khai' " )
+                    .append("WHEN n.topic_id = 2 THEN 'Dự án hợp tác cùng KOL,Celeb' " )
+                    .append("WHEN n.topic_id = 3 THEN 'Tin tức HOT về Influencer KO' " )
+                    .append("WHEN n.topic_id = 4 THEN 'Cập nhật tin tức về thị trường Influencer marketing' " )
+                    .append("WHEN n.topic_id = 5 THEN 'Phương pháp tối ưu hiệu quả khi triển khai Influencer marketing' " )
+                    .append("WHEN n.topic_id = 6 THEN 'Case study cùng nhãn hàng' " )
+                    .append("WHEN n.topic_id = 7 THEN 'Lưu ý dành riêng cho các bạn' " )
+                    .append("WHEN n.topic_id = 8 THEN 'Halago - Hoạt động tiêu biểu' " )
+                    .append("ELSE '' " )
+                    .append("END  as topicName from news n left join news_language nl on n.id_news = nl.new_id ");
+            StringBuilder querySql = new StringBuilder();
+            querySql.append(selectNewAdmin);
+            sqlNew(querySql, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
+            querySql.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
+            querySql.append(" and n.is_hot = ").append(newsSearch.getIsHot());
+            querySql.append(" order by n.created desc limit ").append(newsSearch.getPageSize()).append(" offset ").append(offset * 10);
+            Query nativeQuery = entityManager.createNativeQuery(querySql.toString());
+            StringBuilder count = new StringBuilder();
+            count.append(selectNewAdmin);
+            sqlNew(count, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
+            count.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
+            count.append(" and n.is_hot = ").append(newsSearch.getIsHot());
+            Query totalNews = entityManager.createNativeQuery(count.toString());
+            List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
+            List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
             Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            List<NewDto> newsEntityList = newsRepository.getNewList(newsSearch.getTitle(), newsSearch.getTopicId(), newsSearch.getTagId() != null ? String.valueOf(newsSearch.getTagId()) : "", newsSearch.getIsHot(), pageable);
-            PageResponse<?> pageResponse;
-            if (CollectionUtils.isEmpty(newsEntityList)) {
-                pageResponse = new PageResponse<>(new PageImpl<>(newsEntityList, pageable, 0));
-                return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
-            }
-            pageResponse = new PageResponse<>(new PageImpl<>(newsEntityList, pageable, totalCountNews));
-            return new BaseResponse<>(200, "Lấy dữ liệu thành công", pageResponse);
-        } catch (Exception e) {
-            return new ErrorResponse<>(500, "Lấy dữ liệu thất bại", null);
-        }
+            return new BaseResponse<>(200, "Lấy dữ liệu thành công", new PageResponse<>(new PageImpl<>(newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size())));
+//        } catch (Exception e) {
+//            return new ErrorResponse<>(500, "Lấy dữ liệu thất bại", null);
+//        }
     }
 
     @Override
@@ -98,7 +116,7 @@ public class NewsServiceImpl implements NewsService {
                         newewDtoDetailsss.setAuthorName(i.getAuthorName());
                         newewDtoDetailsss.setAuthorAvatar(i.getAuthorAvatar());
                         newewDtoDetailsss.setTagNames(i.getTagName());
-                       TopicEntity topic= topicRepository.findById(i.getTopicId()).get();
+                        TopicEntity topic = topicRepository.findById(i.getTopicId()).get();
                         if (i.getLanguage().equalsIgnoreCase("VN")) {
                             newewDtoDetailsss.setContentVN(i.getContent());
                             newewDtoDetailsss.setDescriptionVN(i.getDescription());
@@ -139,11 +157,11 @@ public class NewsServiceImpl implements NewsService {
 
     private static StringBuilder sqlNew(StringBuilder sql, String language, Long topicId, Long tagId) {
         sql.append(" where nl.language = '").append(language).append("' and n.news_from_kol <> 1 ");
-        if (topicId > 0L) {
+        if (topicId != null && topicId > 0L) {
             sql.append(" and n.topic_id = ").append(topicId);
         }
 
-        if (tagId > 0L) {
+        if (tagId != null && tagId > 0L) {
             sql.append(" and (n.tag_id LIKE '").append(tagId)
                     .append(",%' OR n.tag_id LIKE '%, ").append(tagId)
                     .append(",%' OR n.tag_id LIKE '%, ").append(tagId)
@@ -165,7 +183,7 @@ public class NewsServiceImpl implements NewsService {
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
         viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
         viewNewsDetailDto.setTopicId(viewNewsMaps.getTopicId());
-        TopicEntity topic= topicRepository.findById((long) viewNewsMaps.getTopicId()).get();
+        TopicEntity topic = topicRepository.findById((long) viewNewsMaps.getTopicId()).get();
         viewNewsDetailDto.setTopicName(topic.getTopicName());
         return viewNewsDetailDto;
     }
@@ -212,7 +230,7 @@ public class NewsServiceImpl implements NewsService {
             ViewNewsHotDto viewNew = new ViewNewsHotDto();
             viewNew.setTitle(viewMap.getTitle());
             viewNew.setImg(viewMap.getImage());
-            viewNew.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(),"yyyy-MM-dd"));
+            viewNew.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(), "yyyy-MM-dd"));
             viewNewDtos.add(viewNew);
         });
 
@@ -220,7 +238,7 @@ public class NewsServiceImpl implements NewsService {
             ViewNewsHotDto viewNewsHotDto = new ViewNewsHotDto();
             viewNewsHotDto.setTitle(viewMap.getTitle());
             viewNewsHotDto.setImg(viewMap.getImage());
-            viewNewsHotDto.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(),"yyyy-MM-dd"));
+            viewNewsHotDto.setCreated(DateUtilFormat.convertDateToString(viewMap.getCreated(), "yyyy-MM-dd"));
             viewNewHots.add(viewNewsHotDto);
         });
         return new ViewNewsAndHotDetailDto(viewNewsTopicDto, viewNewDtos, viewNewHots);
@@ -312,6 +330,7 @@ public class NewsServiceImpl implements NewsService {
                 news.get().setTagName(stringJoiner.toString());
             } else {
                 news.get().setTagId("");
+                news.get().setTagName("");
             }
             news.get().setIsHot(newsAddRequest.getIsHot() != null);
             newsRepository.save(news.get());
@@ -348,6 +367,8 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setTopicId(8l);
             newsEntity.setThumbnail(fileImageUtil.uploadImage(request.getImg()));
             newsEntity.setRepresentativeId(request.getRepresentativeId());
+            newsEntity.setIsHot(false);
+            newsEntity.setTagId("");
             newsEntity.setCreated(new Date());
             newsEntity.setNewsFromKol(1l);
             newsRepository.save(newsEntity);
