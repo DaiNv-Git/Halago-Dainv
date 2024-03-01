@@ -25,9 +25,31 @@ public class NewDto {
         this.title = title;
         this.img = img;
         this.category = type;
-        this.created = DateFormatUtils.format(created != null ? created : null, "dd-MM-yyyy");
+        this.created = DateFormatUtils.format(created, "yyyy-MM-dd");
         this.topicId = topicId;
         this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
         this.tagNames = tagName;
+        this.topicName = choseTagName(topicId);
+    }
+
+    private static String choseTagName(Long topicId) {
+        if (topicId == 1L) {
+            return "Các dự án đã triển khai";
+        } else if (topicId == 2L) {
+            return "Dự án hợp tác cùng KOL,Celeb";
+        } else if (topicId == 3L) {
+            return "Tin tức HOT về Influencer KOL";
+        } else if (topicId == 4L) {
+            return "Cập nhật tin tức về thị trường Influencer marketing";
+        } else if (topicId == 5L) {
+            return "Phương pháp tối ưu hiệu quả khi triển khai Influencer marketing";
+        } else if (topicId == 6L) {
+            return "Case study cùng nhãn hàng";
+        } else if (topicId == 7L) {
+            return "Lưu ý dành riêng cho các bạn";
+        } else if (topicId == 8L) {
+            return "Halago - Hoạt động tiêu biểu";
+        }
+        return "";
     }
 }

@@ -48,8 +48,8 @@ public class NewsController {
     @PostMapping("/view")
     public ResponseEntity<?> viewNews(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo,
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                      @RequestParam(value = "topicId", defaultValue = "2", required = false) Long topicId,
-                                      @RequestParam(value = "tagId", defaultValue = "0", required = false) Long tagId,
+                                      @RequestParam(value = "topicId", defaultValue = "1", required = false) Long topicId,
+                                      @RequestParam(value = "tagId", defaultValue = "1", required = false) Long tagId,
                                       @RequestParam(value = "language") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language, topicId, tagId)));
@@ -118,9 +118,9 @@ public class NewsController {
     @GetMapping("/view/relation-topics")
     public ResponseEntity<?> getRelationTopics(@RequestParam(value = "topicId") int topicId,
                                                @RequestParam(value = "newId") int newId,
-                                               @RequestParam(value = "language",defaultValue = "vn") String language) {
+                                               @RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getNewRelationTopics(topicId, newId,language)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getNewRelationTopics(topicId, newId, language)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

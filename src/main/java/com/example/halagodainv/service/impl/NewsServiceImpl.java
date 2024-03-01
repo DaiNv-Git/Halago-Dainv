@@ -1,6 +1,7 @@
 package com.example.halagodainv.service.impl;
 
 import com.example.halagodainv.common.Language;
+import com.example.halagodainv.dto.influcer.InflucerMenuDto;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.news.NewDtoDetails;
@@ -119,20 +120,36 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public PageResponse<?> getViewNews(int pageNo, int pageSize, String language, Long topicId, Long tagId) {
-        PageResponse<?> pageResponse;
+        String getNewsConverterSql = "select n.id_news as id,nl.title,n.thumbnail as img, DATE_FORMAT(n.created,'%Y-%m-%d') as createdDate from news n left join news_language nl on n.id_news = nl.new_id ";
         int offset = pageNo > 0 ? pageNo - 1 : 0;
-        Pageable pageable = PageRequest.of(offset, pageSize, Sort.Direction.DESC, "created");
-        String tagId1 = (tagId != 0L) ? String.valueOf(tagId) : "";
-        List<ViewNewsMap> viewNewsMaps = newsRepository.getPageViewNews(topicId, tagId1, language, pageable);
-        List<ViewNewsDto> newsDtos = new ArrayList<>();
-        viewNewsMaps.forEach(i -> newsDtos.add(new ViewNewsDto(i.getId(), i.getImg(), i.getTitle(), i.getCreatedDate())));
-        if (CollectionUtils.isEmpty(viewNewsMaps)) {
-            pageResponse = new PageResponse<>(new PageImpl<>(viewNewsMaps, pageable, 0));
-            return pageResponse;
+        Pageable pageable = PageRequest.of(offset, pageSize);
+        StringBuilder sql = new StringBuilder();
+        sql.append(getNewsConverterSql);
+        sqlNew(sql, language, topicId, tagId);
+        sql.append(" order by n.created desc limit ").append(pageSize).append(" offset ").append(offset * 10);
+        Query nativeQuery = entityManager.createNativeQuery(sql.toString());
+        StringBuilder count = new StringBuilder();
+        count.append(getNewsConverterSql);
+        sqlNew(count, language, topicId, tagId);
+        Query totalNews = entityManager.createNativeQuery(count.toString());
+        List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(ViewNewsDto.class)).getResultList();
+        List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(ViewNewsDto.class)).getResultList();
+        return new PageResponse<>(new PageImpl<>(newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
+    }
+
+    private static StringBuilder sqlNew(StringBuilder sql, String language, Long topicId, Long tagId) {
+        sql.append(" where nl.language = '").append(language).append("' and n.news_from_kol <> 1 ");
+        if (topicId > 0L) {
+            sql.append(" and n.topic_id = ").append(topicId);
         }
-        int viewCountNewsMaps = newsRepository.getCountPageViewNews(topicId, tagId1, language);
-        pageResponse = new PageResponse<>(new PageImpl<>(newsDtos, pageable, viewCountNewsMaps));
-        return pageResponse;
+
+        if (tagId > 0L) {
+            sql.append(" and (n.tag_id LIKE '").append(tagId)
+                    .append(",%' OR n.tag_id LIKE '%, ").append(tagId)
+                    .append(",%' OR n.tag_id LIKE '%, ").append(tagId)
+                    .append("' OR n.tag_id like ").append("'%").append(tagId).append("%')");
+        }
+        return sql;
     }
 
     public ViewNewsDetailDto getViewNewsDetail(int id, String language) {

@@ -62,7 +62,6 @@ public class InfluencerServiceImpl implements InfluencerService {
         Query nativeQueryCount = entityManager.createNativeQuery(countInfluQuery(search));
         List<InflucerMenuDto> countQuery = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
         PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
-        ;
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
@@ -136,7 +135,10 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
 
         if (!StringUtils.isEmpty(search.getIndustry())) {
-            stringBuilder.append(" and FIND_IN_SET('").append(search.getIndustry()).append("',ie.industry) > 0 ");
+            stringBuilder.append(" and (ie.industry LIKE '").append(search.getIndustry())
+                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
+                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
+                    .append("' OR ie.industry like ").append("'%").append(search.getIndustry()).append("%')");
         }
         if (!StringUtils.isEmpty(search.getSex())) {
             stringBuilder.append(" and ie.sex = ").append(search.getSex());
