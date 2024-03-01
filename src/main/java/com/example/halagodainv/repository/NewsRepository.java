@@ -3,7 +3,6 @@ package com.example.halagodainv.repository;
 
 import com.example.halagodainv.dto.hompage.NewsTenDto;
 import com.example.halagodainv.dto.news.NewDetails;
-import com.example.halagodainv.dto.news.NewDto;
 import com.example.halagodainv.dto.viewnews.ViewNewAndHot;
 import com.example.halagodainv.dto.viewnews.ViewNewsMap;
 import com.example.halagodainv.model.NewsEntity;
