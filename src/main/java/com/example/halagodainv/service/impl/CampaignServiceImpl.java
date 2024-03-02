@@ -219,34 +219,40 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId, String userName, String language, int pageSize, int pageNo, Pageable pageable) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("select ");
-        if (language.equals("vn")) {
-            stringBuilder.append(" c.campaign_name as campaignName,c.id as campaignId,");
-        } else if (language.equals("en")) {
-            stringBuilder.append(" c.campaign_name_en as campaignName,");
+        try{
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("select ");
+            if (language.equals("vn")) {
+                stringBuilder.append(" c.campaign_name as campaignName,c.id as campaignId,");
+            } else if (language.equals("en")) {
+                stringBuilder.append(" c.campaign_name_en as campaignName,");
+            }
+            stringBuilder.append("u.username as userName,u.id as userId,u.email as email,u.phone as phoneNumber,crl.id as id,ie.age as age " +
+                    ",ie.industry_name as field  from campaign c " +
+                    "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
+                    "inner join users u on u.id = crl.id_influ " +
+                    "inner join role_user ru on ru.id_role= u.role_id " +
+                    "left join influencer_entity ie on u.id = ie.user_id" +
+                    " where c.id = :campaignId ");
+
+            if (userName != null) {
+                stringBuilder.append("and u.username LIKE :userName ");
+            }
+
+            Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
+            nativeQuery.setParameter("campaignId", campaignId);
+            if (userName != null) {
+                nativeQuery.setParameter("userName", "%" + userName + "%");
+            }
+
+            List<CampaignUserResponse> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class)
+                    .setResultTransformer(Transformers.aliasToBean(CampaignUserResponse.class))
+                    .getResultList();
+            return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
         }
-        stringBuilder.append("u.username as userName,u.id as userId,u.email as email,u.phone as phoneNumber,crl.id as id  from campaign c " +
-                "inner join campaign_recruitment_log crl on crl.id_campaign = c.id " +
-                "inner join users u on u.id = crl.id_influ " +
-                "inner join role_user ru on ru.id_role= u.role_id and ru.id_role = 4 " +
-                "where c.id = :campaignId ");
 
-        if (userName != null) {
-            stringBuilder.append("and u.username LIKE :userName ");
-        }
-
-        Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
-        nativeQuery.setParameter("campaignId", campaignId);
-        if (userName != null) {
-            nativeQuery.setParameter("userName", "%" + userName + "%");
-        }
-
-        List<CampaignUserResponse> campaignRecruitments = nativeQuery.unwrap(NativeQuery.class)
-                .setResultTransformer(Transformers.aliasToBean(CampaignUserResponse.class))
-                .getResultList();
-
-        return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
     }
 
 
