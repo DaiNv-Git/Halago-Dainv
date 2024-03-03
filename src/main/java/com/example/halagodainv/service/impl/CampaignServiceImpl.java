@@ -137,10 +137,10 @@ public class CampaignServiceImpl implements CampaignService {
             campaignEntity.setTimeDeadline(campaignAddRequest.getTimeDeadline());
             campaignEntity.setCreated(DateUtilFormat.newDateAsia());
             campaignEntity = campaignRepository.save(campaignEntity);
-            return new BaseResponse<>(HttpStatus.CREATED.value(), "Thêm mới thành công", new CampaignDetailFullDto(campaignEntity));
+            return new BaseResponse<>(200, "Thêm mới thành công", new CampaignDetailFullDto(campaignEntity));
         } catch (
                 Exception e) {
-            return new ErrorResponse<>(Constant.FAILED, "Thêm mới không thành công", null);
+            return new ErrorResponse<>(500, "Thêm mới không thành công", null);
         }
     }
 
@@ -176,9 +176,9 @@ public class CampaignServiceImpl implements CampaignService {
             editEntity.setHashtag(campaignEditRequest.getHashtag());
             editEntity.setTimeDeadline(campaignEditRequest.getTimeDeadline());
             editEntity = campaignRepository.save(editEntity);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", new CampaignDetailFullDto(editEntity));
+            return new BaseResponse<>(200, "Sửa thành công", new CampaignDetailFullDto(editEntity));
         } catch (Exception e) {
-            return new ErrorResponse<>(Constant.FAILED, "Sửa không thành công", null);
+            return new ErrorResponse<>(500, "Sửa không thành công", null);
         }
     }
 
