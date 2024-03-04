@@ -472,6 +472,9 @@ public class InfluencerServiceImpl implements InfluencerService {
                 "FROM influencer_entity ie \n" +
                 "left join influencer_detail id on ie.id = id.influ_id\n" +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        if (search.getIds().size() > 0) {
+            stringBuilder.append(" and ie.id in(").append(InfluencerServiceImpl.parseListIntegerToString(search.getIds())).append(")");
+        }
         strSqlQuerySearch(search, stringBuilder);
         return stringBuilder.toString();
     }
@@ -558,9 +561,6 @@ public class InfluencerServiceImpl implements InfluencerService {
             stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
         }
         stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
-        if (search.getIds().size() > 0) {
-            stringBuilder.append(" and ie.id in(").append(search.getIds()).append(")");
-        }
         stringBuilder.append(" order by ie.id desc ");
         return stringBuilder;
     }
