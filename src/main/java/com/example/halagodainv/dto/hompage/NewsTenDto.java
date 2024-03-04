@@ -19,15 +19,4 @@ public class NewsTenDto {
     private String created;
     private String avatar;
     private String nameAuthor;
-
-    public NewsTenDto(String linkPagers, String titleImage, String title, String image, String description, Date created, String avatar, String name) {
-        this.titleImage = titleImage;
-        this.linkPagers = linkPagers;
-        this.title = title;
-        this.image = image;
-        this.description = description;
-        this.created = DateFormatUtils.format(created, "yyyy-MM-dd HH:ss aa");
-        this.avatar = avatar;
-        this.nameAuthor = name;
-    }
 }

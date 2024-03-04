@@ -1,10 +1,10 @@
 package com.example.halagodainv.service.impl;
 
-import com.example.halagodainv.dto.hompage.*;
+import com.example.halagodainv.dto.hompage.*;;
+import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.exception.GeneralException;
 import com.example.halagodainv.model.viewdisplayentity.HomepageEntitty;
 import com.example.halagodainv.model.viewdisplayentity.PartnerEntity;
-import com.example.halagodainv.repository.*;
 import com.example.halagodainv.repository.viewdisplay.HomePageRepository;
 import com.example.halagodainv.repository.viewdisplay.PartnerRepository;
 import com.example.halagodainv.request.homepage.HomeUpdateRequest;
@@ -15,8 +15,6 @@ import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +26,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class HomePageServiceImpl implements HomePageService {
-
-    private final NewsRepository newsRepository;
     private final HomePageRepository homePageRepository;
     private final PartnerRepository partnerRepository;
     private final FileImageUtil fileImageUtil;
@@ -39,15 +35,22 @@ public class HomePageServiceImpl implements HomePageService {
     @Override
     public Object getHomePage(String language) throws GeneralException {
         try {
-            Pageable page = PageRequest.of(0, 10);
-            List<NewsTenDto> newsTenDtos = newsRepository.getHomeLanguage(language, page);
             List<HomePageDetail> homePageDetails = new ArrayList<>();
             homePageDetails.add(new HomePageDetail(homePageRepository.findAll(), language));
-            HomePageDto homePageDto = new HomePageDto(homePageDetails, newsTenDtos);
+            HomePageDto homePageDto = new HomePageDto(homePageDetails, getNewLimit10(language).size() > 0 ? getNewLimit10(language) : new ArrayList<>());
             return new BaseResponse<>(HttpStatus.OK.value(), "success", homePageDto);
         } catch (Exception e) {
-            throw new GeneralException(e.getLocalizedMessage());
+            return new ErrorResponse<>(500, e.getLocalizedMessage(), null);
         }
+    }
+
+    private List<NewsTenDto> getNewLimit10(String language){
+        String sql = "select n.link_papers as linkPagers,n.title_seo as titleImage,nl.title, n.thumbnail as " +
+                "image,nl.description,DATE_FORMAT(n.created,'%Y-%m-%d') as created,n.author_avatar as avatar,n.author_name as " +
+                "nameAuthor from news n left join news_language nl on n.id_news = nl.new_id " +
+                "where n.topic_id = 1 and n.news_from_kol <> 1 and nl.language= '"+language+"' order by n.created desc limit 10 ";
+        Query nativeQuery = entityManager.createNativeQuery(sql);
+        return nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewsTenDto.class)).getResultList();
     }
 
     public Object getDetail() throws GeneralException {
@@ -71,12 +74,9 @@ public class HomePageServiceImpl implements HomePageService {
         }
     }
 
-    public Object getPartner(int partnerID) throws GeneralException {
+    public Object getPartner(int partnerId) throws GeneralException {
         try {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("SELECT * FROM partner WHERE partner_id =:partnerID ORDER BY IFNULL(SUBSTRING_INDEX(name_file, '_', -1),'') DESC ");
-            Query query = entityManager.createNativeQuery(stringBuilder.toString(), PartnerEntity.class);
-            query.setParameter("partnerID", partnerID);
+            Query query = entityManager.createNativeQuery("SELECT * FROM partner WHERE partner_id ="+partnerId+" ORDER BY IFNULL(SUBSTRING_INDEX(name_file, '_', -1),'') DESC ", PartnerEntity.class);
             List<PartnerEntity> partnerEntities = query.getResultList();
             return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerEntities);
         } catch (Exception e) {

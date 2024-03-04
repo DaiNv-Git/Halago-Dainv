@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +28,5 @@ public class InfluencerSearch extends SearchPageForm {
     private String endYear = "";
     private int ageStart = 0;
     private int ageEnd = 100;
+    private List<Integer> ids = new ArrayList<>();
 }

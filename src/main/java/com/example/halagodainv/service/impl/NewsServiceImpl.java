@@ -56,45 +56,41 @@ public class NewsServiceImpl implements NewsService {
     private final EntityManager entityManager;
 
     @Override
-    public  BaseResponse<?> getNews(NewsFormSearch newsSearch) {
-//        try {
-            int offset = 0;
-            if (newsSearch.getPageNo() > 0) {
-                offset = newsSearch.getPageNo() - 1;
-            }
-            StringBuilder selectNewAdmin= new StringBuilder();
-            selectNewAdmin.append("select n.id_news as id,nl.title,n.thumbnail as img, DATE_FORMAT(n.created,'%Y-%m-%d') as created, n.tag_name as tagNames, ")
-                    .append("CASE " )
-                    .append("WHEN n.topic_id = 1 THEN 'Các dự án đã triển khai' " )
-                    .append("WHEN n.topic_id = 2 THEN 'Dự án hợp tác cùng KOL,Celeb' " )
-                    .append("WHEN n.topic_id = 3 THEN 'Tin tức HOT về Influencer KO' " )
-                    .append("WHEN n.topic_id = 4 THEN 'Cập nhật tin tức về thị trường Influencer marketing' " )
-                    .append("WHEN n.topic_id = 5 THEN 'Phương pháp tối ưu hiệu quả khi triển khai Influencer marketing' " )
-                    .append("WHEN n.topic_id = 6 THEN 'Case study cùng nhãn hàng' " )
-                    .append("WHEN n.topic_id = 7 THEN 'Lưu ý dành riêng cho các bạn' " )
-                    .append("WHEN n.topic_id = 8 THEN 'Halago - Hoạt động tiêu biểu' " )
-                    .append("ELSE '' " )
-                    .append("END  as topicName from news n left join news_language nl on n.id_news = nl.new_id ");
-            StringBuilder querySql = new StringBuilder();
-            querySql.append(selectNewAdmin);
-            sqlNew(querySql, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
-            querySql.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
-            querySql.append(" and n.is_hot = ").append(newsSearch.getIsHot());
-            querySql.append(" order by n.created desc limit ").append(newsSearch.getPageSize()).append(" offset ").append(offset * 10);
-            Query nativeQuery = entityManager.createNativeQuery(querySql.toString());
-            StringBuilder count = new StringBuilder();
-            count.append(selectNewAdmin);
-            sqlNew(count, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
-            count.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
-            count.append(" and n.is_hot = ").append(newsSearch.getIsHot());
-            Query totalNews = entityManager.createNativeQuery(count.toString());
-            List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
-            List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
-            Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
-            return new BaseResponse<>(200, "Lấy dữ liệu thành công", new PageResponse<>(new PageImpl<>(newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size())));
-//        } catch (Exception e) {
-//            return new ErrorResponse<>(500, "Lấy dữ liệu thất bại", null);
-//        }
+    public BaseResponse<?> getNews(NewsFormSearch newsSearch) {
+        int offset = 0;
+        if (newsSearch.getPageNo() > 0) {
+            offset = newsSearch.getPageNo() - 1;
+        }
+        StringBuilder selectNewAdmin = new StringBuilder();
+        selectNewAdmin.append("select n.id_news as id,nl.title,n.thumbnail as img, DATE_FORMAT(n.created,'%Y-%m-%d') as created, n.tag_name as tagNames, ")
+                .append("CASE ")
+                .append("WHEN n.topic_id = 1 THEN 'Các dự án đã triển khai' ")
+                .append("WHEN n.topic_id = 2 THEN 'Dự án hợp tác cùng KOL,Celeb' ")
+                .append("WHEN n.topic_id = 3 THEN 'Tin tức HOT về Influencer KO' ")
+                .append("WHEN n.topic_id = 4 THEN 'Cập nhật tin tức về thị trường Influencer marketing' ")
+                .append("WHEN n.topic_id = 5 THEN 'Phương pháp tối ưu hiệu quả khi triển khai Influencer marketing' ")
+                .append("WHEN n.topic_id = 6 THEN 'Case study cùng nhãn hàng' ")
+                .append("WHEN n.topic_id = 7 THEN 'Lưu ý dành riêng cho các bạn' ")
+                .append("WHEN n.topic_id = 8 THEN 'Halago - Hoạt động tiêu biểu' ")
+                .append("ELSE '' ")
+                .append("END as topicName from news n left join news_language nl on n.id_news = nl.new_id ");
+        StringBuilder querySql = new StringBuilder();
+        querySql.append(selectNewAdmin);
+        sqlNew(querySql, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
+        querySql.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
+        querySql.append(" and n.is_hot = ").append(newsSearch.getIsHot());
+        querySql.append(" order by n.created desc limit ").append(newsSearch.getPageSize()).append(" offset ").append(offset * 10);
+        Query nativeQuery = entityManager.createNativeQuery(querySql.toString());
+        StringBuilder count = new StringBuilder();
+        count.append(selectNewAdmin);
+        sqlNew(count, "vn", newsSearch.getTopicId(), newsSearch.getTagId());
+        count.append(" and (nl.title like '%").append(newsSearch.getTitle()).append("%') ");
+        count.append(" and n.is_hot = ").append(newsSearch.getIsHot());
+        Query totalNews = entityManager.createNativeQuery(count.toString());
+        List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
+        List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
+        Pageable pageable = PageRequest.of(offset, newsSearch.getPageSize());
+        return new BaseResponse<>(200, "Lấy dữ liệu thành công", new PageResponse<>(new PageImpl<>( CollectionUtils.isEmpty(newsDtos) ? new ArrayList<>(): newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size())));
     }
 
     @Override
@@ -152,7 +148,7 @@ public class NewsServiceImpl implements NewsService {
         Query totalNews = entityManager.createNativeQuery(count.toString());
         List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(ViewNewsDto.class)).getResultList();
         List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(ViewNewsDto.class)).getResultList();
-        return new PageResponse<>(new PageImpl<>(newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
+        return new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(newsDtos) ? new ArrayList<>() : newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
     }
 
     private static StringBuilder sqlNew(StringBuilder sql, String language, Long topicId, Long tagId) {

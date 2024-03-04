@@ -61,7 +61,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         List<InflucerMenuDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
         Query nativeQueryCount = entityManager.createNativeQuery(countInfluQuery(search));
         List<InflucerMenuDto> countQuery = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(influcerMenuDtos) ? new ArrayList<>() : influcerMenuDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
@@ -115,54 +115,8 @@ public class InfluencerServiceImpl implements InfluencerService {
         } else {
             influcerMenuDtos = new ArrayList<>();
         }
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuCount) ? 0 : influcerMenuCount.size()));
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(influcerMenuDtos) ? new ArrayList<>() : influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuCount) ? 0 : influcerMenuCount.size()));
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
-    }
-
-    private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
-        stringBuilder.append(" and ie.name like '%").append(search.getName()).append("%'");
-        if (isCheckBooleanSearch(search.getIsFacebook())) {
-            stringBuilder.append(" and ie.is_facebook = ").append(search.getIsFacebook()).append(" and id.channel ='FACEBOOK'");
-        }
-        if (isCheckBooleanSearch(search.getIsInstagram())) {
-            stringBuilder.append(" and ie.is_instagram = ").append(search.getIsInstagram()).append(" and id.channel ='INSTAGRAM'");
-        }
-        if (isCheckBooleanSearch(search.getIsYoutube())) {
-            stringBuilder.append(" and ie.is_youtube = ").append(search.getIsYoutube()).append(" and id.channel ='YOUTUBE'");
-        }
-        if (isCheckBooleanSearch(search.getIsTikTok())) {
-            stringBuilder.append(" and ie.is_tiktok = ").append(search.getIsTikTok()).append(" and id.channel ='TIKTOK'");
-        }
-
-        if (!StringUtils.isEmpty(search.getIndustry())) {
-            stringBuilder.append(" and (ie.industry LIKE '").append(search.getIndustry())
-                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
-                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
-                    .append("' OR ie.industry like ").append("'%").append(search.getIndustry()).append("%')");
-        }
-        if (!StringUtils.isEmpty(search.getSex())) {
-            stringBuilder.append(" and ie.sex = ").append(search.getSex());
-        }
-        String startYear = isStartYear(search.getStartYear());
-        String endYear = isEndYear(search.getEndYear());
-        stringBuilder.append(" and (IFNULL(ie.year_old,'') between concat('").append(startYear).append("','-00','-01') and concat('").append(endYear).append("','-31','-12'))");
-        if (!StringUtils.isEmpty(search.getStartExpanse()) && !StringUtils.isEmpty(search.getEndExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
-        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append("99999999999999").append(")");
-        } else if (!StringUtils.isEmpty(search.getEndExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(" 0 ").append("and").append(search.getEndExpanse().trim()).append(")");
-        }
-        if (!StringUtils.isEmpty(search.getStartFollower()) && !StringUtils.isEmpty(search.getEndFollower())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
-        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append("99999999999999").append(")");
-        } else if (!StringUtils.isEmpty(search.getEndFollower())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
-        }
-        stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
-        stringBuilder.append(" order by ie.id desc ");
-        return stringBuilder;
     }
 
 
@@ -224,7 +178,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             dtoDetailsSet.add(dtoDetails);
             return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetailsSet);
         } catch (Exception e) {
-            return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tìm thất bại", null);
+            return new ErrorResponse<>(500, "Tìm thất bại", null);
         }
     }
 
@@ -459,13 +413,13 @@ public class InfluencerServiceImpl implements InfluencerService {
     @Modifying
     public Object delete(long id) {
         try {
-           Optional<InfluencerEntity> influencer= influencerEntityRepository.findById(id);
-           if(!influencer.isPresent()){
-               return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
-           }
+            Optional<InfluencerEntity> influencer = influencerEntityRepository.findById(id);
+            if (!influencer.isPresent()) {
+                return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
+            }
             influencerDetailRepository.deleteByInfluId(id);
             influencerEntityRepository.deleteById(id);
-            if(influencer.get().getUserId()!=null){
+            if (influencer.get().getUserId() != null) {
                 userRepository.deleteById(influencer.get().getUserId());
             }
             return new BaseResponse(Constant.SUCCESS, "Xóa  thành công", new BaseResponse(1, "Xóa  thành công", null));
@@ -487,7 +441,11 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     public List<InfluencerExportExcelDto> getExportExcel(InfluencerSearch search) {
         Query nativeQuery = entityManager.createNativeQuery(StrQueryExportExcel(search));
-        return nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InfluencerExportExcelDto.class)).getResultList();
+        List<InfluencerExportExcelDto> influencerExportExcelDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InfluencerExportExcelDto.class)).getResultList();
+        if (CollectionUtils.isEmpty(influencerExportExcelDtos)) {
+            return new ArrayList<>();
+        }
+        return influencerExportExcelDtos;
     }
 
     private static String StrQueryExportExcel(InfluencerSearch search) {
@@ -556,6 +514,55 @@ public class InfluencerServiceImpl implements InfluencerService {
             return joiner.toString();
         }
         return "";
+    }
+
+    private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
+        stringBuilder.append(" and ie.name like '%").append(search.getName()).append("%'");
+        if (isCheckBooleanSearch(search.getIsFacebook())) {
+            stringBuilder.append(" and ie.is_facebook = ").append(search.getIsFacebook()).append(" and id.channel ='FACEBOOK'");
+        }
+        if (isCheckBooleanSearch(search.getIsInstagram())) {
+            stringBuilder.append(" and ie.is_instagram = ").append(search.getIsInstagram()).append(" and id.channel ='INSTAGRAM'");
+        }
+        if (isCheckBooleanSearch(search.getIsYoutube())) {
+            stringBuilder.append(" and ie.is_youtube = ").append(search.getIsYoutube()).append(" and id.channel ='YOUTUBE'");
+        }
+        if (isCheckBooleanSearch(search.getIsTikTok())) {
+            stringBuilder.append(" and ie.is_tiktok = ").append(search.getIsTikTok()).append(" and id.channel ='TIKTOK'");
+        }
+
+        if (!StringUtils.isEmpty(search.getIndustry())) {
+            stringBuilder.append(" and (ie.industry LIKE '").append(search.getIndustry())
+                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
+                    .append(",%' OR ie.industry LIKE '%, ").append(search.getIndustry())
+                    .append("' OR ie.industry like ").append("'%").append(search.getIndustry()).append("%')");
+        }
+        if (!StringUtils.isEmpty(search.getSex())) {
+            stringBuilder.append(" and ie.sex = ").append(search.getSex());
+        }
+        String startYear = isStartYear(search.getStartYear());
+        String endYear = isEndYear(search.getEndYear());
+        stringBuilder.append(" and (IFNULL(ie.year_old,'') between concat('").append(startYear).append("','-00','-01') and concat('").append(endYear).append("','-31','-12'))");
+        if (!StringUtils.isEmpty(search.getStartExpanse()) && !StringUtils.isEmpty(search.getEndExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
+        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append("999999999999999999999").append(")");
+        } else if (!StringUtils.isEmpty(search.getEndExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(" 0 ").append("and").append(search.getEndExpanse().trim()).append(")");
+        }
+        if (!StringUtils.isEmpty(search.getStartFollower()) && !StringUtils.isEmpty(search.getEndFollower())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
+        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append("999999999999999999999").append(")");
+        } else if (!StringUtils.isEmpty(search.getEndFollower())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
+        }
+        stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
+        if (search.getIds().size() > 0) {
+            stringBuilder.append(" and ie.id in(").append(search.getIds()).append(")");
+        }
+        stringBuilder.append(" order by ie.id desc ");
+        return stringBuilder;
     }
 
     public boolean isCheckInforInflu(String email) {
