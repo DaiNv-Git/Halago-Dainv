@@ -73,7 +73,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
         strSqlQuerySearch(search, stringBuilder);
-        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
+//        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
         return stringBuilder.toString();
     }
 
