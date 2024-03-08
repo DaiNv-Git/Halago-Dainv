@@ -260,6 +260,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
+            newsEntity.setProductId(0);
             newsEntity.setNewsFromKol(0L);
             if (!request.getTagId().isEmpty()) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
@@ -318,6 +319,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setAuthorName(newsAddRequest.getAuthorName());
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
             news.get().setNewsFromKol(0L);
+            news.get().setProductId(0);
             if (!newsAddRequest.getTagId().isEmpty()) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
