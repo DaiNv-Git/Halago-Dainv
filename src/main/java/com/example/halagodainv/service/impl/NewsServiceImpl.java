@@ -245,7 +245,7 @@ public class NewsServiceImpl implements NewsService {
     public Object insertNews(NewsAddRequest request) {
         try {
             List<NewsEntity> isCheckHot = newsRepository.findByIsHot(request.getIsHot());
-            if (Boolean.TRUE.equals(request.getIsHot()) && isCheckHot.size() != 0) {
+            if (Boolean.TRUE.equals(request.getIsHot()) && !isCheckHot.isEmpty()) {
                 return new ErrorResponse<>(500, "Đã tồn tại tin tức nổi bật", null);
             }
             //add news
@@ -260,6 +260,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(request.getTopicId());
+            newsEntity.setNewsFromKol(0L);
             if (!request.getTagId().isEmpty()) {
                 newsEntity.setTagId(InfluencerServiceImpl.parseListIntegerToString(request.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
@@ -300,7 +301,7 @@ public class NewsServiceImpl implements NewsService {
     public Object update(NewsAddRequest newsAddRequest) {
         try {
             List<NewsEntity> isCheckHot = newsRepository.findByIsHot(newsAddRequest.getIsHot());
-            if (Boolean.TRUE.equals(newsAddRequest.getIsHot()) && isCheckHot.size() != 0) {
+            if (Boolean.TRUE.equals(newsAddRequest.getIsHot()) && !isCheckHot.isEmpty()) {
                 return new ErrorResponse<>(500, "Đã tồn tại tin tức nổi bật", null);
             }
             Optional<NewsEntity> news = newsRepository.findById(newsAddRequest.getIdNews());
@@ -316,6 +317,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setTopicId(newsAddRequest.getTopicId());
             news.get().setAuthorName(newsAddRequest.getAuthorName());
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
+            news.get().setNewsFromKol(0L);
             if (!newsAddRequest.getTagId().isEmpty()) {
                 news.get().setTagId(InfluencerServiceImpl.parseListIntegerToString(newsAddRequest.getTagId()));
                 StringJoiner stringJoiner = new StringJoiner(", ");
