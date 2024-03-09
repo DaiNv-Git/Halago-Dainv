@@ -214,8 +214,10 @@ public class UserServiceImpl implements UserService {
         mailMessage.setFrom("halogo939@gmail.com", "halago.contact");
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("Mã otp đã của bạn");
-        String content = "<div><h3>Mã otp: " + code + " </h3> </div>"
-                + "<span><h4> Có hiệu lực trong vòng 30 giây </h4></span>";
+        String content = "<div style=\"font-family: Arial, sans-serif;\">"
+                + "<h3 style=\"color: #333;\">Mã otp: " + code + "</h3>"
+                + "<p style=\"color: #666;\">Có hiệu lực trong vòng 60 giây.</p>"
+                + "</div>";
         mailMessage.setText(content, true);
         javaMailSender.send(message);
         timeOutAuthenCode(recipientEmail);
@@ -226,7 +228,7 @@ public class UserServiceImpl implements UserService {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             authenPasswordRepository.deleteByEmail(email);
-        }, 31, TimeUnit.SECONDS);
+        }, 60, TimeUnit.SECONDS);
 
         executor.shutdown();
     }
