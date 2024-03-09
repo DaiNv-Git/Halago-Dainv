@@ -213,12 +213,9 @@ public class UserServiceImpl implements UserService {
         MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
         mailMessage.setFrom("halogo939@gmail.com", "halago.contact");
         mailMessage.setTo(recipientEmail);
-        mailMessage.setSubject("Mã otp đã của bạn");
-        String content = "<div style=\"font-family: Arial, sans-serif;\">"
-                + "<h3 style=\"color: #333;\">Mã otp: " + code + "</h3>"
-                + "<p style=\"color: #666;\">Có hiệu lực trong vòng 60 giây.</p>"
-                + "</div>";
-        mailMessage.setText(content, true);
+        mailMessage.setSubject("Mã otp của bạn");
+        String content = "Mã otp: " + code +"\n Có hiệu lực trong vòng 180 giây.";
+        mailMessage.setText(content, false);
         javaMailSender.send(message);
         timeOutAuthenCode(recipientEmail);
         return new BaseResponse<>(200, "Mã xác thực đã được gửi tới email của bạn", null);
@@ -228,7 +225,7 @@ public class UserServiceImpl implements UserService {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.schedule(() -> {
             authenPasswordRepository.deleteByEmail(email);
-        }, 60, TimeUnit.SECONDS);
+        }, 180, TimeUnit.SECONDS);
 
         executor.shutdown();
     }

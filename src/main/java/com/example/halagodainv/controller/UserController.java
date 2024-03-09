@@ -31,6 +31,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
@@ -145,7 +146,8 @@ public class UserController extends UserAuthenLogin {
 
     @PostMapping("/forgot_password")
     public ResponseEntity<?> processForgotPassword(@RequestParam("email") String email) throws MessagingException, UnsupportedEncodingException {
-        String code = RandomString.make(6);
+        Random random = new Random();
+        String code = String.valueOf(random.nextInt(900000));
         return ResponseEntity.ok(userService.sendByCode(email, code));
     }
 
