@@ -15,7 +15,7 @@ public class NewsAddRequest {
     private String descriptionEN;
     private String contentVN;
     private String contentEN;
-    private Integer type;
+    private Integer type = 0;
     private String photoTitle;
     private String linkPost;
     private String authorName;

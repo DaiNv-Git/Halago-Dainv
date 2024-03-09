@@ -26,4 +26,8 @@ public interface UserService {
             throws MessagingException, UnsupportedEncodingException;
 
     void updatePassword(UserEntity customer, String newPassword);
+
+    Object sendByCode(String recipientEmail, String code) throws MessagingException, UnsupportedEncodingException;
+
+    boolean isCheckCode( String code, String email);
 }

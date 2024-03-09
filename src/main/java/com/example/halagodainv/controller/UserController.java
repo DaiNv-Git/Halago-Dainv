@@ -97,12 +97,12 @@ public class UserController extends UserAuthenLogin {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
             UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
             Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
-            if(userEntity.isPresent() && userEntity.get().getRoleId() == 4){
+            if (userEntity.isPresent() && userEntity.get().getRoleId() == 4) {
                 return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
             }
             String token = jwtToken.generateToken(userDetails);
             String refreshToken = jwtToken.generateRefreshToken(userDetails);
-            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken)));
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(), userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken)));
         } catch (Exception e) {
             return ResponseEntity.ok(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login not success", null));
         }
@@ -121,7 +121,7 @@ public class UserController extends UserAuthenLogin {
                 }
                 String token = jwtToken.generateToken(userDetails);
                 String refreshToken = jwtToken.generateRefreshToken(userDetails);
-                baseResponse = new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken));
+                baseResponse = new BaseResponse<>(HttpStatus.OK.value(), "Login success", new UserResponse(userEntity.get().getId(), userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken));
             }
             return ResponseEntity.ok(baseResponse);
         } catch (Exception e) {
@@ -137,40 +137,35 @@ public class UserController extends UserAuthenLogin {
             Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
             Optional<RoleEntity> roleEntity = roleRepository.findById(userEntity.get().getRoleId());
             String newToken = jwtToken.generateToken(userDetails);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getId(),userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), newToken, refreshToken)));
+            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "login success", new UserResponse(userEntity.get().getId(), userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), newToken, refreshToken)));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @PostMapping("/forgot_password")
-    public String processForgotPassword(@RequestParam("email") String email) throws GeneralException {
-        String codeResetPassWord = RandomString.make(8);
-        try {
-            userService.updateResetPasswordToken(codeResetPassWord, email);
-            userService.sendEmail(email, codeResetPassWord);
-            return "We have sent a reset password link to your email. Please check";
-        } catch (MessagingException ex) {
-            throw new GeneralException("error: " + email);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+    public ResponseEntity<?> processForgotPassword(@RequestParam("email") String email) throws MessagingException, UnsupportedEncodingException {
+        String code = RandomString.make(6);
+        return ResponseEntity.ok(userService.sendByCode(email, code));
     }
 
     @PostMapping("/change_password")
-    public ResponseEntity<BaseResponse<Object>> changePassword(@RequestParam("newPassword") String newPassword, @RequestParam("passwordAgain") String passwordAgain) throws GeneralException {
-        try {
-            UserDetails userDetails = authConfig.loadUserByUsername(getUser());
-            Optional<UserEntity> userEntity = userRepository.findByEmail(userDetails.getUsername());
-            if (userEntity.isPresent()) {
-                if (newPassword.equalsIgnoreCase(passwordAgain)) {
-                    userService.updatePassword(userEntity.get(), newPassword);
-                    return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password success", null));
-                }
+    public ResponseEntity<?> changePassword(@RequestParam("email") String email,
+                                            @RequestParam("newPassword") String newPassword,
+                                            @RequestParam("passwordAgain") String passwordAgain) {
+        Optional<UserEntity> userEntity = userRepository.findByEmailAndRoleId(email, 4);
+        if (userEntity.isPresent()) {
+            if (newPassword.equals(passwordAgain)) {
+                userService.updatePassword(userEntity.get(), newPassword);
+                return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Thay đổi thành công", null));
             }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new BaseResponse<>(HttpStatus.OK.value(), "Change password not success", null));
-        } catch (Exception ex) {
-            throw new GeneralException("error: " + ex.getMessage());
+            return ResponseEntity.ok(new BaseResponse<>(500, "Mật khẩu nhập lại đang không đúng", null));
         }
+        return ResponseEntity.ok(new BaseResponse<>(500, "Thay đổi không thành công", null));
+    }
+
+    @GetMapping("/check_code")
+    public ResponseEntity<Object> checkCode(@RequestParam("code") String code, @RequestParam("email") String email) {
+        return ResponseEntity.ok(userService.isCheckCode(code, email));
     }
 }

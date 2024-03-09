@@ -24,6 +24,7 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
+import com.example.halagodainv.until.FormatData;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
@@ -256,10 +257,10 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setCreated(new Date());
             newsEntity.setTitleSeo(request.getPhotoTitle());
             newsEntity.setLinkPapers(request.getLinkPost());
-            newsEntity.setType(request.getType());
+            newsEntity.setType(FormatData.checkNull(request.getType()));
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
-            newsEntity.setTopicId(request.getTopicId());
+            newsEntity.setTopicId(FormatData.checkNull(request.getTopicId()));
             newsEntity.setProductId(0);
             newsEntity.setNewsFromKol(0L);
             if (!request.getTagId().isEmpty()) {
@@ -314,8 +315,8 @@ public class NewsServiceImpl implements NewsService {
             news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
-            news.get().setType(newsAddRequest.getType());
-            news.get().setTopicId(newsAddRequest.getTopicId());
+            news.get().setType(FormatData.checkNull(newsAddRequest.getType()));
+            news.get().setTopicId(FormatData.checkNull(newsAddRequest.getTopicId()));
             news.get().setAuthorName(newsAddRequest.getAuthorName());
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
             news.get().setNewsFromKol(0L);
