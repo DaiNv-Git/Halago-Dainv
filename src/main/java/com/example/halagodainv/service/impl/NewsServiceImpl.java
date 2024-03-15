@@ -261,6 +261,7 @@ public class NewsServiceImpl implements NewsService {
             newsEntity.setAuthorName(request.getAuthorName());
             newsEntity.setAuthorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()));
             newsEntity.setTopicId(FormatData.checkNull(request.getTopicId()));
+            newsEntity.setRepresentativeId(0L);
             newsEntity.setProductId(0);
             newsEntity.setNewsFromKol(0L);
             if (!request.getTagId().isEmpty()) {
@@ -318,6 +319,7 @@ public class NewsServiceImpl implements NewsService {
             news.get().setType(FormatData.checkNull(newsAddRequest.getType()));
             news.get().setTopicId(FormatData.checkNull(newsAddRequest.getTopicId()));
             news.get().setAuthorName(newsAddRequest.getAuthorName());
+            news.get().setRepresentativeId(0L);
             news.get().setAuthorAvatar(fileImageUtil.uploadImage(newsAddRequest.getAuthorAvatar()));
             news.get().setNewsFromKol(0L);
             news.get().setProductId(0);
