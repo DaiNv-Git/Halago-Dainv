@@ -93,6 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/campaign/delete/influ").permitAll()
                 .antMatchers("/api/check_code").permitAll()
                 .antMatchers("/api/change_password").permitAll()
+                .antMatchers("/news/view/relation-topics").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
