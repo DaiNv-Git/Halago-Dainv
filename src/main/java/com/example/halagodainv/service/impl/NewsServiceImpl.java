@@ -312,6 +312,7 @@ public class NewsServiceImpl implements NewsService {
             }
             //xoa detail
             //add
+            //add
             news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
             news.get().setLinkPapers(newsAddRequest.getLinkPost());
