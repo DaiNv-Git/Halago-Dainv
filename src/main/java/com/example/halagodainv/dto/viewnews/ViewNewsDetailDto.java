@@ -12,6 +12,7 @@ import java.util.List;
 public class ViewNewsDetailDto {
     private int id;
     private String title;
+    private String img;
     private String content;
     private String createdDate;
     private List<Integer> tagId;
