@@ -94,6 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/check_code").permitAll()
                 .antMatchers("/api/change_password").permitAll()
                 .antMatchers("/news/view/relation-topics").permitAll()
+                .antMatchers("/industry").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

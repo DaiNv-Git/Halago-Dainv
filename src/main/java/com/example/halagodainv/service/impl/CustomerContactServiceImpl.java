@@ -65,15 +65,16 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
-        mailMessage.setSubject("Khách hàng đăng ký");
-        mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
-                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
-        message.setContent(content, "text/html; charset=UTF-8");
-        javaMailSender.send(message);
+        if (!request.getEmail().isEmpty()) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+            mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+            mailMessage.setSubject("Khách hàng đăng ký");
+            mailMessage.setTo(freeConsultationEntity.getEmail());
+            String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" + "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+            message.setContent(content, "text/html; charset=UTF-8");
+            javaMailSender.send(message);
+        }
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
     }
 
@@ -92,15 +93,16 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
-        mailMessage.setSubject("Khách hàng đăng ký");
-        mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
-                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
-        message.setContent(content, "text/html; charset=UTF-8");
-        javaMailSender.send(message);
+        if (!request.getEmail().isEmpty()) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+            mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+            mailMessage.setSubject("Khách hàng đăng ký");
+            mailMessage.setTo(freeConsultationEntity.getEmail());
+            String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" + "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+            message.setContent(content, "text/html; charset=UTF-8");
+            javaMailSender.send(message);
+        }
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
 
     }
