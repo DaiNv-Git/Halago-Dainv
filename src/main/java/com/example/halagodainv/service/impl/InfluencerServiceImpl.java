@@ -195,10 +195,6 @@ public class InfluencerServiceImpl implements InfluencerService {
             if (isCheckPhone.isPresent()) {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
             }
-            Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
-//            if (isCheckInfluName.isPresent()) {
-//                return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
-//            }
             InfluencerEntity influencer = new InfluencerEntity();
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
             influencer.setInflucerName(request.getName());
@@ -305,10 +301,6 @@ public class InfluencerServiceImpl implements InfluencerService {
                 if (isCheckPhone.isPresent()) {
                     return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
                 }
-//                Optional<InfluencerEntity> isCheckInfluName = influencerEntityRepository.findByInflucerName(request.getName());
-//                if (isCheckInfluName.isPresent()) {
-//                    return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Tên influencer [" + request.getName() + "] này đã tồn tại", null);
-//                }
                 entity.get().setInflucerName(request.getName());
                 entity.get().setHistoryCreated(new Date());
                 entity.get().setSex(request.getSex());
