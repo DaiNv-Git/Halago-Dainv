@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class InfluencerSearch extends SearchPageForm {
     private String name = "";
+    private Long id;
+    private String phoneNumber;
     private Boolean isFacebook = null;
     private Boolean isInstagram = null;
     private Boolean isTikTok = null;

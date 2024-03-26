@@ -176,6 +176,7 @@ public class NewsServiceImpl implements NewsService {
         ViewNewsDetailDto viewNewsDetailDto = new ViewNewsDetailDto();
         viewNewsDetailDto.setId(viewNewsMaps.getId());
         viewNewsDetailDto.setTitle(viewNewsMaps.getTitle());
+        viewNewsDetailDto.setImg(viewNewsMaps.getImg());
         viewNewsDetailDto.setContent(viewNewsMaps.getContent());
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
         viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
@@ -299,7 +300,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Modifying
-    @Transactional
     public Object update(NewsAddRequest newsAddRequest) {
         try {
             List<NewsEntity> isCheckHot = newsRepository.findByIsHot(newsAddRequest.getIsHot());
@@ -311,7 +311,6 @@ public class NewsServiceImpl implements NewsService {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa tin tức  thất bại", null);
             }
             //xoa detail
-            //add
             //add
             news.get().setThumbnail(fileImageUtil.uploadImage(newsAddRequest.getImg()));
             news.get().setTitleSeo(newsAddRequest.getPhotoTitle());
@@ -459,7 +458,7 @@ public class NewsServiceImpl implements NewsService {
 
     public List<NewRelationTopicDto> getNewRelationTopics(int topicId, int newId, String language) {
         StringBuilder convertSql = new StringBuilder();
-        convertSql.append("SELECT n.id_news as newId ,IFNULL(nl.title,'') as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
+        convertSql.append("SELECT n.id_news as newId ,nl.title as title,n.thumbnail as img,DATE_FORMAT(n.created, '%Y-%m-%d') as created from news n left join news_language nl")
                 .append(" on n.id_news = nl.new_id and nl.`language` = '").append(language).append("'").
                 append(" WHERE n.topic_id = ").append(topicId).append(" AND  n.id_news <> ").append(newId).append(" AND n.news_from_kol <> 1 ").append(" order by n.created DESC limit 4");
         Query query = entityManager.createNativeQuery(convertSql.toString());

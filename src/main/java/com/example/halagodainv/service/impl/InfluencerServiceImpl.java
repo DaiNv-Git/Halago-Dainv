@@ -18,6 +18,7 @@ import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -521,6 +522,12 @@ public class InfluencerServiceImpl implements InfluencerService {
 
     private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
         stringBuilder.append(" and ie.name like '%").append(search.getName()).append("%'");
+        if (search.getId() != null) {
+            stringBuilder.append(" and ie.id like '%").append(search.getId()).append("%'");
+        }
+        if(!StringUtils.isEmpty(search.getPhoneNumber())) {
+            stringBuilder.append(" and ie.phone like '%").append(search.getPhoneNumber()).append("%'");
+        }
         if (isCheckBooleanSearch(search.getIsFacebook())) {
             stringBuilder.append(" and ie.is_facebook = ").append(search.getIsFacebook()).append(" and id.channel ='FACEBOOK'");
         }
