@@ -26,6 +26,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -65,15 +67,18 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
-        mailMessage.setSubject("Khách hàng đăng ký");
-        mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
-                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
-        message.setContent(content, "text/html; charset=UTF-8");
-        javaMailSender.send(message);
+        Pattern pattern = Pattern.compile("@gmail.com");
+        Matcher emailmatcher = pattern.matcher(request.getEmail());
+        if (emailmatcher.find()) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+            mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+            mailMessage.setSubject("Khách hàng đăng ký");
+            mailMessage.setTo(freeConsultationEntity.getEmail());
+            String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" + "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+            message.setContent(content, "text/html; charset=UTF-8");
+            javaMailSender.send(message);
+        }
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
     }
 
@@ -92,15 +97,18 @@ public class CustomerContactServiceImpl implements ContactCustomerService {
         freeConsultationEntity.setNote(request.getNote());
         freeConsultationEntity.setCreated(DateUtilFormat.newDateAsia());
         freeConsultationEntity = freeConsultationRepository.save(freeConsultationEntity);
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
-        mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
-        mailMessage.setSubject("Khách hàng đăng ký");
-        mailMessage.setTo(freeConsultationEntity.getEmail());
-        String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" +
-                "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
-        message.setContent(content, "text/html; charset=UTF-8");
-        javaMailSender.send(message);
+        Pattern pattern = Pattern.compile("@gmail.com");
+        Matcher emailmatcher = pattern.matcher(request.getEmail());
+        if (emailmatcher.find()) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+            mailMessage.setFrom("halogohalogo939@gmail.com", "halago.contact");
+            mailMessage.setSubject("Khách hàng đăng ký");
+            mailMessage.setTo(freeConsultationEntity.getEmail());
+            String content = "<div><h3>" + DateUtilFormat.newDateAsia() + " </h3>" + "<span>" + new String("Cảm ơn khách hàng đăng ký tư vấn trên website".getBytes(), StandardCharsets.UTF_8) + "</span></div>";
+            message.setContent(content, "text/html; charset=UTF-8");
+            javaMailSender.send(message);
+        }
         return new BaseResponse<>(HttpStatus.OK.value(), "Đăng ký thành công", freeConsultationEntity);
 
     }
