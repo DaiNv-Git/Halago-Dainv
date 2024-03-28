@@ -1,6 +1,7 @@
 package com.example.halagodainv.dto.group;
 
 import com.example.halagodainv.service.impl.InfluencerServiceImpl;
+import com.example.halagodainv.until.ConvertString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class GroupDto {
         this.memberTotal = memberTotal;
         this.expense = expense;
         this.created = DateFormatUtils.format(created, "dd-MM-yyyy");
-        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(industryId);
+        this.industryId = ConvertString.parseStringToListOfIntegers(industryId);
         this.industry = industry;
     }
 }

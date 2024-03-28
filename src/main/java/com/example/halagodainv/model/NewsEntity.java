@@ -2,17 +2,27 @@ package com.example.halagodainv.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "news")
-public class NewsEntity {
+@Builder
+public class NewsEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_news")
@@ -51,154 +61,4 @@ public class NewsEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "newsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NewsLanguageEntity> imageBrandMains = new ArrayList<>();
-
-    public NewsEntity() {
-    }
-
-    public NewsEntity(int idNews, String thumbnail, Date created, int type, String titleSeo, String linkPapers, Long topicId, int productId, int isProduct, String tagId, String tagName, Boolean isHot, String authorName, String authorAvatar, Long representativeId, List<NewsLanguageEntity> imageBrandMains) {
-        this.idNews = idNews;
-        this.thumbnail = thumbnail;
-        this.created = created;
-        this.type = type;
-        this.titleSeo = titleSeo;
-        this.linkPapers = linkPapers;
-        this.topicId = topicId;
-        this.productId = productId;
-        this.isProduct = isProduct;
-        this.tagId = tagId;
-        this.tagName = tagName;
-        this.isHot = isHot;
-        this.authorName = authorName;
-        this.authorAvatar = authorAvatar;
-        this.representativeId = representativeId;
-        this.imageBrandMains = imageBrandMains;
-    }
-
-    public void setIdNews(int idNews) {
-        this.idNews = idNews;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public void setTitleSeo(String titleSeo) {
-        this.titleSeo = titleSeo;
-    }
-
-    public void setLinkPapers(String linkPapers) {
-        this.linkPapers = linkPapers;
-    }
-
-    public void setTopicId(Long topicId) {
-        this.topicId = topicId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public void setIsProduct(int isProduct) {
-        this.isProduct = isProduct;
-    }
-
-    public void setTagId(String tagId) {
-        this.tagId = tagId;
-    }
-
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
-
-    public void setHot(Boolean hot) {
-        isHot = hot;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
-
-    public void setAuthorAvatar(String authorAvatar) {
-        this.authorAvatar = authorAvatar;
-    }
-
-    public void setRepresentativeId(Long representativeId) {
-        this.representativeId = representativeId;
-    }
-
-    public void setImageBrandMains(List<NewsLanguageEntity> imageBrandMains) {
-        this.imageBrandMains = imageBrandMains;
-    }
-
-    public int getIdNews() {
-        return idNews;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public String getTitleSeo() {
-        return titleSeo;
-    }
-
-    public String getLinkPapers() {
-        return linkPapers;
-    }
-
-    public Long getTopicId() {
-        return topicId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public int getIsProduct() {
-        return isProduct;
-    }
-
-    public String getTagId() {
-        return tagId;
-    }
-
-    public String getTagName() {
-        return tagName;
-    }
-
-    public Boolean getHot() {
-        return isHot;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public String getAuthorAvatar() {
-        return authorAvatar;
-    }
-
-    public Long getRepresentativeId() {
-        return representativeId;
-    }
-
-    public List<NewsLanguageEntity> getImageBrandMains() {
-        return imageBrandMains;
-    }
 }

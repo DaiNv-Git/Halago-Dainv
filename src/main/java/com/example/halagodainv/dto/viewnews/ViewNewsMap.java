@@ -1,6 +1,6 @@
 package com.example.halagodainv.dto.viewnews;
 
-import com.example.halagodainv.service.impl.InfluencerServiceImpl;
+import com.example.halagodainv.until.ConvertString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class ViewNewsMap {
             this.content = content;
             this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
             this.topicId = Integer.parseInt(String.valueOf(topicId));
-            this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
+            this.tagId = ConvertString.parseStringToListOfIntegers(tagId);
             this.img = img;
             this.description = description;
     }

@@ -17,6 +17,7 @@ import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.CampaignUserResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.CampaignService;
+import com.example.halagodainv.until.ConvertString;
 import com.example.halagodainv.until.DateUtilFormat;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +70,7 @@ public class CampaignServiceImpl implements CampaignService {
     public Object getRelateToCampaigns(List<Integer> industryIds, int camId, int workStatus, String language) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select * from campaign cam where ");
-        String industry = InfluencerServiceImpl.parseListIntegerToString(industryIds);
+        String industry = ConvertString.parseListIntegerToString(industryIds);
         if (!StringUtils.isEmpty(industry) && campaignRepository.findByIdAndIndustryId(camId, industry).isPresent()) {
             stringBuilder.append("( ");
             for (int i = 0; i < industryIds.size(); i++) {
@@ -115,10 +116,10 @@ public class CampaignServiceImpl implements CampaignService {
             CampaignEntity campaignEntity = new CampaignEntity();
             campaignEntity.setCampaignName(campaignAddRequest.getCampaignName());
             campaignEntity.setCampaignNameEN(campaignAddRequest.getCampaignNameEN());
-            campaignEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignAddRequest.getIndustryId()));
+            campaignEntity.setIndustryId(ConvertString.parseListIntegerToString(campaignAddRequest.getIndustryId()));
             campaignEntity.setImg(fileImageUtil.uploadImage(campaignAddRequest.getImage()));
-            campaignEntity.setCampaignCategory(InfluencerServiceImpl.parseListIntegerToString(campaignAddRequest.getCampaignCategory()));
-            campaignEntity.setCampaignCommunication(InfluencerServiceImpl.parseListIntegerToString(campaignAddRequest.getCampaignCommunication()));
+            campaignEntity.setCampaignCategory(ConvertString.parseListIntegerToString(campaignAddRequest.getCampaignCategory()));
+            campaignEntity.setCampaignCommunication(ConvertString.parseListIntegerToString(campaignAddRequest.getCampaignCommunication()));
             campaignEntity.setWorkStatus(campaignAddRequest.getWorkStatus());
             campaignEntity.setImage1(fileImageUtil.uploadImage(campaignAddRequest.getThumbnail1()));
             campaignEntity.setImage2(fileImageUtil.uploadImage(campaignAddRequest.getThumbnail2()));
@@ -155,10 +156,10 @@ public class CampaignServiceImpl implements CampaignService {
 
             editEntity.setCampaignName(campaignEditRequest.getCampaignName());
             editEntity.setCampaignNameEN(campaignEditRequest.getCampaignNameEN());
-            editEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getIndustryId()));
+            editEntity.setIndustryId(ConvertString.parseListIntegerToString(campaignEditRequest.getIndustryId()));
             editEntity.setImg(fileImageUtil.uploadImage(campaignEditRequest.getImage()));
-            editEntity.setCampaignCategory(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCategory()));
-            editEntity.setCampaignCommunication(InfluencerServiceImpl.parseListIntegerToString(campaignEditRequest.getCampaignCommunication()));
+            editEntity.setCampaignCategory(ConvertString.parseListIntegerToString(campaignEditRequest.getCampaignCategory()));
+            editEntity.setCampaignCommunication(ConvertString.parseListIntegerToString(campaignEditRequest.getCampaignCommunication()));
             editEntity.setWorkStatus(campaignEditRequest.getWorkStatus());
             editEntity.setImage1(fileImageUtil.uploadImage(campaignEditRequest.getThumbnail1()));
             editEntity.setImage2(fileImageUtil.uploadImage(campaignEditRequest.getThumbnail2()));

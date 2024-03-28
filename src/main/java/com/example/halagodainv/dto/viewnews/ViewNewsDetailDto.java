@@ -1,6 +1,7 @@
 package com.example.halagodainv.dto.viewnews;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ViewNewsDetailDto {
     private int id;
     private String title;
@@ -17,6 +19,7 @@ public class ViewNewsDetailDto {
     private String description;
     private String createdDate;
     private List<Integer> tagId;
+    private String tagName;
     private int topicId;
     private String topicName;
 }

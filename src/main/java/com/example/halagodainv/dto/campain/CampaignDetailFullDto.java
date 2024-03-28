@@ -2,6 +2,7 @@ package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.service.impl.InfluencerServiceImpl;
+import com.example.halagodainv.until.ConvertString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,9 +57,9 @@ public class CampaignDetailFullDto {
         this.otherEN = campaignEntity.getOtherEN();
         this.hashtag = campaignEntity.getHashtag();
         this.timeDeadline = campaignEntity.getTimeDeadline();
-        this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
-        this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
-        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getIndustryId());
+        this.campaignCategory = ConvertString.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
+        this.campaignCommunication = ConvertString.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
+        this.industryId = ConvertString.parseStringToListOfIntegers(campaignEntity.getIndustryId());
         this.brandName = campaignEntity.getBrandName();
         this.thumbnail1 = campaignEntity.getImage1();
         this.thumbnail2 = campaignEntity.getImage2();

@@ -1,6 +1,7 @@
 package com.example.halagodainv.dto.page;
 
 import com.example.halagodainv.service.impl.InfluencerServiceImpl;
+import com.example.halagodainv.until.ConvertString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class PageDto {
         this.link = link;
         this.follower = follower;
         this.expense = expense;
-        this.industryId = InfluencerServiceImpl.parseStringToListOfIntegers(industryId);
+        this.industryId = ConvertString.parseStringToListOfIntegers(industryId);
         this.industry = industry;
         this.created = DateFormatUtils.format(created, "yyyy-MM-dd");
     }
