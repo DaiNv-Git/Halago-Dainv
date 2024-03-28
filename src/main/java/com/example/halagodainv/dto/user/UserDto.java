@@ -34,6 +34,8 @@ public class UserDto {
                 return "Marketing";
             case 3:
                 return "Project";
+            case 4:
+                return "InfuCampaign";
         }
         return "";
     }

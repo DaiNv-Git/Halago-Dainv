@@ -38,6 +38,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -58,15 +59,19 @@ public class InfluencerServiceImpl implements InfluencerService {
         int offset = 0;
         if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
         Pageable pageable = PageRequest.of(offset, search.getPageSize());
-        Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search, offset));
-        List<InflucerMenuDto> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
-        Query nativeQueryCount = entityManager.createNativeQuery(countInfluQuery(search));
-        List<InflucerMenuDto> countQuery = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class)).getResultList();
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(influcerMenuDtos) ? new ArrayList<>() : influcerMenuDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size()));
+        Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search));
+        nativeQuery.unwrap(NativeQuery.class)
+                .setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class));
+//                .setFirstResult((int) pageable.getOffset())
+//                .setMaxResults(pageable.getPageSize());
+        List<InflucerMenuDto> influcerMenuDtos = nativeQuery.getResultList();
+        List<InflucerMenuDto> listCount = entityManager.createNativeQuery(countInfluQuery(search)).getResultList();
+        int totalCount = CollectionUtils.isEmpty(listCount) ? 0 : listCount.size();
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, totalCount));
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
-    private static String StrSqlQuery(InfluencerSearch search, int offset) {
+    private static String StrSqlQuery(InfluencerSearch search) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
                 "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
@@ -74,7 +79,6 @@ public class InfluencerServiceImpl implements InfluencerService {
                 "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
         strSqlQuerySearch(search, stringBuilder);
-//        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
         return stringBuilder.toString();
     }
 
@@ -207,7 +211,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             influencer.setAccountNumber(request.getBankNumber());
             influencer.setUserId(request.getUserId());
             influencer.setCreated(new Date());
-            if (request.getIndustry().size() > 0) {
+            if (!request.getIndustry().isEmpty()) {
                 influencer.setIndustry(parseListIntegerToString(request.getIndustry()));
                 List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
                 StringJoiner stringJoiner = new StringJoiner(", ");
@@ -218,7 +222,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             }
             influencer.setAddress(request.getAddress());
             influencer.setProvinceId(request.getProvinceId());
-            if (request.getClassifyId().size() > 0) {
+            if (!request.getClassifyId().isEmpty()) {
                 influencer.setClassifyId(parseListIntegerToString(request.getClassifyId()));
                 List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
                 StringJoiner stringJoiner = new StringJoiner(", ");
@@ -227,18 +231,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                 });
                 influencer.setClassifyName(stringJoiner.toString());
             }
-            if (!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb())) {
-                influencer.setFacebook(true);
-            }
-            if (!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT())) {
-                influencer.setTiktok(true);
-            }
-            if (!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT())) {
-                influencer.setYoutube(true);
-            }
-            if (!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns())) {
-                influencer.setInstagram(true);
-            }
+            influencer.setFacebook(!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb()));
+            influencer.setTiktok(!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT()));
+            influencer.setYoutube(!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT()));
+            influencer.setInstagram(!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns()));
             influencer = influencerEntityRepository.save(influencer);
             if (Boolean.TRUE.equals(influencer.isFacebook())) {
                 InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
@@ -309,7 +305,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 entity.get().setEmail(request.getEmail());
                 entity.get().setBankId(request.getBankId().toUpperCase());
                 entity.get().setAccountNumber(request.getBankNumber());
-                if (request.getIndustry().size() > 0) {
+                if (!request.getIndustry().isEmpty()) {
                     entity.get().setIndustry(parseListIntegerToString(request.getIndustry()));
                     List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
                     StringJoiner stringJoiner = new StringJoiner(", ");
@@ -322,7 +318,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 entity.get().setProvinceId(request.getProvinceId()
 
                 );
-                if (request.getClassifyId().size() > 0) {
+                if (!request.getClassifyId().isEmpty()) {
                     entity.get().setClassifyId(parseListIntegerToString(request.getClassifyId()));
                     List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
                     StringJoiner stringJoiner = new StringJoiner(", ");
@@ -334,26 +330,10 @@ public class InfluencerServiceImpl implements InfluencerService {
                     entity.get().setClassifyId("");
                     entity.get().setClassifyName("");
                 }
-                if (!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb())) {
-                    entity.get().setFacebook(true);
-                } else {
-                    entity.get().setFacebook(false);
-                }
-                if (!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT())) {
-                    entity.get().setTiktok(true);
-                } else {
-                    entity.get().setTiktok(false);
-                }
-                if (!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT())) {
-                    entity.get().setYoutube(true);
-                } else {
-                    entity.get().setYoutube(false);
-                }
-                if (!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns())) {
-                    entity.get().setInstagram(true);
-                } else {
-                    entity.get().setInstagram(false);
-                }
+                entity.get().setFacebook(!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb()));
+                entity.get().setTiktok(!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT()));
+                entity.get().setYoutube(!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT()));
+                entity.get().setInstagram(!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns()));
                 influencerEntityRepository.save(entity.get());
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
@@ -407,17 +387,17 @@ public class InfluencerServiceImpl implements InfluencerService {
     public Object delete(long id) {
         try {
             Optional<InfluencerEntity> influencer = influencerEntityRepository.findById(id);
-            if (!influencer.isPresent()) {
-                return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
+            if (influencer.isEmpty()) {
+                return new ErrorResponse<>(Constant.FAILED, "Xóa  thất bại", new ErrorResponse<>(0, "Xóa  thất bại", null));
             }
             influencerDetailRepository.deleteByInfluId(id);
             influencerEntityRepository.deleteById(id);
-            if (influencer.get().getUserId() != null) {
+            if (influencer.get().getUserId() != null && influencer.get().getUserId() > 0) {
                 userRepository.deleteById(influencer.get().getUserId());
             }
-            return new BaseResponse(Constant.SUCCESS, "Xóa  thành công", new BaseResponse(1, "Xóa  thành công", null));
+            return new BaseResponse<>(Constant.SUCCESS, "Xóa  thành công", new BaseResponse<>(1, "Xóa  thành công", null));
         } catch (Exception e) {
-            return new BaseResponse(Constant.FAILED, "Xóa  thất bại", new BaseResponse(0, "Xóa  thất bại", null));
+            return new ErrorResponse<>(Constant.FAILED, "Xóa  thất bại", new ErrorResponse<>(0, "Xóa  thất bại", null));
 
         }
     }

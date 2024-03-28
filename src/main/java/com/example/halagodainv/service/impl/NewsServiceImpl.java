@@ -179,6 +179,7 @@ public class NewsServiceImpl implements NewsService {
         viewNewsDetailDto.setImg(viewNewsMaps.getImg());
         viewNewsDetailDto.setContent(viewNewsMaps.getContent());
         viewNewsDetailDto.setCreatedDate(viewNewsMaps.getCreatedDate());
+        viewNewsDetailDto.setDescription(viewNewsMaps.getDescription());
         viewNewsDetailDto.setTagId(viewNewsMaps.getTagId());
         viewNewsDetailDto.setTopicId(viewNewsMaps.getTopicId());
         TopicEntity topic = topicRepository.findById((long) viewNewsMaps.getTopicId()).get();

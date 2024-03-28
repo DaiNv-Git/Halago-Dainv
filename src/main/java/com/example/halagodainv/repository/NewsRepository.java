@@ -1,7 +1,6 @@
 package com.example.halagodainv.repository;
 
 
-import com.example.halagodainv.dto.hompage.NewsTenDto;
 import com.example.halagodainv.dto.news.NewDetails;
 import com.example.halagodainv.dto.viewnews.ViewNewAndHot;
 import com.example.halagodainv.dto.viewnews.ViewNewsMap;
@@ -24,7 +23,7 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
             "left join CategoryEntity c on c.id = n.type where n.idNews =:idNews ")
     List<NewDetails> getHomeLanguage(@Param("idNews") int idNews);
 
-    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.content,n.created,n.topicId,n.tagId,n.thumbnail) from  NewsEntity n " +
+    @Query("select new com.example.halagodainv.dto.viewnews.ViewNewsMap(n.idNews,nl.title,nl.content,n.created,n.topicId,n.tagId,n.thumbnail,nl.description) from  NewsEntity n " +
             "left join NewsLanguageEntity nl on n.idNews = nl.newsEntity.idNews " +
             "where nl.language =:#{#language} and n.idNews =:#{#id}")
     ViewNewsMap getDetailView(@Param("language") String language, @Param("id") Integer id);
@@ -49,5 +48,4 @@ public interface NewsRepository extends JpaRepository<NewsEntity, Integer> {
 
     List<NewsEntity> findAllByRepresentativeId(Long id);
 
-    List<NewsEntity> findAllByRepresentativeIdIn(List<Long> isProduct);
 }

@@ -20,8 +20,9 @@ public class ViewNewsMap {
     private int topicId;
     private List<Integer> tagId;
     private String img;
+    private String description;
 
-    public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img) {
+    public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img,String description) {
             this.id = id;
             this.title = title;
             this.content = content;
@@ -29,5 +30,6 @@ public class ViewNewsMap {
             this.topicId = Integer.parseInt(String.valueOf(topicId));
             this.tagId = InfluencerServiceImpl.parseStringToListOfIntegers(tagId);
             this.img = img;
+            this.description = description;
     }
 }
