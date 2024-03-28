@@ -67,7 +67,7 @@ public class NewsServiceImpl implements NewsService {
                 .append("CASE ")
                 .append("WHEN n.topic_id = 1 THEN 'Các dự án đã triển khai' ")
                 .append("WHEN n.topic_id = 2 THEN 'Dự án hợp tác cùng KOL,Celeb' ")
-                .append("WHEN n.topic_id = 3 THEN 'Tin tức HOT về Influencer KO' ")
+                .append("WHEN n.topic_id = 3 THEN 'Tin tức HOT về Influencer KOL' ")
                 .append("WHEN n.topic_id = 4 THEN 'Cập nhật tin tức về thị trường Influencer marketing' ")
                 .append("WHEN n.topic_id = 5 THEN 'Phương pháp tối ưu hiệu quả khi triển khai Influencer marketing' ")
                 .append("WHEN n.topic_id = 6 THEN 'Case study cùng nhãn hàng' ")
