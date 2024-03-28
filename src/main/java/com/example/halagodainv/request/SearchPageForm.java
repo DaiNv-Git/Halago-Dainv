@@ -12,4 +12,8 @@ public class SearchPageForm {
     private int pageNo = 1;
     private String startDate = "1000-01-01";
     private String endDate = "9999-01-01";
+
+    public int getOffset(){
+        return this.pageNo > 0 ? this.pageNo - 1 : 0;
+    }
 }

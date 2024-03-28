@@ -18,7 +18,7 @@ import com.example.halagodainv.request.influencer.InfluencerSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.InfluencerService;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+import com.example.halagodainv.until.ConvertString;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -38,7 +38,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -55,133 +54,73 @@ public class InfluencerServiceImpl implements InfluencerService {
     @PersistenceContext
     private final EntityManager entityManager;
 
+    @Override
     public Object getAll(InfluencerSearch search) {
-        int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
-        Pageable pageable = PageRequest.of(offset, search.getPageSize());
+        Pageable pageable = PageRequest.of(search.getOffset(), search.getPageSize());
+
         Query nativeQuery = entityManager.createNativeQuery(StrSqlQuery(search));
+
         nativeQuery.unwrap(NativeQuery.class)
                 .setResultTransformer(Transformers.aliasToBean(InflucerMenuDto.class));
 //                .setFirstResult((int) pageable.getOffset())
 //                .setMaxResults(pageable.getPageSize());
         List<InflucerMenuDto> influcerMenuDtos = nativeQuery.getResultList();
-        List<InflucerMenuDto> listCount = entityManager.createNativeQuery(countInfluQuery(search)).getResultList();
-        int totalCount = CollectionUtils.isEmpty(listCount) ? 0 : listCount.size();
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, totalCount));
+
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(influcerMenuDtos, pageable, getCountInflu(search)));
         return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
     }
 
-    private static String StrSqlQuery(InfluencerSearch search) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
-                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
-                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
-                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
-                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
-        strSqlQuerySearch(search, stringBuilder);
-        return stringBuilder.toString();
-    }
-
-    private static String countInfluQuery(InfluencerSearch search) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
-                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
-                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
-                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
-                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
-        strSqlQuerySearch(search, stringBuilder);
-        return stringBuilder.toString();
-    }
-
+    @Override
     public Object getSubInflu(InfluencerSearch search) {
-        int offset = 0;
-        if (search.getPageNo() > 0) offset = search.getPageNo() - 1;
+        Pageable pageable = PageRequest.of(search.getOffset(), search.getPageSize());
+        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(getSubListInflu(search, pageable), pageable, getCountInflu(search)));
+        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+    }
+
+    private List<InflucerDtoSubMenu> getSubListInflu(InfluencerSearch search, Pageable pageable) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
                 "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
                 "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
         strSqlQuerySearch(search, stringBuilder);
-        stringBuilder.append(" limit ").append(search.getPageSize()).append(" offset ").append(offset * 10);
-        Pageable pageable = PageRequest.of(offset, search.getPageSize());
+
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
-        List<InflucerDtoSubMenu> influcerMenuDtos;
-        List<InflucerDtoSubMenu> influcerMenuCount = new ArrayList<>();
-        if (isCheckBooleanSearch(search.getIsInstagram()) || isCheckBooleanSearch(search.getIsYoutube()) || isCheckBooleanSearch(search.getIsTikTok()) || isCheckBooleanSearch(search.getIsFacebook())) {
-            influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class)).getResultList();
-            StringBuilder countSubInflu = new StringBuilder();
-            countSubInflu.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
-                    "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
-                    "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
-                    "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
-            strSqlQuerySearch(search, countSubInflu);
-            Query nativeQueryCount = entityManager.createNativeQuery(stringBuilder.toString());
-            influcerMenuCount = nativeQueryCount.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class)).getResultList();
-        } else {
-            influcerMenuDtos = new ArrayList<>();
-        }
-        PageResponse<?> pageResponse = new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(influcerMenuDtos) ? new ArrayList<>() : influcerMenuDtos, pageable, CollectionUtils.isEmpty(influcerMenuCount) ? 0 : influcerMenuCount.size()));
-        return new BaseResponse<>(HttpStatus.OK.value(), "Lấy thành công", pageResponse);
+
+        List<InflucerDtoSubMenu> influcerMenuDtos = nativeQuery.unwrap(NativeQuery.class)
+                .setResultTransformer(Transformers.aliasToBean(InflucerDtoSubMenu.class))
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+        return CollectionUtils.isEmpty(influcerMenuDtos) ? new ArrayList<>() : influcerMenuDtos;
     }
 
-
-    private static String isStartYear(String value) {
-        return StringUtils.isEmpty(value) ? "1900" : value;
-    }
-
-    private static String isEndYear(String value) {
-        return StringUtils.isEmpty(value) ? "9999" : value;
-    }
-
-
-    private static boolean isCheckBooleanSearch(Boolean value) {
-        return Boolean.TRUE.equals(value);
+    private int getCountInflu(InfluencerSearch search) {
+        List<InflucerMenuDto> listCount = entityManager.createNativeQuery(countInfluQuery(search)).getResultList();
+        return CollectionUtils.isEmpty(listCount) ? 0 : listCount.size();
     }
 
     @Override
     public Object findInfluencerById(long id) {
         try {
             List<InflucerDtoListDetail> influencers = influencerEntityRepository.getDetails(id);
-            Set<InfluencerDtoDetails> dtoDetailsSet = new HashSet<>();
-            InfluencerDtoDetails dtoDetails = new InfluencerDtoDetails();
-            for (InflucerDtoListDetail influencer : influencers) {
-                dtoDetails.setId(influencer.getId());
-                dtoDetails.setName(influencer.getName());
-                dtoDetails.setAddress(influencer.getAddress());
-                dtoDetails.setBankId(influencer.getBankId());
-                dtoDetails.setClassifyId(parseStringToListOfIntegers(influencer.getClassify()));
-                dtoDetails.setBankNumber(influencer.getBankNumber());
-                dtoDetails.setBirtYear(influencer.getBirtYear());
-                dtoDetails.setSex(influencer.getSex());
-                dtoDetails.setEmail(influencer.getEmail());
-                dtoDetails.setProvinceId(influencer.getProvinceId());
-                dtoDetails.setBirtYear(influencer.getBirtYear());
-                dtoDetails.setCreateHistory(DateFormatUtils.format(influencer.getCreateHistory(), "yyyy-MM-dd"));
-                dtoDetails.setPhone(influencer.getPhone());
-                dtoDetails.setIndustry(parseStringToListOfIntegers(influencer.getIndustry()));
-                if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
-                    dtoDetails.setLinkFb(influencer.getLink());
-                    dtoDetails.setExpenseFb(influencer.getExpense());
-                    dtoDetails.setFollowerFb(influencer.getFollower());
-                }
-                if ("YOUTUBE".toUpperCase().equals(influencer.getChannel())) {
-                    dtoDetails.setLinkYT(influencer.getLink());
-                    dtoDetails.setExpenseYT(influencer.getExpense());
-                    dtoDetails.setFollowerYT(influencer.getFollower());
-                }
-                if ("TIKTOK".toUpperCase().equals(influencer.getChannel())) {
-                    dtoDetails.setLinkTT(influencer.getLink());
-                    dtoDetails.setExpenseTT(influencer.getExpense());
-                    dtoDetails.setFollowerTT(influencer.getFollower());
-                }
-                if ("INSTAGRAM".toUpperCase().equals(influencer.getChannel())) {
-                    dtoDetails.setLinkIns(influencer.getLink());
-                    dtoDetails.setExpenseIns(influencer.getExpense());
-                    dtoDetails.setFollowerIns(influencer.getFollower());
-                }
-            }
-            dtoDetailsSet.add(dtoDetails);
-            return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetailsSet);
+            InfluencerDtoDetails dtoDetails = InfluencerDtoDetails.builder()
+                    .id(influencers.get(0).getId())
+                    .name(influencers.get(0).getName())
+                    .address(influencers.get(0).getAddress())
+                    .bankId(influencers.get(0).getBankId())
+                    .classifyId(ConvertString.parseStringToListOfIntegers(influencers.get(0).getClassify()))
+                    .bankNumber(influencers.get(0).getBankNumber())
+                    .birtYear(influencers.get(0).getBirtYear())
+                    .sex(influencers.get(0).getSex())
+                    .email(influencers.get(0).getEmail())
+                    .provinceId(influencers.get(0).getProvinceId())
+                    .birtYear(influencers.get(0).getBirtYear())
+                    .createHistory(DateFormatUtils.format(influencers.get(0).getCreateHistory(), "yyyy-MM-dd"))
+                    .phone(influencers.get(0).getPhone())
+                    .industry(ConvertString.parseStringToListOfIntegers(influencers.get(0).getIndustry())).build();
+            setSocial(dtoDetails, influencers);
+            return new BaseResponse<>(HttpStatus.OK.value(), "Tìm thành công", dtoDetails);
         } catch (Exception e) {
             return new ErrorResponse<>(500, "Tìm thất bại", null);
         }
@@ -199,78 +138,21 @@ public class InfluencerServiceImpl implements InfluencerService {
             if (isCheckPhone.isPresent()) {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
             }
-            InfluencerEntity influencer = new InfluencerEntity();
-            List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
-            influencer.setInflucerName(request.getName());
-            influencer.setHistoryCreated(new Date());
-            influencer.setSex(request.getSex());
-            influencer.setPhone(request.getPhone());
-            influencer.setYearOld(String.valueOf(request.getBirtYear()));
-            influencer.setEmail(request.getEmail());
-            influencer.setBankId(request.getBankId().toUpperCase());
-            influencer.setAccountNumber(request.getBankNumber());
-            influencer.setUserId(request.getUserId());
-            influencer.setCreated(new Date());
-            if (!request.getIndustry().isEmpty()) {
-                influencer.setIndustry(parseListIntegerToString(request.getIndustry()));
-                List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
-                StringJoiner stringJoiner = new StringJoiner(", ");
-                industryEntities.forEach(industryEntity -> {
-                    stringJoiner.add(industryEntity.getIndustryName());
-                });
-                influencer.setIndustryName(stringJoiner.toString());
-            }
-            influencer.setAddress(request.getAddress());
-            influencer.setProvinceId(request.getProvinceId());
-            if (!request.getClassifyId().isEmpty()) {
-                influencer.setClassifyId(parseListIntegerToString(request.getClassifyId()));
-                List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
-                StringJoiner stringJoiner = new StringJoiner(", ");
-                classifyEntities.forEach(classifyEntity -> {
-                    stringJoiner.add(classifyEntity.getName());
-                });
-                influencer.setClassifyName(stringJoiner.toString());
-            }
-            influencer.setFacebook(!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb()));
-            influencer.setTiktok(!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT()));
-            influencer.setYoutube(!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT()));
-            influencer.setInstagram(!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns()));
+            InfluencerEntity influencer = save(request);
             influencer = influencerEntityRepository.save(influencer);
+            //add detail
+            List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
             if (Boolean.TRUE.equals(influencer.isFacebook())) {
-                InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
-                detailEntityFacebook.setChannel("FACEBOOK".toUpperCase());
-                detailEntityFacebook.setFollower(request.getFollowerFb());
-                detailEntityFacebook.setExpense(request.getExpenseFb());
-                detailEntityFacebook.setUrl(request.getLinkFb());
-                detailEntityFacebook.setInfluId(influencer.getId());
-                influencerDetailEntities.add(detailEntityFacebook);
+                influencerDetailEntities.add(saveDetail(influencer, request, "FACEBOOK"));
             }
             if (Boolean.TRUE.equals(influencer.isTiktok())) {
-                InfluencerDetailEntity detailEntityTikTok = new InfluencerDetailEntity();
-                detailEntityTikTok.setChannel("TIKTOK".toUpperCase());
-                detailEntityTikTok.setFollower(request.getFollowerTT());
-                detailEntityTikTok.setExpense(request.getExpenseTT());
-                detailEntityTikTok.setUrl(request.getLinkTT());
-                detailEntityTikTok.setInfluId(influencer.getId());
-                influencerDetailEntities.add(detailEntityTikTok);
+                influencerDetailEntities.add(saveDetail(influencer, request, "TIKTOK"));
             }
             if (Boolean.TRUE.equals(influencer.isYoutube())) {
-                InfluencerDetailEntity detailEntityYoutube = new InfluencerDetailEntity();
-                detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
-                detailEntityYoutube.setFollower(request.getFollowerYT());
-                detailEntityYoutube.setExpense(request.getExpenseYT());
-                detailEntityYoutube.setUrl(String.valueOf(request.getLinkYT()));
-                detailEntityYoutube.setInfluId(influencer.getId());
-                influencerDetailEntities.add(detailEntityYoutube);
+                influencerDetailEntities.add(saveDetail(influencer, request, "YOUTUBE"));
             }
             if (Boolean.TRUE.equals(influencer.isInstagram())) {
-                InfluencerDetailEntity detailEntityInstagram = new InfluencerDetailEntity();
-                detailEntityInstagram.setChannel("INSTAGRAM".toUpperCase());
-                detailEntityInstagram.setFollower(request.getFollowerIns());
-                detailEntityInstagram.setExpense(request.getExpenseIns());
-                detailEntityInstagram.setUrl(String.valueOf(request.getLinkIns()));
-                detailEntityInstagram.setInfluId(influencer.getId());
-                influencerDetailEntities.add(detailEntityInstagram);
+                influencerDetailEntities.add(saveDetail(influencer, request, "INSTAGRAM"));
             }
             influencerDetailRepository.saveAll(influencerDetailEntities);
             return new BaseResponse<>(HttpStatus.OK.value(), "Thêm thành công", findInfluencerById(influencer.getId()));
@@ -279,7 +161,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
-
+    @Override
     public Object edit(InfluencerAddRequest request) {
         try {
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
@@ -297,80 +179,19 @@ public class InfluencerServiceImpl implements InfluencerService {
                 if (isCheckPhone.isPresent()) {
                     return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
                 }
-                entity.get().setInflucerName(request.getName());
-                entity.get().setHistoryCreated(new Date());
-                entity.get().setSex(request.getSex());
-                entity.get().setPhone(request.getPhone());
-                entity.get().setYearOld(String.valueOf(request.getBirtYear()));
-                entity.get().setEmail(request.getEmail());
-                entity.get().setBankId(request.getBankId().toUpperCase());
-                entity.get().setAccountNumber(request.getBankNumber());
-                if (!request.getIndustry().isEmpty()) {
-                    entity.get().setIndustry(parseListIntegerToString(request.getIndustry()));
-                    List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
-                    StringJoiner stringJoiner = new StringJoiner(", ");
-                    industryEntities.forEach(industryEntity -> {
-                        stringJoiner.add(industryEntity.getIndustryName());
-                    });
-                    entity.get().setIndustryName(stringJoiner.toString());
-                }
-                entity.get().setAddress(request.getAddress());
-                entity.get().setProvinceId(request.getProvinceId()
-
-                );
-                if (!request.getClassifyId().isEmpty()) {
-                    entity.get().setClassifyId(parseListIntegerToString(request.getClassifyId()));
-                    List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
-                    StringJoiner stringJoiner = new StringJoiner(", ");
-                    classifyEntities.forEach(classifyEntity -> {
-                        stringJoiner.add(classifyEntity.getName());
-                    });
-                    entity.get().setClassifyName(stringJoiner.toString());
-                } else {
-                    entity.get().setClassifyId("");
-                    entity.get().setClassifyName("");
-                }
-                entity.get().setFacebook(!StringUtils.isBlank(request.getLinkFb()) || !StringUtils.isBlank(request.getFollowerFb()) || !StringUtils.isBlank(request.getExpenseFb()));
-                entity.get().setTiktok(!StringUtils.isBlank(request.getLinkTT()) || !StringUtils.isBlank(request.getFollowerTT()) || !StringUtils.isBlank(request.getExpenseTT()));
-                entity.get().setYoutube(!StringUtils.isBlank(request.getLinkYT()) || !StringUtils.isBlank(request.getFollowerYT()) || !StringUtils.isBlank(request.getExpenseYT()));
-                entity.get().setInstagram(!StringUtils.isBlank(request.getLinkIns()) || !StringUtils.isBlank(request.getFollowerIns()) || !StringUtils.isBlank(request.getExpenseIns()));
-                influencerEntityRepository.save(entity.get());
+                influencerEntityRepository.save(save(request));
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
-                    InfluencerDetailEntity detailEntityFacebook = new InfluencerDetailEntity();
-                    detailEntityFacebook.setChannel("FACEBOOK".toUpperCase());
-                    detailEntityFacebook.setFollower(request.getFollowerFb());
-                    detailEntityFacebook.setExpense(request.getExpenseFb());
-                    detailEntityFacebook.setUrl(request.getLinkFb());
-                    detailEntityFacebook.setInfluId(entity.get().getId());
-                    influencerDetailEntities.add(detailEntityFacebook);
+                    influencerDetailEntities.add(saveDetail(entity.get(), request, "FACEBOOK"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isTiktok())) {
-                    InfluencerDetailEntity detailEntityTikTok = new InfluencerDetailEntity();
-                    detailEntityTikTok.setChannel("TIKTOK".toUpperCase());
-                    detailEntityTikTok.setFollower(request.getFollowerTT());
-                    detailEntityTikTok.setExpense(request.getExpenseTT());
-                    detailEntityTikTok.setUrl(request.getLinkTT());
-                    detailEntityTikTok.setInfluId(entity.get().getId());
-                    influencerDetailEntities.add(detailEntityTikTok);
+                    influencerDetailEntities.add(saveDetail(entity.get(), request, "TIKTOK"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isYoutube())) {
-                    InfluencerDetailEntity detailEntityYoutube = new InfluencerDetailEntity();
-                    detailEntityYoutube.setChannel("YOUTUBE".toUpperCase());
-                    detailEntityYoutube.setFollower(request.getFollowerYT());
-                    detailEntityYoutube.setExpense(request.getExpenseYT());
-                    detailEntityYoutube.setUrl(String.valueOf(request.getLinkYT()));
-                    detailEntityYoutube.setInfluId(entity.get().getId());
-                    influencerDetailEntities.add(detailEntityYoutube);
+                    influencerDetailEntities.add(saveDetail(entity.get(), request, "YOUTUBE"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isInstagram())) {
-                    InfluencerDetailEntity detailEntityInstagram = new InfluencerDetailEntity();
-                    detailEntityInstagram.setChannel("INSTAGRAM".toUpperCase());
-                    detailEntityInstagram.setFollower(request.getFollowerIns());
-                    detailEntityInstagram.setExpense(request.getExpenseIns());
-                    detailEntityInstagram.setUrl(String.valueOf(request.getLinkIns()));
-                    detailEntityInstagram.setInfluId(entity.get().getId());
-                    influencerDetailEntities.add(detailEntityInstagram);
+                    influencerDetailEntities.add(saveDetail(entity.get(), request, "INSTAGRAM"));
                 }
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
@@ -402,6 +223,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
+    @Override
     public byte[] exportExcel(InfluencerSearch search) {
         try {
             List<InfluencerExportExcelDto> exportAllData = getExportExcel(search);
@@ -445,8 +267,8 @@ public class InfluencerServiceImpl implements InfluencerService {
                 "FROM influencer_entity ie \n" +
                 "left join influencer_detail id on ie.id = id.influ_id\n" +
                 "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
-        if (search.getIds().size() > 0) {
-            stringBuilder.append(" and ie.id in(").append(InfluencerServiceImpl.parseListIntegerToString(search.getIds())).append(")");
+        if (!search.getIds().isEmpty()) {
+            stringBuilder.append(" and ie.id in(").append(ConvertString.parseListIntegerToString(search.getIds())).append(")");
         }
         strSqlQuerySearch(search, stringBuilder);
         return stringBuilder.toString();
@@ -467,29 +289,144 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
     }
 
-    public static List<Integer> parseStringToListOfIntegers(String input) {
-        List<Integer> integerList = new ArrayList<>();
-        if (!StringUtils.isBlank(input)) {
-            String[] numberStrings = input.split(",");
-            for (String numberString : numberStrings) {
-                int number = Integer.parseInt(numberString.trim());
-                integerList.add(number);
-            }
-            return integerList;
+    public boolean isCheckInforInflu(String email) {
+        return influencerEntityRepository.findByEmail(email).isPresent();
+    }
+
+    private String getIndustryName(InfluencerAddRequest request) {
+        if (!request.getIndustry().isEmpty()) {
+            List<IndustryEntity> industryEntities = industryRepository.findByIdIn(request.getIndustry());
+            StringJoiner stringJoiner = new StringJoiner(", ");
+            industryEntities.forEach(industryEntity -> {
+                stringJoiner.add(industryEntity.getIndustryName());
+            });
+            return stringJoiner.toString();
         }
-        return new ArrayList<>();
+        return "";
+    }
+
+    private String getClassify(InfluencerAddRequest request) {
+        if (!request.getClassifyId().isEmpty()) {
+            List<ClassifyEntity> classifyEntities = classifyRepository.findByIdIn(request.getClassifyId());
+            StringJoiner stringJoiner = new StringJoiner(", ");
+            classifyEntities.forEach(classifyEntity -> {
+                stringJoiner.add(classifyEntity.getName());
+            });
+            return stringJoiner.toString();
+        }
+        return "";
+    }
+
+    private InfluencerEntity save(InfluencerAddRequest request) {
+        InfluencerEntity influencer = new InfluencerEntity();
+        if (request.getId() > 0) {
+            influencer.setId(request.getId());
+        }
+        influencer = InfluencerEntity.builder()
+                .influcerName(request.getName())
+                .historyCreated(new Date())
+                .sex(request.getSex())
+                .phone(request.getPhone())
+                .yearOld(String.valueOf(request.getBirtYear()))
+                .email(request.getEmail())
+                .bankId(request.getBankId().toUpperCase())
+                .accountNumber(request.getBankNumber())
+                .userId(request.getUserId())
+                .created(new Date())
+                .industry(ConvertString.parseListIntegerToString(request.getIndustry()))
+                .industryName(getIndustryName(request))
+                .address(request.getAddress())
+                .provinceId(request.getProvinceId())
+                .classifyId(ConvertString.parseListIntegerToString(request.getClassifyId()))
+                .classifyName(getClassify(request))
+                .isFacebook(isCheckInforSocial(request.getLinkFb(), request.getFollowerFb(), request.getExpenseFb()))
+                .isTiktok(isCheckInforSocial(request.getLinkTT(), request.getFollowerTT(), request.getExpenseTT()))
+                .isYoutube(isCheckInforSocial(request.getLinkYT(), request.getFollowerYT(), request.getExpenseYT()))
+                .isInstagram(isCheckInforSocial(request.getLinkIns(), request.getFollowerIns(), request.getExpenseIns()))
+                .build();
+        return influencer;
+    }
+
+    private boolean isCheckInforSocial(String link, String follower, String expense) {
+        return !StringUtils.isBlank(link) || !StringUtils.isBlank(follower) || !StringUtils.isBlank(expense);
+    }
+
+    private InfluencerDetailEntity saveDetail(InfluencerEntity influencer, InfluencerAddRequest request, String socialNetwork) {
+        InfluencerDetailEntity addDetail = new InfluencerDetailEntity();
+        if (socialNetwork.equalsIgnoreCase("FACEBOOK")) {
+            addDetail = InfluencerDetailEntity
+                    .builder()
+                    .channel("FACEBOOK".toUpperCase())
+                    .follower(request.getFollowerFb())
+                    .expense(request.getExpenseFb())
+                    .url(request.getLinkFb())
+                    .influId(influencer.getId()).build();
+        } else if (socialNetwork.equalsIgnoreCase("YOUTUBE")) {
+            addDetail = InfluencerDetailEntity
+                    .builder()
+                    .channel("YOUTUBE".toUpperCase())
+                    .follower(request.getFollowerYT())
+                    .expense(request.getExpenseYT())
+                    .url(request.getLinkYT())
+                    .influId(influencer.getId()).build();
+        } else if (socialNetwork.equalsIgnoreCase("INSTAGRAM")) {
+            addDetail = InfluencerDetailEntity
+                    .builder()
+                    .channel("INSTAGRAM".toUpperCase())
+                    .follower(request.getFollowerIns())
+                    .expense(request.getExpenseIns())
+                    .url(request.getLinkIns())
+                    .influId(influencer.getId()).build();
+        }
+        return addDetail;
+    }
+
+    private void setSocial(InfluencerDtoDetails dtoDetails, List<InflucerDtoListDetail> influencers) {
+        for (InflucerDtoListDetail influencer : influencers) {
+            if ("FACEBOOK".toUpperCase().equals(influencer.getChannel())) {
+                dtoDetails.setLinkFb(influencer.getLink());
+                dtoDetails.setExpenseFb(influencer.getExpense());
+                dtoDetails.setFollowerFb(influencer.getFollower());
+            }
+            if ("YOUTUBE".toUpperCase().equals(influencer.getChannel())) {
+                dtoDetails.setLinkYT(influencer.getLink());
+                dtoDetails.setExpenseYT(influencer.getExpense());
+                dtoDetails.setFollowerYT(influencer.getFollower());
+            }
+            if ("TIKTOK".toUpperCase().equals(influencer.getChannel())) {
+                dtoDetails.setLinkTT(influencer.getLink());
+                dtoDetails.setExpenseTT(influencer.getExpense());
+                dtoDetails.setFollowerTT(influencer.getFollower());
+            }
+            if ("INSTAGRAM".toUpperCase().equals(influencer.getChannel())) {
+                dtoDetails.setLinkIns(influencer.getLink());
+                dtoDetails.setExpenseIns(influencer.getExpense());
+                dtoDetails.setFollowerIns(influencer.getFollower());
+            }
+        }
     }
 
 
-    public static String parseListIntegerToString(List<Integer> inputs) {
-        if (inputs.size() > 0) {
-            StringJoiner joiner = new StringJoiner(", ");
-            for (Integer integer : inputs) {
-                joiner.add(String.valueOf(integer).trim());
-            }
-            return joiner.toString();
-        }
-        return "";
+    private static String StrSqlQuery(InfluencerSearch search) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
+                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
+                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
+                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        return stringBuilder.toString();
+    }
+
+    private static String countInfluQuery(InfluencerSearch search) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name , " +
+                "ie.is_facebook as isFacebook ,ie.is_tiktok as isTikTok,ie.is_instagram as isInstagram,ie.is_youtube as isYouTube," +
+                "ie.industry as industryId ,ie.industry_name as industry,ie.phone FROM " +
+                "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
+                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+        strSqlQuerySearch(search, stringBuilder);
+        return stringBuilder.toString();
     }
 
     private static StringBuilder strSqlQuerySearch(InfluencerSearch search, StringBuilder stringBuilder) {
@@ -497,7 +434,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         if (search.getId() != null) {
             stringBuilder.append(" and ie.id like '%").append(search.getId()).append("%'");
         }
-        if(!StringUtils.isEmpty(search.getPhoneNumber())) {
+        if (!StringUtils.isEmpty(search.getPhoneNumber())) {
             stringBuilder.append(" and ie.phone like '%").append(search.getPhoneNumber()).append("%'");
         }
         if (isCheckBooleanSearch(search.getIsFacebook())) {
@@ -524,7 +461,9 @@ public class InfluencerServiceImpl implements InfluencerService {
         }
         String startYear = isStartYear(search.getStartYear());
         String endYear = isEndYear(search.getEndYear());
+
         stringBuilder.append(" and (IFNULL(ie.year_old,'') between concat('").append(startYear).append("','-00','-01') and concat('").append(endYear).append("','-31','-12'))");
+
         if (!StringUtils.isEmpty(search.getStartExpanse()) && !StringUtils.isEmpty(search.getEndExpanse())) {
             stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
         } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
@@ -532,6 +471,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         } else if (!StringUtils.isEmpty(search.getEndExpanse())) {
             stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(" 0 ").append("and").append(search.getEndExpanse().trim()).append(")");
         }
+
         if (!StringUtils.isEmpty(search.getStartFollower()) && !StringUtils.isEmpty(search.getEndFollower())) {
             stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
         } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
@@ -539,12 +479,21 @@ public class InfluencerServiceImpl implements InfluencerService {
         } else if (!StringUtils.isEmpty(search.getEndFollower())) {
             stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
         }
+
         stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
         stringBuilder.append(" order by ie.id desc ");
         return stringBuilder;
     }
 
-    public boolean isCheckInforInflu(String email) {
-        return influencerEntityRepository.findByEmail(email).isPresent();
+    private static String isStartYear(String value) {
+        return StringUtils.isEmpty(value) ? "1900" : value;
+    }
+
+    private static String isEndYear(String value) {
+        return StringUtils.isEmpty(value) ? "9999" : value;
+    }
+
+    private static boolean isCheckBooleanSearch(Boolean value) {
+        return Boolean.TRUE.equals(value);
     }
 }

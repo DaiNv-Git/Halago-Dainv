@@ -12,6 +12,7 @@ import com.example.halagodainv.request.page.PageSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.PageService;
+import com.example.halagodainv.until.ConvertString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +76,7 @@ public class PageServiceImpl implements PageService {
                     joiner.add(map.getIndustryName());
                 });
                 pageEntity.setIndustry(joiner.toString());
-                pageEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageAddRequest.getIndustryId()));
+                pageEntity.setIndustryId(ConvertString.parseListIntegerToString(pageAddRequest.getIndustryId()));
             }
             pageEntity.setCreated(new Date());
             pageEntity = pageRepository.save(pageEntity);
@@ -100,7 +101,7 @@ public class PageServiceImpl implements PageService {
                     entities.forEach(map -> {
                         joiner.add(map.getIndustryName());
                     });
-                    pageEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(pageEditRequest.getIndustryId()));
+                    pageEntity.get().setIndustryId(ConvertString.parseListIntegerToString(pageEditRequest.getIndustryId()));
                     pageEntity.get().setIndustry(joiner.toString());
                 }else {
                     pageEntity.get().setIndustryId("");

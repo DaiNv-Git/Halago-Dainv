@@ -4,8 +4,6 @@ import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.request.news.NewsFormSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.NewsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +14,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/news")
 public class NewsController {
-    Logger logger = LoggerFactory.getLogger(NewsController.class);
+
     @Autowired
     private NewsService newsService;
 

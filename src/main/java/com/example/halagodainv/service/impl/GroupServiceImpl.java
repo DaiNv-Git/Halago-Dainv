@@ -12,6 +12,7 @@ import com.example.halagodainv.request.group.GroupSearch;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.GroupService;
+import com.example.halagodainv.until.ConvertString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +76,7 @@ public class GroupServiceImpl implements GroupService {
                     joiner.add(map.getIndustryName());
                 });
                 groupEntity.setIndustry(joiner.toString());
-                groupEntity.setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupAddRequest.getIndustryId()));
+                groupEntity.setIndustryId(ConvertString.parseListIntegerToString(groupAddRequest.getIndustryId()));
             }
             groupEntity.setCreated(new Date());
             groupEntity = groupRepository.save(groupEntity);
@@ -101,7 +102,7 @@ public class GroupServiceImpl implements GroupService {
                         joiner.add(map.getIndustryName());
                     });
                     groupEntity.get().setIndustry(joiner.toString());
-                    groupEntity.get().setIndustryId(InfluencerServiceImpl.parseListIntegerToString(groupEditRequest.getIndustryId()));
+                    groupEntity.get().setIndustryId(ConvertString.parseListIntegerToString(groupEditRequest.getIndustryId()));
                 }
                 groupRepository.save(groupEntity.get());
                 return new BaseResponse<>(HttpStatus.CREATED.value(), "Sửa dữ liệu thành công!", groupRepository.getDetail(groupEntity.get().getId()));

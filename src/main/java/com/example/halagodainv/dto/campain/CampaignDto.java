@@ -1,7 +1,7 @@
 package com.example.halagodainv.dto.campain;
 
 import com.example.halagodainv.model.campaign.CampaignEntity;
-import com.example.halagodainv.service.impl.InfluencerServiceImpl;
+import com.example.halagodainv.until.ConvertString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ public class CampaignDto {
         }
         this.workStatus = campaignEntity.getWorkStatus()==1 ? "Đang triển khai" : "Đã kết thúc";
         this.timeDeadline = campaignEntity.getTimeDeadline();
-        this.campaignCategory = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
-        this.campaignCommunication = InfluencerServiceImpl.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
+        this.campaignCategory = ConvertString.parseStringToListOfIntegers(campaignEntity.getCampaignCategory());
+        this.campaignCommunication = ConvertString.parseStringToListOfIntegers(campaignEntity.getCampaignCommunication());
     }
 }
