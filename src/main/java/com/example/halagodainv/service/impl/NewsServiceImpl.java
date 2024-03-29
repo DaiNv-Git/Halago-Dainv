@@ -63,16 +63,13 @@ public class NewsServiceImpl implements NewsService {
     public BaseResponse<?> getNews(NewsFormSearch newsSearch) {
         StringBuilder querySql = new StringBuilder();
         sqlWhere(querySql,newsSearch);
-        querySql.append(" order by n.created desc");
+        querySql.append(" order by n.created desc limit ").append(newsSearch.getPageSize()).append(" offset ").append(newsSearch.getOffset() * 10);
         Query nativeQuery = entityManager.createNativeQuery(querySql.toString());
         StringBuilder count = new StringBuilder();
         sqlWhere(count,newsSearch);
         Query totalNews = entityManager.createNativeQuery(count.toString());
         List<ViewNewsDto> newsDtos = nativeQuery.unwrap(NativeQuery.class)
-                .setResultTransformer(Transformers.aliasToBean(NewDto.class))
-                .setFirstResult(newsSearch.getOffset())
-                .setMaxResults(newsSearch.getPageSize())
-                .getResultList();
+                .setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
         List<ViewNewsDto> countQuery = totalNews.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewDto.class)).getResultList();
         Pageable pageable = PageRequest.of(newsSearch.getOffset(), newsSearch.getPageSize());
         return new BaseResponse<>(200, "Lấy dữ liệu thành công", new PageResponse<>(new PageImpl<>(CollectionUtils.isEmpty(newsDtos) ? new ArrayList<>() : newsDtos, pageable, CollectionUtils.isEmpty(countQuery) ? 0 : countQuery.size())));
