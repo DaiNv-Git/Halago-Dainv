@@ -138,7 +138,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             if (isCheckPhone.isPresent()) {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
             }
-            InfluencerEntity influencer = save(request);
+            InfluencerEntity influencer = save(request,null);
             influencer = influencerEntityRepository.save(influencer);
             //add detail
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
@@ -179,19 +179,19 @@ public class InfluencerServiceImpl implements InfluencerService {
                 if (isCheckPhone.isPresent()) {
                     return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
                 }
-                influencerEntityRepository.save(save(request));
+                InfluencerEntity influencer = influencerEntityRepository.save(save(request,entity));
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
-                    influencerDetailEntities.add(saveDetail(entity.get(), request, "FACEBOOK"));
+                    influencerDetailEntities.add(saveDetail(influencer, request, "FACEBOOK"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isTiktok())) {
-                    influencerDetailEntities.add(saveDetail(entity.get(), request, "TIKTOK"));
+                    influencerDetailEntities.add(saveDetail(influencer, request, "TIKTOK"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isYoutube())) {
-                    influencerDetailEntities.add(saveDetail(entity.get(), request, "YOUTUBE"));
+                    influencerDetailEntities.add(saveDetail(influencer, request, "YOUTUBE"));
                 }
                 if (Boolean.TRUE.equals(entity.get().isInstagram())) {
-                    influencerDetailEntities.add(saveDetail(entity.get(), request, "INSTAGRAM"));
+                    influencerDetailEntities.add(saveDetail(influencer, request, "INSTAGRAM"));
                 }
                 influencerDetailRepository.saveAll(influencerDetailEntities);
                 return new BaseResponse<>(HttpStatus.OK.value(), "Sửa thành công", findInfluencerById(entity.get().getId()));
@@ -317,12 +317,34 @@ public class InfluencerServiceImpl implements InfluencerService {
         return "";
     }
 
-    private InfluencerEntity save(InfluencerAddRequest request) {
-        InfluencerEntity influencer = new InfluencerEntity();
+    private InfluencerEntity save(InfluencerAddRequest request,Optional<InfluencerEntity> entity) {
         if (request.getId() > 0) {
-            influencer.setId(request.getId());
+            return entity.get().builder()
+                    .id(request.getId())
+                    .influcerName(request.getName())
+                    .historyCreated(new Date())
+                    .sex(request.getSex())
+                    .phone(request.getPhone())
+                    .yearOld(String.valueOf(request.getBirtYear()))
+                    .email(request.getEmail())
+                    .bankId(request.getBankId().toUpperCase())
+                    .accountNumber(request.getBankNumber())
+                    .userId(request.getUserId())
+                    .created(entity.get().getCreated())
+                    .industry(ConvertString.parseListIntegerToString(request.getIndustry()))
+                    .industryName(getIndustryName(request))
+                    .address(request.getAddress())
+                    .userId(request.getUserId())
+                    .provinceId(request.getProvinceId())
+                    .classifyId(ConvertString.parseListIntegerToString(request.getClassifyId()))
+                    .classifyName(getClassify(request))
+                    .isFacebook(isCheckInforSocial(request.getLinkFb(), request.getFollowerFb(), request.getExpenseFb()))
+                    .isTiktok(isCheckInforSocial(request.getLinkTT(), request.getFollowerTT(), request.getExpenseTT()))
+                    .isYoutube(isCheckInforSocial(request.getLinkYT(), request.getFollowerYT(), request.getExpenseYT()))
+                    .isInstagram(isCheckInforSocial(request.getLinkIns(), request.getFollowerIns(), request.getExpenseIns()))
+                    .build();
         }
-        influencer = InfluencerEntity.builder()
+        return InfluencerEntity.builder()
                 .influcerName(request.getName())
                 .historyCreated(new Date())
                 .sex(request.getSex())
@@ -344,7 +366,6 @@ public class InfluencerServiceImpl implements InfluencerService {
                 .isYoutube(isCheckInforSocial(request.getLinkYT(), request.getFollowerYT(), request.getExpenseYT()))
                 .isInstagram(isCheckInforSocial(request.getLinkIns(), request.getFollowerIns(), request.getExpenseIns()))
                 .build();
-        return influencer;
     }
 
     private boolean isCheckInforSocial(String link, String follower, String expense) {

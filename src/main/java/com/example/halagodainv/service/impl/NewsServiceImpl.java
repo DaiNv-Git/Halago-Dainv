@@ -120,13 +120,13 @@ public class NewsServiceImpl implements NewsService {
                     .authorName(detail.get(0).getAuthorName())
                     .authorAvatar(detail.get(0).getAuthorAvatar())
                     .tagNames(detail.get(0).getTagName())
-                    .contentVN(detail.get(0).getContent())
-                    .contentEN(detail.get(1).getContent())
-                    .descriptionVN(detail.get(0).getDescription())
-                    .descriptionEN(detail.get(1).getDescription())
+                    .contentVN(detail.get(1).getContent())
+                    .contentEN(detail.get(0).getContent())
+                    .descriptionVN(detail.get(1).getDescription())
+                    .descriptionEN(detail.get(0).getDescription())
                     .topicName(topic.getTopicName())
-                    .titleVN(detail.get(0).getTitle())
-                    .titleEN(detail.get(1).getTitle())
+                    .titleVN(detail.get(1).getTitle())
+                    .titleEN(detail.get(0).getTitle())
                     .build();
             return new BaseResponse<>(200, "lấy dữ liệu chi tiết thành công", newewDtoDetailsss);
         } catch (Exception e) {
@@ -238,7 +238,20 @@ public class NewsServiceImpl implements NewsService {
                 return new ErrorResponse<>(500, "Đã tồn tại tin tức nổi bật", null);
             }
             //add news
-            NewsEntity newsEntity = saveNew(request);
+            NewsEntity newsEntity = NewsEntity.builder()
+                    .thumbnail(fileImageUtil.uploadImage(request.getImg()))
+                    .created(new Date())
+                    .titleSeo(request.getPhotoTitle())
+                    .linkPapers(request.getLinkPost())
+                    .type(FormatData.checkNull(request.getType()))
+                    .authorName(request.getAuthorName())
+                    .authorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()))
+                    .topicId(FormatData.checkNull(request.getTopicId()))
+                    .productId(0)
+                    .newsFromKol(0L)
+                    .tagId(ConvertString.parseListIntegerToString(request.getTagId()))
+                    .tagName(getTagName(request))
+                    .isHot(request.getIsHot()).build();
             newsRepository.save(newsEntity);
             //add en
             newsLanguageRepository.save(saveDetail(newsEntity, request, "EN"));
@@ -263,17 +276,32 @@ public class NewsServiceImpl implements NewsService {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa tin tức  thất bại", null);
             }
             //add
-            NewsEntity newsEntity = saveNew(request);
+            news.get().builder()
+                    .idNews(request.getIdNews())
+                    .thumbnail(fileImageUtil.uploadImage(request.getImg()))
+                    .created(new Date())
+                    .titleSeo(request.getPhotoTitle())
+                    .linkPapers(request.getLinkPost())
+                    .type(FormatData.checkNull(request.getType()))
+                    .authorName(request.getAuthorName())
+                    .authorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()))
+                    .topicId(FormatData.checkNull(request.getTopicId()))
+                    .created(news.get().getCreated())
+                    .productId(0)
+                    .newsFromKol(0L)
+                    .tagId(ConvertString.parseListIntegerToString(request.getTagId()))
+                    .tagName(getTagName(request))
+                    .isHot(request.getIsHot()).build();
             newsRepository.save(news.get());
             //delete all detail
             newsLanguageRepository.deleteByNewId(request.getIdNews());
             //add en
-            newsLanguageRepository.save(saveDetail(newsEntity, request, "EN"));
+            newsLanguageRepository.save(saveDetail(news.get(), request, "EN"));
             //add vn
-            newsLanguageRepository.save(saveDetail(newsEntity, request, "VN"));
+            newsLanguageRepository.save(saveDetail(news.get(), request, "VN"));
             return new BaseResponse<>(200, "Sửa tin tức  thành công", getDetail(news.get().getIdNews()));
         } catch (Exception e) {
-            return new BaseResponse<>(500, "Sửa tin tức  thất bại", null);
+            return new ErrorResponse<>(500, "Sửa tin tức  thất bại", null);
         }
     }
 
@@ -409,32 +437,19 @@ public class NewsServiceImpl implements NewsService {
     }
 
     private NewsLanguageEntity saveDetail(NewsEntity newsEntity, NewsAddRequest request, String language) {
+        if (language.equals("VN")){
+            return NewsLanguageEntity.builder()
+                    .title(request.getTitleVN())
+                    .content(request.getContentVN())
+                    .description(request.getDescriptionVN())
+                    .language(language)
+                    .newsEntity(newsEntity).build();
+        }
         return NewsLanguageEntity.builder()
-                .title(request.getTitleVN()).content(request.getContentVN())
-                .description(request.getDescriptionVN())
+                .title(request.getTitleEN())
+                .content(request.getContentEN())
+                .description(request.getDescriptionEN())
                 .language(language)
                 .newsEntity(newsEntity).build();
-    }
-
-    private NewsEntity saveNew(NewsAddRequest request) {
-        NewsEntity newsEntity = new NewsEntity();
-        if (request.getIdNews() != null && request.getIdNews() > 0) {
-            newsEntity.setIdNews(request.getIdNews());
-        }
-        newsEntity = NewsEntity.builder()
-                .thumbnail(fileImageUtil.uploadImage(request.getImg()))
-                .created(new Date())
-                .titleSeo(request.getPhotoTitle())
-                .linkPapers(request.getLinkPost())
-                .type(FormatData.checkNull(request.getType()))
-                .authorName(request.getAuthorName())
-                .authorAvatar(fileImageUtil.uploadImage(request.getAuthorAvatar()))
-                .topicId(FormatData.checkNull(request.getTopicId()))
-                .productId(0)
-                .newsFromKol(0L)
-                .tagId(ConvertString.parseListIntegerToString(request.getTagId()))
-                .tagName(getTagName(request))
-                .isHot(request.getIsHot()).build();
-        return newsEntity;
     }
 }
