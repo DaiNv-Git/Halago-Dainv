@@ -480,6 +480,9 @@ public class InfluencerServiceImpl implements InfluencerService {
         if (isCheckBooleanSearch(search.getIsTikTok())) {
             stringBuilder.append(" and ie.is_tiktok = ").append(search.getIsTikTok()).append(" and id.channel ='TIKTOK'");
         }
+        if (!StringUtils.isEmpty(search.getProvinceId())) {
+            stringBuilder.append(" and ie.province_id = ").append(search.getProvinceId());
+        }
 
         if (!StringUtils.isEmpty(search.getIndustry())) {
             stringBuilder.append(" and (ie.industry LIKE '").append(search.getIndustry())
@@ -496,19 +499,19 @@ public class InfluencerServiceImpl implements InfluencerService {
         stringBuilder.append(" and (IFNULL(ie.year_old,'') between concat('").append(startYear).append("','-00','-01') and concat('").append(endYear).append("','-31','-12'))");
 
         if (!StringUtils.isEmpty(search.getStartExpanse()) && !StringUtils.isEmpty(search.getEndExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
+            stringBuilder.append(" and (IFNULL(id.expense,'0') between ").append(search.getStartExpanse().trim()).append(" and ").append(search.getEndExpanse().trim()).append(")");
         } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(search.getStartExpanse().trim()).append(" and ").append("999999999999999999999").append(")");
+            stringBuilder.append(" and (IFNULL(id.expense,'0') between ").append(search.getStartExpanse().trim()).append(" and ").append("999999999999999999999").append(" )");
         } else if (!StringUtils.isEmpty(search.getEndExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.expense,'') between ").append(" 0 ").append("and").append(search.getEndExpanse().trim()).append(")");
+            stringBuilder.append(" and (IFNULL(id.expense,'0') between ").append(" 0 ").append("and ").append(search.getEndExpanse().trim()).append(" )");
         }
 
         if (!StringUtils.isEmpty(search.getStartFollower()) && !StringUtils.isEmpty(search.getEndFollower())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
-        } else if (!StringUtils.isEmpty(search.getStartExpanse())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(search.getStartFollower().trim()).append(" and ").append("999999999999999999999").append(")");
+            stringBuilder.append(" and (IFNULL(id.follower,'0') between ").append(search.getStartFollower().trim()).append(" and ").append(search.getEndFollower().trim()).append(")");
+        } else if (!StringUtils.isEmpty(search.getStartFollower())) {
+            stringBuilder.append(" and (IFNULL(id.follower,'0') between ").append(search.getStartFollower().trim()).append(" and ").append("999999999999999999999").append(")");
         } else if (!StringUtils.isEmpty(search.getEndFollower())) {
-            stringBuilder.append(" and (IFNULL(id.follower,'') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(")");
+            stringBuilder.append(" and (IFNULL(id.follower,'0') between ").append(" 0 ").append(" and ").append(search.getEndFollower().trim()).append(" )");
         }
 
         stringBuilder.append(" and ((year(CURRENT_DATE()) - COALESCE(SUBSTRING(ie.year_old, 1, 4), 1999)) BETWEEN ").append(search.getAgeStart()).append(" and ").append(search.getAgeEnd()).append(")");
