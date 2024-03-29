@@ -138,7 +138,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             if (isCheckPhone.isPresent()) {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
             }
-            InfluencerEntity influencer = save(request,null);
+            InfluencerEntity influencer = save(request, null);
             influencer = influencerEntityRepository.save(influencer);
             //add detail
             List<InfluencerDetailEntity> influencerDetailEntities = new ArrayList<>();
@@ -179,7 +179,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                 if (isCheckPhone.isPresent()) {
                     return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Số điện thoại [" + request.getPhone() + "] này đã tồn tại", null);
                 }
-                InfluencerEntity influencer = influencerEntityRepository.save(save(request,entity));
+                InfluencerEntity influencer = influencerEntityRepository.save(save(request, entity));
                 influencerDetailRepository.deleteByInfluId(entity.get().getId());
                 if (Boolean.TRUE.equals(entity.get().isFacebook())) {
                     influencerDetailEntities.add(saveDetail(influencer, request, "FACEBOOK"));
@@ -317,7 +317,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         return "";
     }
 
-    private InfluencerEntity save(InfluencerAddRequest request,Optional<InfluencerEntity> entity) {
+    private InfluencerEntity save(InfluencerAddRequest request, Optional<InfluencerEntity> entity) {
         if (request.getId() > 0) {
             return entity.get().builder()
                     .id(request.getId())
@@ -373,25 +373,35 @@ public class InfluencerServiceImpl implements InfluencerService {
     }
 
     private InfluencerDetailEntity saveDetail(InfluencerEntity influencer, InfluencerAddRequest request, String socialNetwork) {
-        InfluencerDetailEntity addDetail = new InfluencerDetailEntity();
         if (socialNetwork.equalsIgnoreCase("FACEBOOK")) {
-            addDetail = InfluencerDetailEntity
+            return InfluencerDetailEntity
                     .builder()
                     .channel("FACEBOOK".toUpperCase())
                     .follower(request.getFollowerFb())
                     .expense(request.getExpenseFb())
                     .url(request.getLinkFb())
                     .influId(influencer.getId()).build();
-        } else if (socialNetwork.equalsIgnoreCase("YOUTUBE")) {
-            addDetail = InfluencerDetailEntity
+        }
+        if (socialNetwork.equalsIgnoreCase("YOUTUBE")) {
+            return InfluencerDetailEntity
                     .builder()
                     .channel("YOUTUBE".toUpperCase())
                     .follower(request.getFollowerYT())
                     .expense(request.getExpenseYT())
                     .url(request.getLinkYT())
                     .influId(influencer.getId()).build();
-        } else if (socialNetwork.equalsIgnoreCase("INSTAGRAM")) {
-            addDetail = InfluencerDetailEntity
+        }
+        if (socialNetwork.equalsIgnoreCase("TIKTOK")) {
+            return InfluencerDetailEntity
+                    .builder()
+                    .channel("TIKTOK".toUpperCase())
+                    .follower(request.getFollowerTT())
+                    .expense(request.getExpenseTT())
+                    .url(request.getLinkTT())
+                    .influId(influencer.getId()).build();
+        }
+        if (socialNetwork.equalsIgnoreCase("INSTAGRAM")) {
+            return InfluencerDetailEntity
                     .builder()
                     .channel("INSTAGRAM".toUpperCase())
                     .follower(request.getFollowerIns())
@@ -399,7 +409,7 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .url(request.getLinkIns())
                     .influId(influencer.getId()).build();
         }
-        return addDetail;
+        return new InfluencerDetailEntity();
     }
 
     private void setSocial(InfluencerDtoDetails dtoDetails, List<InflucerDtoListDetail> influencers) {
