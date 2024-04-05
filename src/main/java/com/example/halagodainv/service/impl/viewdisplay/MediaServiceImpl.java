@@ -39,7 +39,7 @@ public class MediaServiceImpl implements MediaService {
 
     public List<MediaDetail> getMedia() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT * FROM media_detail a WHERE a.is_show = true ");
+        stringBuilder.append("SELECT * FROM media_detail a ");
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString(), MediaDetail.class);
         List<MediaDetail> mediaDetails = nativeQuery.getResultList();
         return mediaDetails;
