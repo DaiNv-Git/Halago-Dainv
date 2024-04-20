@@ -82,7 +82,7 @@ public class InfluencerServiceImpl implements InfluencerService {
         stringBuilder.append("SELECT DISTINCT ie.id as id ,ie.name as name,ie.phone,id.url as link,id.follower as follower," +
                 "id.expense as expense,ie.industry as industryId,ie.industry_name as industry FROM " +
                 "influencer_entity ie left join influencer_detail id on ie.id = id.influ_id " +
-                "WHERE  (ie.phone  is not null or ie.phone <> '') and (ie.name is not null or ie.name  <> '') ");
+                "WHERE 1=1 ");
         strSqlQuerySearch(search, stringBuilder);
 
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString());
