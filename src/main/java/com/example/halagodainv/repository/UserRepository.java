@@ -3,10 +3,12 @@ package com.example.halagodainv.repository;
 import com.example.halagodainv.model.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByEmailAndIdIsNot(String email, int id);
 
     Optional<UserEntity> findByEmail(String email);
-    Optional<UserEntity> findByEmailAndRoleId(String email,int roleId);
+
+    Optional<UserEntity> findByEmailAndRoleId(String email, int roleId);
 
     Optional<UserEntity> findByEmailOrUserName(String email, String userName);
 
@@ -34,4 +37,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Query(value = "select count(*) from users u inner join role_user r " +
             "on r.id_role = u.role_id where u.username like concat('%',:userName,'%') ", nativeQuery = true)
     int totalElementAll(@Param("userName") String userName);
+
+    @Transactional
+    @Modifying
+    void deleteByEmail(String email);
+
 }

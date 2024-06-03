@@ -145,9 +145,9 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int userId) {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if (userEntity.isPresent()) {
-            Optional<InfluencerEntity> influencerEntity = influencerEntityRepository.findByUserId(userId);
+            Optional<InfluencerEntity> influencerEntity = influencerEntityRepository.findByEmail(userEntity.get().getEmail());
             influencerEntity.ifPresent(entity -> influencerDetailRepository.deleteByInfluId(entity.getId()));
-            influencerEntityRepository.deleteByUserId(userId);
+            influencerEntity.ifPresent(entity ->influencerEntityRepository.deleteById(entity.getId()));
         }
         userRepository.deleteById(userId);
     }

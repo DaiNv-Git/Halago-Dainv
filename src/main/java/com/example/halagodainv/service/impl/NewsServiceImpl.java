@@ -273,7 +273,7 @@ public class NewsServiceImpl implements NewsService {
                 return new ErrorResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Sửa tin tức  thất bại", null);
             }
             //add
-            news.get().builder()
+           NewsEntity update= NewsEntity.builder()
                     .idNews(request.getIdNews())
                     .thumbnail(fileImageUtil.uploadImage(request.getImg()))
                     .created(new Date())
@@ -289,7 +289,7 @@ public class NewsServiceImpl implements NewsService {
                     .tagId(ConvertString.parseListIntegerToString(request.getTagId()))
                     .tagName(getTagName(request))
                     .isHot(request.getIsHot()).build();
-            newsRepository.save(news.get());
+            newsRepository.save(update);
             //delete all detail
             newsLanguageRepository.deleteByNewId(request.getIdNews());
             //add en

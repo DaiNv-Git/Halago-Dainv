@@ -36,5 +36,5 @@ public class InfluencerAddRequest {
     private String linkIns = "";
     private String followerIns = "";
     private String expenseIns = "";
-    private Integer userId;
+    private Integer userId = 0;
 }

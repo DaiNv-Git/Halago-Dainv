@@ -213,9 +213,7 @@ public class InfluencerServiceImpl implements InfluencerService {
             }
             influencerDetailRepository.deleteByInfluId(id);
             influencerEntityRepository.deleteById(id);
-            if (influencer.get().getUserId() != null && influencer.get().getUserId() > 0) {
-                userRepository.deleteById(influencer.get().getUserId());
-            }
+            influencer.ifPresent(in -> userRepository.deleteByEmail(in.getEmail()));
             return new BaseResponse<>(Constant.SUCCESS, "Xóa  thành công", new BaseResponse<>(1, "Xóa  thành công", null));
         } catch (Exception e) {
             return new ErrorResponse<>(Constant.FAILED, "Xóa  thất bại", new ErrorResponse<>(0, "Xóa  thất bại", null));
@@ -334,7 +332,6 @@ public class InfluencerServiceImpl implements InfluencerService {
                     .industry(ConvertString.parseListIntegerToString(request.getIndustry()))
                     .industryName(getIndustryName(request))
                     .address(request.getAddress())
-                    .userId(request.getUserId())
                     .provinceId(request.getProvinceId())
                     .classifyId(ConvertString.parseListIntegerToString(request.getClassifyId()))
                     .classifyName(getClassify(request))
