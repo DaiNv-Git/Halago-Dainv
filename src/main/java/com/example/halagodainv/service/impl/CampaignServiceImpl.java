@@ -77,7 +77,7 @@ public class CampaignServiceImpl implements CampaignService {
             }
             stringBuilder.append(") and ");
         }
-        stringBuilder.append("cam.id <> ").append(camId).append(" and cam.work_status = ").append(workStatus).append(" limit 10");
+        stringBuilder.append("cam.id <> ").append(camId).append(" and cam.work_status = ").append(workStatus).append(" order by cam.created desc").append(" limit 10");
         Query nativeQuery = entityManager.createNativeQuery(stringBuilder.toString(), CampaignEntity.class);
         List<CampaignEntity> campaignEntities = nativeQuery.getResultList();
         List<CampaignDto> campaignDtos = new ArrayList<>();

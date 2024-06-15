@@ -23,7 +23,8 @@ public interface CampaignService {
     Object edit(CampaignEditRequest campaignEditRequest) throws ParseException;
 
     Object deleteByCampaign(int campaignId);
-    void deleteByInfluId(int campaignId,int influId);
+
+    void deleteByInfluId(int campaignId, int influId);
 
     Object getByBrands();
 
@@ -40,6 +41,7 @@ public interface CampaignService {
     Object isCheckRecruitment(int idInflu, int idCampaign);
 
     PageResponse<CampaignRecruitment> getRecruitmentList(int campaignId, int pageSize, int pageNo, String language);
-    PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId,String userName,String language, int pageSize, int pageNo, Pageable pageable);
+
+    PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId, String userName, String language, int pageSize, int pageNo, Pageable pageable);
 
 }
