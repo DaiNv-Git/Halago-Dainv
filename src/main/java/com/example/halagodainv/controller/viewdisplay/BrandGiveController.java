@@ -1,6 +1,5 @@
 package com.example.halagodainv.controller.viewdisplay;
 
-import com.example.halagodainv.model.viewdisplayentity.BrandGiveEntity;
 import com.example.halagodainv.request.brand.BrandGiveRequest;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.BrandGiveService;
@@ -17,8 +16,9 @@ public class BrandGiveController {
 
     @Autowired
     private BrandGiveService brandGiveService;
+
     @PostMapping("")
-    public ResponseEntity<Object> getAll(@RequestParam("language") String language) {
+    public ResponseEntity<Object> getAll(@RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", brandGiveService.getAll(language)));
         } catch (Exception e) {

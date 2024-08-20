@@ -44,11 +44,11 @@ public class HomePageServiceImpl implements HomePageService {
         }
     }
 
-    private List<NewsTenDto> getNewLimit10(String language){
+    private List<NewsTenDto> getNewLimit10(String language) {
         String sql = "select n.link_papers as linkPagers,n.title_seo as titleImage,nl.title, n.thumbnail as " +
                 "image,nl.description,DATE_FORMAT(n.created,'%Y-%m-%d') as created,n.author_avatar as avatar,n.author_name as " +
                 "nameAuthor from news n left join news_language nl on n.id_news = nl.new_id " +
-                "where n.topic_id = 1 and n.news_from_kol <> 1 and nl.language= '"+language+"' order by n.created desc limit 10 ";
+                "where n.topic_id = 1 and n.news_from_kol <> 1 and nl.language= '" + language + "' order by n.created desc limit 10 ";
         Query nativeQuery = entityManager.createNativeQuery(sql);
         return nativeQuery.unwrap(NativeQuery.class).setResultTransformer(Transformers.aliasToBean(NewsTenDto.class)).getResultList();
     }
@@ -76,7 +76,7 @@ public class HomePageServiceImpl implements HomePageService {
 
     public Object getPartner(int partnerId) throws GeneralException {
         try {
-            Query query = entityManager.createNativeQuery("SELECT * FROM partner WHERE partner_id ="+partnerId+" ORDER BY IFNULL(SUBSTRING_INDEX(name_file, '_', -1),'') DESC ", PartnerEntity.class);
+            Query query = entityManager.createNativeQuery("SELECT * FROM partner WHERE partner_id =" + partnerId + " ORDER BY IFNULL(SUBSTRING_INDEX(name_file, '_', -1),'') DESC ", PartnerEntity.class);
             List<PartnerEntity> partnerEntities = query.getResultList();
             return new BaseResponse<>(HttpStatus.OK.value(), "success", partnerEntities);
         } catch (Exception e) {

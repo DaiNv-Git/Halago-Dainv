@@ -22,14 +22,14 @@ public class ViewNewsMap {
     private String img;
     private String description;
 
-    public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img,String description) {
-            this.id = id;
-            this.title = title;
-            this.content = content;
-            this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
-            this.topicId = Integer.parseInt(String.valueOf(topicId));
-            this.tagId = ConvertString.parseStringToListOfIntegers(tagId);
-            this.img = img;
-            this.description = description;
+    public ViewNewsMap(int id, String title, String content, Date createdDate, Long topicId, String tagId, String img, String description) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdDate = DateFormatUtils.format(createdDate, "yyyy-MM-dd");
+        this.topicId = Integer.parseInt(String.valueOf(topicId));
+        this.tagId = ConvertString.parseStringToListOfIntegers(tagId);
+        this.img = img;
+        this.description = description;
     }
 }

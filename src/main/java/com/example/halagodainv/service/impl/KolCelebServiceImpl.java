@@ -4,7 +4,10 @@ import com.example.halagodainv.dto.kol.*;
 import com.example.halagodainv.model.BestKolEntity;
 import com.example.halagodainv.model.NewsEntity;
 import com.example.halagodainv.model.RepresentativeEntity;
-import com.example.halagodainv.repository.*;
+import com.example.halagodainv.repository.BestKolRepository;
+import com.example.halagodainv.repository.NewsLanguageRepository;
+import com.example.halagodainv.repository.NewsRepository;
+import com.example.halagodainv.repository.RepresentativesRepository;
 import com.example.halagodainv.request.kolCeleb.KolCelebRequest;
 import com.example.halagodainv.request.news.NewsAddRequest;
 import com.example.halagodainv.response.BaseResponse;
@@ -12,7 +15,6 @@ import com.example.halagodainv.service.KolCelebService;
 import com.example.halagodainv.service.NewsService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class KolCelebServiceImpl implements KolCelebService {
     private final FileImageUtil fileImageUtil;
     private final NewsService newsService;
     private final NewsLanguageRepository newsLanguageRepository;
-    private static String KOL_UPLOAD= "kol";
+    private static String KOL_UPLOAD = "kol";
 
     public Object getKolAll(String language) {
         try {
@@ -44,17 +46,18 @@ public class KolCelebServiceImpl implements KolCelebService {
                 dto.setInteractions(map.getInteractions());
                 dto.setInteractionRate(map.getInteractionRate());
                 dto.setReach(map.getReach());
-                List<NewsEntity> news= newsRepository.findAllByRepresentativeId(map.getId());
-                if(news.size() > 0){
+                List<NewsEntity> news = newsRepository.findAllByRepresentativeId(map.getId());
+                if (news.size() > 0) {
                     dto.setNewsId(news.get(0).getIdNews());
                 }
-                if ("VN".equals(language.toUpperCase())) {
+                if ("VN".equalsIgnoreCase(language)) {
                     dto.setName(map.getName());
                     dto.setContent(map.getContent());
-                } else {
+                } else if ("EN".equalsIgnoreCase(language)) {
                     dto.setName(map.getNameEN());
                     dto.setContent(map.getContentEN());
                 }
+
                 representativeDtos.add(dto);
             }
             List<KolMapEntity> kolMapEntities = bestKolRepository.getAllImage();
@@ -62,10 +65,10 @@ public class KolCelebServiceImpl implements KolCelebService {
             for (KolMapEntity bestMap : kolMapEntities) {
                 KolDetailDto bestPickDto = new KolDetailDto();
                 bestPickDto.setImage(bestMap.getImg());
-                if ("VN".equals(language.toUpperCase())) {
+                if ("VN".equalsIgnoreCase(language)) {
                     bestPickDto.setName(bestMap.getName());
                     bestPickDto.setJob(bestMap.getJob());
-                } else {
+                } else if ("EN".equalsIgnoreCase(language)) {
                     bestPickDto.setName(bestMap.getNameEN());
                     bestPickDto.setJob(bestMap.getJobEN());
                 }
@@ -87,13 +90,14 @@ public class KolCelebServiceImpl implements KolCelebService {
             List<RepresentativeMapEntity> representatives = representativesRepository.getAll();
             List<NewsEntity> newsEntities = newsRepository.findAllByRepresentativeIdIsNotNull();
             List<KolMapEntity> kols = bestKolRepository.getAllImage();
-            List<RepresentativeMapEntity> representatives1 = assignIdNewsToRepresentatives(representatives,newsEntities);
+            List<RepresentativeMapEntity> representatives1 = assignIdNewsToRepresentatives(representatives, newsEntities);
             KolAndRepresentDetailDto detailDto = new KolAndRepresentDetailDto(representatives1, kols);
             return new BaseResponse<>(HttpStatus.OK.value(), HttpStatus.OK.name(), detailDto);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
     }
+
     public List<RepresentativeMapEntity> assignIdNewsToRepresentatives(List<RepresentativeMapEntity> representatives, List<NewsEntity> newsEntities) {
         Map<Long, Integer> newsIdToIdMap = newsEntities.stream()
                 .collect(Collectors.toMap(NewsEntity::getRepresentativeId, NewsEntity::getIdNews));
@@ -106,6 +110,7 @@ public class KolCelebServiceImpl implements KolCelebService {
 
         return representatives;
     }
+
     @Transactional
     public Object update(KolCelebRequest request) {
         try {
@@ -139,9 +144,10 @@ public class KolCelebServiceImpl implements KolCelebService {
                 bestKolEntity.setName(kolMapEntity.getName());
                 bestKolEntities.add(bestKolEntity);
             }
-            List<RepresentativeEntity>  res =  representativesRepository.saveAll(representativeEntities);
+
+            List<RepresentativeEntity> res = representativesRepository.saveAll(representativeEntities);
             for (RepresentativeEntity representativeMap : res) {
-                NewsAddRequest news= new NewsAddRequest();
+                NewsAddRequest news = new NewsAddRequest();
                 news.setImg(representativeMap.getImg());
                 news.setTitleEN(representativeMap.getNameEN());
                 news.setTitleVN(representativeMap.getName());

@@ -28,7 +28,7 @@ public interface CampaignService {
 
     Object getByBrands();
 
-    Object getByIndustry();
+    Object getByIndustry(String language);
 
     Object getCampaignCommunications();
 

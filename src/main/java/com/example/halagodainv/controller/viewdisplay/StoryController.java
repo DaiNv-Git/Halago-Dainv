@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/story")
 public class StoryController {
@@ -13,7 +15,7 @@ public class StoryController {
     private StoryService storyService;
 
     @PostMapping("")
-    public ResponseEntity<Object> getHalago(@RequestParam("language") String language) {
+    public ResponseEntity<Object> getHalago(@RequestParam(value = "language", defaultValue = "vn") String language) {
         return ResponseEntity.ok(storyService.getStoryHalago(language));
     }
 
@@ -23,7 +25,7 @@ public class StoryController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Object> update(@RequestBody StoryDetailDto request) {
+    public ResponseEntity<Object> update(@RequestBody List<StoryDetailDto> request) {
         return ResponseEntity.ok(storyService.update(request));
     }
 }

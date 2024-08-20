@@ -1,8 +1,11 @@
 package com.example.halagodainv.service.auth;
 
+import com.example.halagodainv.config.filter.JwtToken;
+import com.example.halagodainv.converter.LogConverter;
 import com.example.halagodainv.dto.user.UserDto;
 import com.example.halagodainv.exception.ErrorResponse;
 import com.example.halagodainv.model.InfluencerEntity;
+import com.example.halagodainv.model.LogAuthenEntity;
 import com.example.halagodainv.model.UserEntity;
 import com.example.halagodainv.model.authen.AuthenPassword;
 import com.example.halagodainv.repository.InfluencerDetailRepository;
@@ -10,19 +13,26 @@ import com.example.halagodainv.repository.InfluencerEntityRepository;
 import com.example.halagodainv.repository.RoleRepository;
 import com.example.halagodainv.repository.UserRepository;
 import com.example.halagodainv.repository.authen.AuthenPasswordRepository;
+import com.example.halagodainv.repository.authen.LogAuthenRepository;
 import com.example.halagodainv.request.UserAddRequest;
 import com.example.halagodainv.request.UserEditRequest;
+import com.example.halagodainv.request.UserLogin;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.response.PageResponse;
+import com.example.halagodainv.response.UserResponse;
 import com.example.halagodainv.service.UserService;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,10 +62,35 @@ public class UserServiceImpl implements UserService {
     private final InfluencerDetailRepository influencerDetailRepository;
     private final AuthenPasswordRepository authenPasswordRepository;
 
+    private final UserServiceConfig authConfig;
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtToken jwtToken;
+
     private final JavaMailSender javaMailSender;
 
-    @PersistenceContext
-    private final EntityManager entityManager;
+    private final LogAuthenRepository logAuthenRepository;
+
+
+    public ResponseEntity<?> login(UserLogin userLogin) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getLoginAccount(), userLogin.getPassword()));
+            UserDetails userDetails = authConfig.loadUserByUsername(userLogin.getLoginAccount());
+            Optional<UserEntity> userEntity = userRepository.findByEmailOrUserName(userDetails.getUsername(), userDetails.getUsername());
+            String token = jwtToken.generateToken(userDetails);
+            String refreshToken = jwtToken.generateRefreshToken(userDetails);
+            if (userEntity.isPresent()) {
+                if (userEntity.get().getRoleId() == 4) {
+                    return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.FORBIDDEN.value(), "Login success", null));
+                }
+            }
+            UserResponse userResponse = new UserResponse(userEntity.get().getId(), userEntity.get().getUserName(), userEntity.get().getEmail(), userEntity.get().getRoleId(), token, refreshToken);
+            return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "Login success", userResponse));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ErrorResponse<>(HttpStatus.UNAUTHORIZED.value(), "Login not success", null));
+        }
+    }
+
 
     public Object getAll(int pageNo, int pageSize, String userName) {
         try {
@@ -147,7 +182,7 @@ public class UserServiceImpl implements UserService {
         if (userEntity.isPresent()) {
             Optional<InfluencerEntity> influencerEntity = influencerEntityRepository.findByEmail(userEntity.get().getEmail());
             influencerEntity.ifPresent(entity -> influencerDetailRepository.deleteByInfluId(entity.getId()));
-            influencerEntity.ifPresent(entity ->influencerEntityRepository.deleteById(entity.getId()));
+            influencerEntity.ifPresent(entity -> influencerEntityRepository.deleteById(entity.getId()));
         }
         userRepository.deleteById(userId);
     }
@@ -214,7 +249,7 @@ public class UserServiceImpl implements UserService {
         mailMessage.setFrom("halogo939@gmail.com", "halago.contact");
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("Mã otp của bạn");
-        String content = "Mã otp: " + code +"\n Có hiệu lực trong vòng 180 giây.";
+        String content = "Mã otp: " + code + "\n Có hiệu lực trong vòng 180 giây.";
         mailMessage.setText(content, false);
         javaMailSender.send(message);
         timeOutAuthenCode(recipientEmail);

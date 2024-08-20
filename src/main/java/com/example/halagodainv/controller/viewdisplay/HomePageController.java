@@ -27,7 +27,7 @@ public class HomePageController {
     private ContactCustomerService contactCustomerService;
 
     @PostMapping("")
-    public ResponseEntity<Object> getAll(@RequestParam("language") String language) throws GeneralException {
+    public ResponseEntity<Object> getAll(@RequestParam(value = "language", defaultValue = "vn") String language) throws GeneralException {
         return ResponseEntity.ok(homePageService.getHomePage(language));
     }
 

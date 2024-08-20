@@ -1,13 +1,16 @@
 package com.example.halagodainv.service.impl;
 
-import com.example.halagodainv.dto.solution.livestream.*;
+import com.example.halagodainv.dto.solution.livestream.ImageSolutionDetailDto;
+import com.example.halagodainv.dto.solution.livestream.ImageSolutionDto;
+import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamDetailDto;
+import com.example.halagodainv.dto.solution.livestream.SolutionLiveStreamMapEntity;
 import com.example.halagodainv.model.ImageLiveStreamEntity;
 import com.example.halagodainv.model.SolutionLiveStreamEntity;
 import com.example.halagodainv.repository.ImageSolutionRepository;
 import com.example.halagodainv.repository.SolutionLiveStreamLanguageRepository;
 import com.example.halagodainv.repository.SolutionLiveStreamRepository;
-import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamImageEdit;
 import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamEdit;
+import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamImageEdit;
 import com.example.halagodainv.response.BaseResponse;
 import com.example.halagodainv.service.SolutionLiveStreamService;
 import com.example.halagodainv.until.FileImageUtil;
@@ -35,9 +38,9 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
             imageSolutionRepository.getAllImage().forEach(i -> {
                 ImageSolutionDto imageSolutionDto = new ImageSolutionDto();
                 imageSolutionDto.setImage(i.getImage());
-                if (language.equals("EN")) {
+                if (language.equalsIgnoreCase("EN")) {
                     imageSolutionDto.setImageName(i.getImageNameEN());
-                } else if (language.equals("VN")) {
+                } else if (language.equalsIgnoreCase("VN")) {
                     imageSolutionDto.setImageName(i.getImageNameVN());
                 }
                 imageSolutionDtos.add(imageSolutionDto);
@@ -79,6 +82,7 @@ public class SolutionLiveStreamServiceImpl implements SolutionLiveStreamService 
                 solutionLiveStreamRepository.save(solutionLiveStream.get());
             }
             imageSolutionRepository.deleteAll();
+
             List<ImageLiveStreamEntity> imageLiveStreamEntities = new ArrayList<>();
             for (SolutionLiveStreamImageEdit img : solutionLiveStreamEdit.getImgSlider()) {
                 ImageLiveStreamEntity imageLiveStreamEntity = new ImageLiveStreamEntity();

@@ -14,7 +14,7 @@ public class KolCelebController {
     private final KolCelebService kolCelebService;
 
     @PostMapping("")
-    public ResponseEntity<Object> getALL(@RequestParam("language") String language) {
+    public ResponseEntity<Object> getALL(@RequestParam(value = "language", defaultValue = "vn") String language) {
         return ResponseEntity.ok(kolCelebService.getKolAll(language));
     }
 

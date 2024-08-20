@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryDetailDto {
+    private Long id;
     private String img;
     private String content;
     private String contentEN;
+    private boolean isDelete = false;
 }

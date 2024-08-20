@@ -15,7 +15,7 @@ public class ViewBrandController {
     private ViewBrandService brandService;
 
     @PostMapping("")
-    public ResponseEntity<?> getViewBrands(@RequestParam("language") String language) {
+    public ResponseEntity<?> getViewBrands(@RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Success", brandService.getBranViews(language)));
         } catch (Exception e) {

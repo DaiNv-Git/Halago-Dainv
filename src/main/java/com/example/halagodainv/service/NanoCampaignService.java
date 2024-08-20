@@ -7,6 +7,8 @@ import com.example.halagodainv.response.BaseResponse;
 import java.util.List;
 
 public interface NanoCampaignService {
+
     BaseResponse<List<NanoCampaignEntity>> getList();
+
     BaseResponse<List<NanoCampaignEntity>> updateNano(List<NanoCampaignRequest> nanoCampaignRequests);
 }

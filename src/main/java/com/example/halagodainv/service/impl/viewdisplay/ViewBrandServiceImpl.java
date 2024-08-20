@@ -8,11 +8,16 @@ import com.example.halagodainv.response.PageResponse;
 import com.example.halagodainv.service.ViewBrandService;
 import com.example.halagodainv.until.FileImageUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +37,9 @@ public class ViewBrandServiceImpl implements ViewBrandService {
             viewBrandDto.setName(map.getName());
             viewBrandDto.setLogoBrand(map.getLogoBrand());
             viewBrandDto.setPositionId(map.getPositionId());
-            if (language.equals("VN")) {
+            if (language.equalsIgnoreCase("VN")) {
                 viewBrandDto.setDescription(map.getDescriptionVN());
-            } else if (language.equals("EN")) {
+            } else if (language.equalsIgnoreCase("EN")) {
                 viewBrandDto.setDescription(map.getDescriptionEN());
             }
             viewBrandDtos.add(viewBrandDto);

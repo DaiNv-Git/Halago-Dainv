@@ -69,8 +69,8 @@ public class CampaignController extends UserAuthenLogin {
     }
 
     @GetMapping("/industry")
-    public ResponseEntity<Object> getIndustry() {
-        return ResponseEntity.ok(campaignService.getByIndustry());
+    public ResponseEntity<Object> getIndustry(@RequestParam(value = "language", defaultValue = "vn", required = false) String language) {
+        return ResponseEntity.ok(campaignService.getByIndustry(language));
     }
 
     @GetMapping("/campaign-recruitment")
@@ -103,18 +103,20 @@ public class CampaignController extends UserAuthenLogin {
     public ResponseEntity<Object> getCampaign() {
         return ResponseEntity.ok(campaignService.getCampaignCategories());
     }
+
     @GetMapping("/campaign-user-list")
     public ResponseEntity<Object> campaignRecruitmentListUser(@RequestParam("campaignId") int campaignId,
-                                                              @RequestParam(value ="userName", required = false) String userName,
+                                                              @RequestParam(value = "userName", required = false) String userName,
                                                               @RequestParam(value = "language", defaultValue = "vn", required = false) String language,
-                                                          @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
-                                                          @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+                                                              @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+                                                              @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return ResponseEntity.ok(campaignService.getRecruitmentUserList(campaignId,userName,language, pageSize, pageNo, pageable));
+        return ResponseEntity.ok(campaignService.getRecruitmentUserList(campaignId, userName, language, pageSize, pageNo, pageable));
     }
+
     @DeleteMapping("/delete/influ")
-    public ResponseEntity<?> delete(@RequestParam int campainId,@RequestParam int influId) {
-        campaignService.deleteByInfluId(campainId,influId);
+    public ResponseEntity<?> delete(@RequestParam int campainId, @RequestParam int influId) {
+        campaignService.deleteByInfluId(campainId, influId);
         return ResponseEntity.ok("OK");
     }
 }

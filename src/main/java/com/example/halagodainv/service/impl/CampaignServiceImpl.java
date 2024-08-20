@@ -1,10 +1,9 @@
 package com.example.halagodainv.service.impl;
+
 import com.example.halagodainv.config.Constant;
-import com.example.halagodainv.dto.campain.CampaignDetailDto;
-import com.example.halagodainv.dto.campain.CampaignDetailFullDto;
-import com.example.halagodainv.dto.campain.CampaignDto;
-import com.example.halagodainv.dto.campain.CampaignRecruitment;
+import com.example.halagodainv.dto.campain.*;
 import com.example.halagodainv.exception.ErrorResponse;
+import com.example.halagodainv.model.IndustryEntity;
 import com.example.halagodainv.model.campaign.CampaignEntity;
 import com.example.halagodainv.model.campaign.CampaignRecruitmentLogEntity;
 import com.example.halagodainv.repository.BrandRepository;
@@ -31,12 +30,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CampaignServiceImpl implements CampaignService {
@@ -216,7 +218,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public PageResponse<CampaignUserResponse> getRecruitmentUserList(int campaignId, String userName, String language, int pageSize, int pageNo, Pageable pageable) {
-        try{
+        try {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("select ");
             if (language.equals("vn")) {
@@ -246,7 +248,7 @@ public class CampaignServiceImpl implements CampaignService {
                     .setResultTransformer(Transformers.aliasToBean(CampaignUserResponse.class))
                     .getResultList();
             return new PageResponse<>(new PageImpl<>(campaignRecruitments, pageable, campaignRecruitments.size()));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -265,16 +267,19 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     @Transactional
     @Modifying
-    public void deleteByInfluId(int campainId,int influId) {
-         campaignRecruitmentLog.deleteByIdCampaignAndIdInflu(campainId,influId);
+    public void deleteByInfluId(int campainId, int influId) {
+        campaignRecruitmentLog.deleteByIdCampaignAndIdInflu(campainId, influId);
     }
 
     public Object getByBrands() {
         return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", brandRepository.findByBrandNameAndId());
     }
 
-    public Object getByIndustry() {
-        return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", industryRepository.findAll());
+    public Object getByIndustry(String language) {
+        List<IndustryEntity> results = industryRepository.findAll();
+        return new BaseResponse<>(Constant.SUCCESS, "Lấy nhãn hàng thành công", results.stream().map(result ->
+                ConvertData.from(result, language)).collect(Collectors.toList()));
+
     }
 
     public Object getCampaignCommunications() {

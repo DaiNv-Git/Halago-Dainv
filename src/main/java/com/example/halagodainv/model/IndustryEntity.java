@@ -15,4 +15,6 @@ public class IndustryEntity {
     private int id;
     @Column(name = "industry_name")
     private String industryName;
+    @Column(name = "industry_name_en")
+    private String industryNameEn;
 }

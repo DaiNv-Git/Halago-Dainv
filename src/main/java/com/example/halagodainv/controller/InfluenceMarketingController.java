@@ -54,6 +54,7 @@ public class InfluenceMarketingController {
             return new ResponseEntity<>("Failed to retrieve InfluenceMarketing details", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/detail")
     public ResponseEntity<?> detail() {
         try {

@@ -6,6 +6,7 @@ import com.example.halagodainv.request.solution.livestream.SolutionLiveStreamEdi
 import java.util.List;
 
 public interface SolutionLiveStreamService {
+
     Object getSolution(String language);
 
     Object getSolutionDetail();

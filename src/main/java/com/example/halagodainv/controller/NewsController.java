@@ -48,7 +48,7 @@ public class NewsController {
                                       @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
                                       @RequestParam(value = "topicId", defaultValue = "1", required = false) Long topicId,
                                       @RequestParam(value = "tagId", defaultValue = "1", required = false) Long tagId,
-                                      @RequestParam(value = "language") String language) {
+                                      @RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getViewNews(pageNo, pageSize, language, topicId, tagId)));
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class NewsController {
 
     @PostMapping("/view-detail")
     public ResponseEntity<?> viewNews(@RequestParam(value = "viewId") int viewId,
-                                      @RequestParam(value = "language") String language) {
+                                      @RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getViewNewsDetail(viewId, language.toUpperCase())));
         } catch (Exception e) {
@@ -67,7 +67,7 @@ public class NewsController {
     }
 
     @PostMapping("/view-new-hot-topic")
-    public ResponseEntity<?> getNewsAndHot(@RequestParam(value = "language") String language) {
+    public ResponseEntity<?> getNewsAndHot(@RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getViewNewsAndHots(language.toUpperCase())));
         } catch (Exception e) {
@@ -76,7 +76,7 @@ public class NewsController {
     }
 
     @PostMapping("/view/topic")
-    public ResponseEntity<?> getTopics(@RequestParam(value = "language") String language) {
+    public ResponseEntity<?> getTopics(@RequestParam(value = "language", defaultValue = "vn") String language) {
         try {
             return ResponseEntity.ok(new BaseResponse<>(HttpStatus.OK.value(), "success", newsService.getTopic(language.toUpperCase())));
         } catch (Exception e) {

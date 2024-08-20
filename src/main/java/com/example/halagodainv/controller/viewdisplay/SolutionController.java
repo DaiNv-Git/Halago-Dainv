@@ -22,7 +22,7 @@ public class SolutionController {
     private SolutionReviewService solutionReviewService;
 
     @PostMapping("/live-stream")
-    public ResponseEntity<Object> getLiveStream(@RequestParam("language") String language) {
+    public ResponseEntity<Object> getLiveStream(@RequestParam(value = "language", defaultValue = "vn") String language) {
         return ResponseEntity.ok(solutionLiveStreamService.getSolution(language));
     }
 
